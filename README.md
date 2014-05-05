@@ -20,7 +20,7 @@ This is an attempt at providing a reference implementation for rich client-side 
 
 ## Documentation & Code examples
 
-http://rcarmo.github.io/pink/
+http://oss.sapo.pt/pink
 
  
 
