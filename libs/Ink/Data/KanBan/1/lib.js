@@ -5,7 +5,7 @@
  * @version 1
  */    
 
-Ink.createModule('Ink.Data.KanBan', '1', ['Ink.Data.Binding_1', 'Ink.Dom.Event_1', 'Ink.UI.Toggle_1', 'Ink.Data.DragDrop_1'], function(ko, inkEvt) {
+Ink.createModule('Ink.Data.KanBan', '1', ['Ink.Data.Binding_1', 'Ink.Dom.Event_1', 'Ink.UI.Toggle_1', 'Ink.Data.DragDrop_1'], function(ko, inkEvt, Toggle) {
     var Module = function(options) {
         this.moduleName = 'Ink.Data.KanBan';
         this.sections = options.sections;
