@@ -18169,10 +18169,23 @@ Ink.createModule("Ink.UI.Droppable","1",["Ink.Dom.Element_1", "Ink.Dom.Event_1",
         _update: function(elementData) {
             var data = elementData.data;
             var element = elementData.element;
+            
+            // PINK: This doesn't work with inner viewports 
+            /*
             data.left   = InkElement.offsetLeft(element);
             data.top    = InkElement.offsetTop( element);
             data.right  = data.left + InkElement.elementWidth( element);
             data.bottom = data.top  + InkElement.elementHeight(element);
+            */
+            
+            // PINK: This is better 
+            var ps = [InkElement.scrollWidth(), InkElement.scrollHeight()];
+            var clientRect = element.getBoundingClientRect();
+            
+            data.left = clientRect.left + ps [0];
+            data.top = clientRect.top + ps[1];
+            data.right = clientRect.right + ps[0];
+            data.bottom = clientRect.bottom + ps[1];
         },
 
         /**
@@ -18627,8 +18640,12 @@ Ink.createModule("Ink.UI.Draggable","1",["Ink.Dom.Element_1", "Ink.Dom.Event_1",
                     }
 
                     var Droppable = Ink.getModule('Ink.UI.Droppable_1');
+                    
+                    // PINK: This needs to execute on every movement because droppable's containers viewport may change over time.
+                    if (Droppable) {    Droppable.updateAll();    }
+                    
                     if (this.firstDrag) {
-                        if (Droppable) {    Droppable.updateAll();    }
+                        //if (Droppable) {    Droppable.updateAll();    }
                         /*this.element.style.position = 'absolute';
                         this.element.style.zIndex = this.options.zindex;
                         this.element.parentNode.insertBefore(this.placeholder, this.element);*/

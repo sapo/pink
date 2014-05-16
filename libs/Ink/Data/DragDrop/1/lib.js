@@ -187,7 +187,6 @@ Ink.createModule('Ink.Data.DragDrop', '1', ['Ink.Data.Binding_1', 'Ink.UI.Dragga
             var draggable;
             var draggableElement;
             var dragThreshold = (binding.dragThreshold || 4);
-            var offset = binding.offset;
             var lastSelectedIndex=-1;
 
             var handleSelection = function(data, evt) {
@@ -285,33 +284,6 @@ Ink.createModule('Ink.Data.DragDrop', '1', ['Ink.Data.Binding_1', 'Ink.UI.Dragga
                         
                         dropSuccess = false;
                         draggable=new Draggable(draggableProxy, {cursor: 'move', onEnd: ko.bindingHandlers.draggableContainer._handleDrop.bind(this, binding)});
-                        
-                        // Patch draggable to support container's horizontal scroll offsets
-                        draggable._getCoords = function(e) {
-                            var node = e.target;
-                            var leftScroll = 0;
-                            var ps = [inkEl.scrollWidth(), inkEl.scrollHeight()];
-                            var coords;
-
-                            
-                            if (e.type=='mouseup') {
-                                while ( (typeof node.scrollLeft == 'number') && (leftScroll==0) ) {
-                                    leftScroll += node.scrollLeft;
-                                    node = node.parentNode;
-                                }
-
-                                ps[0] = leftScroll;
-                            }
-                            
-                            
-                            coords = {
-                                    x: (e.touches ? e.touches[0].clientX : e.clientX) + ps[0],
-                                    y: (e.touches ? e.touches[0].clientY : e.clientY) + ps[1]
-                            };
-                            
-                            return coords; 
-                        };
-
                         
                         draggable.handlers.start(clonedEvent);
                         ko.bindingHandlers.draggableContainer._draggable=draggable;
