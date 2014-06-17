@@ -4,7 +4,7 @@
  * @version 1
  */    
 
-Ink.createModule('App.Tasks', '1', ['Ink.App_1', 'Ink.Data.Binding_1', 'Ink.Plugin.Signals_1', 'Ink.Data.Grid_1', 'Ink.Data.AutoComplete_1'], function(App, ko, Signal) {
+Ink.createModule('App.Tasks', '1', ['Pink.App_1', 'Pink.Data.Binding_1', 'Pink.Plugin.Signals_1', 'Pink.Data.Grid_1', 'Pink.Data.AutoComplete_1'], function(App, ko, Signal) {
     
     // App constructor (only data initialization logic)
     var Module = function() {

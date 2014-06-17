@@ -11,10 +11,11 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
 
         <!-- load inks css from the cdn -->
-        <link rel="stylesheet" type="text/css" href="content/css/ink.css">
+        <link rel="stylesheet" type="text/css" href="http://cdn.ink.sapo.pt/3.0.2/css/ink.css">
+        <link rel="stylesheet" type="text/css" href="http://cdn.ink.sapo.pt/3.0.2/css/font-awesome.css">
 
         <!-- load inks javascript files from the cdn -->
-        <script type="text/javascript" src="libs/ink-all.js"></script>
+        <script type="text/javascript" src="http://cdn.ink.sapo.pt/3.0.2/js/ink-all.js"></script>
 
         <link rel="stylesheet" type="text/css" href="content/css/docs.css">
     </head>
@@ -32,9 +33,25 @@
             -->
 
             <header id="mainMenu">
-                <h1><a href="index.html"><img src="content/img/logo-small.png" height="50" alt=""></a><small>Single page app framework</small></h1>
+                <h1 class="hide-tiny hide-small"><a href="index.html"><img src="content/img/logo-small.png" height="50" alt=""></a><small>Single page app framework</small></h1>
                 <nav class="ink-navigation quarter-top-space">
-                    <ul class="menu horizontal black">
+                    <ul class="menu horizontal black hide-tiny hide-small">
+                        <li><a href="get-started.html">Get started</a></li>
+                        <li><a href="docs.html">Docs</a></li>
+                        <li><a href="samples.html">Sample apps</a></li>
+                        <li><a href="https://github.com/sapo/pink" target="_blank">GitHub</a></li>
+                    </ul>
+                    <ul class="menu horizontal black hide-medium hide-large hide-xlarge">
+                    	<li id="verticalMenuTrigger" class="menu-bars" data-target="#verticalMenuMenu">
+                    		<a href="#"><i class="fa fa-bars"></i>
+                    	</a>
+                    	<li class="small-logo-right">                   	
+                    		<a href="index.html"><img src="content/img/logo-small.png" height="30" alt=""></a>
+                    	</li>
+                    </ul>
+                </nav>
+                <nav class="ink-navigation hide-all" id="verticalMenuMenu">
+                    <ul class="menu vertical black">
                         <li><a href="get-started.html">Get started</a></li>
                         <li><a href="docs.html">Docs</a></li>
                         <li><a href="samples.html">Sample apps</a></li>
@@ -42,17 +59,18 @@
                     </ul>
                 </nav>
             </header>
-            <div id="headerPadding">&nbsp;</div>
+            <div id="headerPadding" class="hide-small hide-tiny">&nbsp;</div>
+            <div id="smallHeaderPadding" class="hide-medium hide-large hide-xlarge">&nbsp;</div>
 
-            <div class="column-group gutters">
-                <div class="large-100 content-center">
-                    <img src="content/img/logo-large.png" alt="">
+            <div class="column-group quarter-space">
+                <div class="large-100 xlarge-100 align-center">
+                    <img class="hide-small hide-tiny" src="content/img/logo-large.png" alt="">
                     <h1 class="title">"No frills" single page app framework</h1>
                 </div>
             </div>
             <hr>
-            <div class="column-group gutters top-space">
-                <div class="large-50 small-100 tiny-100">
+            <div class="column-group quarter-space top-space double-gutters">
+                <div class="large-50 xlarge-50 medium-100 small-100 tiny-100">
                     <h2>Why Pink?</h2>
                     <p class="quarter-top-space">
                     While there are other single page app frameworks, Pink is unique because it combines the great <a href="http://ink.sapo.pt">Ink</a> CSS and JavaScript framework with the fabulous <a href="http://knockoutjs.com">Knockout</a> data binding library, giving you a no frills, lightweight and modular approach for building awesome apps.   
@@ -71,7 +89,7 @@
                         Pink was made possible by the great people from SAPO's intranet team, where we use it to build a number of line of business apps.
                     </p>
                 </div>
-                <div class="large-50 small-100 tiny-100">
+                <div class="large-50 xlarge-50 medium-100 small-100 tiny-100">
                     <h3>Features</h3>
                     <ul>
                         <li>Great "out of the box" look & feel, CSS & widgets provided by <a href="http://ink.sapo.pt">Ink</a></li>
@@ -108,5 +126,11 @@
 		        </div>
             </div>
         </footer>
+
+        <script type="text/javascript">
+	        Ink.requireModules(['Ink.UI.Toggle_1'], function (Toggle) {
+	            new Toggle('#verticalMenuTrigger');
+	        });	        
+        </script>        
     </body>
 </html>

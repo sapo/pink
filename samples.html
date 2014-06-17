@@ -11,12 +11,13 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
 
         <!-- load inks css from the cdn -->
-        <link rel="stylesheet" type="text/css" href="content/css/ink.css">
-
-        <!-- load inks javascript files from the cdn -->
-        <script type="text/javascript" src="libs/ink-all.js"></script>
+        <link rel="stylesheet" type="text/css" href="http://cdn.ink.sapo.pt/3.0.2/css/ink.css">
+        <link rel="stylesheet" type="text/css" href="http://cdn.ink.sapo.pt/3.0.2/css/font-awesome.css">
 
         <link rel="stylesheet" type="text/css" href="content/css/docs.css">
+
+        <!-- load inks javascript files from the cdn -->
+        <script type="text/javascript" src="http://cdn.ink.sapo.pt/3.0.2/js/ink-all.js"></script>
     </head>
 
     <body>
@@ -32,9 +33,25 @@
             -->
 
             <header id="mainMenu">
-                <h1><a href="index.html"><img src="content/img/logo-small.png" height="50" alt=""></a><small>Single page app framework</small></h1>
+                <h1 class="hide-tiny hide-small"><a href="index.html"><img src="content/img/logo-small.png" height="50" alt=""></a><small>Single page app framework</small></h1>
                 <nav class="ink-navigation quarter-top-space">
-                    <ul class="menu horizontal black">
+                    <ul class="menu horizontal black hide-tiny hide-small">
+                        <li><a href="get-started.html">Get started</a></li>
+                        <li><a href="docs.html">Docs</a></li>
+                        <li class="active"><a href="samples.html">Sample apps</a></li>
+                        <li><a href="https://github.com/sapo/pink" target="_blank">GitHub</a></li>
+                    </ul>
+                    <ul class="menu horizontal black hide-medium hide-large hide-xlarge">
+                    	<li id="verticalMenuTrigger" class="menu-bars" data-target="#verticalMenuMenu">
+                    		<a href="#"><i class="fa fa-bars"></i>
+                    	</a>
+                    	<li class="small-logo-right">                   	
+                    		<a href="index.html"><img src="content/img/logo-small.png" height="30" alt=""></a>
+                    	</li>
+                    </ul>
+                </nav>
+                <nav class="ink-navigation hide-all" id="verticalMenuMenu">
+                    <ul class="menu vertical black">
                         <li><a href="get-started.html">Get started</a></li>
                         <li><a href="docs.html">Docs</a></li>
                         <li class="active"><a href="samples.html">Sample apps</a></li>
@@ -42,9 +59,10 @@
                     </ul>
                 </nav>
             </header>
-            <div id="headerPadding">&nbsp;</div>
+            <div id="headerPadding" class="hide-small hide-tiny">&nbsp;</div>
+            <div id="smallHeaderPadding" class="hide-medium hide-large hide-xlarge">&nbsp;</div>
             
-            <section class="column-group gutters article">
+            <section class="column-group article quarter-space">
                 <div class="large-100">
                     <header>
                         <h1>Sample apps created with Pink</h1>
@@ -60,9 +78,9 @@
                             a kanban for desktop screens and a simple grid for smaller screens. The items are persisted in local storage.
                         </summary>
 
-                        <figure class="ink-image vertical-space">
+                        <div class="ink-image vertical-space">
                             <a target="_blank" href="todo-app.html"><img src="content/img/todo-app.png"></a>
-                        </figure>
+                        </div>
                         
                         <a target="_blank" href="todo-app.html">View sample&nbsp;<i class="icon-external-link"></i></a>
                     </article>
@@ -75,9 +93,9 @@
                             Search for photos on SAPO Photos service through a simple interface. 
                         </summary>
 
-                        <figure class="ink-image vertical-space">
+                        <div class="ink-image vertical-space">
                             <a target="_blank" href="images-app.html"><img src="content/img/image-search-app.png"></a>
-                        </figure>
+                        </div>
 
                         <a target="_blank" href="images-app.html">View sample&nbsp;<i class="icon-external-link"></i></a>
                     </article>
@@ -102,5 +120,11 @@
                 </div>
             </div>
         </footer>
+
+        <script type="text/javascript">
+	        Ink.requireModules(['Ink.UI.Toggle_1'], function (Toggle) {
+	            new Toggle('#verticalMenuTrigger');
+	        });	        
+        </script>        
     </body>
 </html>

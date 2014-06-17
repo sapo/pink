@@ -1,4 +1,4 @@
-Ink.createModule('App.Tasks.EditTask', '1', ['Ink.Data.Binding_1', 'App.Tasks.DataProvider', 'App.Tasks'], function(ko, dataProvider, app) {
+Ink.createModule('App.Tasks.EditTask', '1', ['Pink.Data.Binding_1', 'App.Tasks.DataProvider', 'App.Tasks'], function(ko, dataProvider, app) {
     var Module = function() {
     	var self=this;
     	
@@ -33,6 +33,16 @@ Ink.createModule('App.Tasks.EditTask', '1', ['Ink.Data.Binding_1', 'App.Tasks.Da
     		this.date(this.task.date);
     		this.status(this.task.status);
     	}
+    };
+
+    Module.prototype.removeTask = function() {
+    	var self=this;
+    	
+    	app.showConfirm('Please confirm...', 'Remove the item?', function() {
+    		dataProvider.deleteTask(self.task);
+    		app.signals.taskUpdated.dispatch();
+        	app.navigateTo(self.task.status);
+    	});
     };
     
     Module.prototype.saveTask = function() {

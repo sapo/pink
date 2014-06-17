@@ -10,12 +10,17 @@
         <meta name="MobileOptimized" content="320">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
 
-        <link rel="stylesheet" type="text/css" href="content/css/ink.css">
+        <!-- load inks css from the cdn -->
+        <link rel="stylesheet" type="text/css" href="http://cdn.ink.sapo.pt/3.0.2/css/ink.css">
+        <link rel="stylesheet" type="text/css" href="http://cdn.ink.sapo.pt/3.0.2/css/font-awesome.css">
+
         <link rel="stylesheet" type="text/css" href="content/css/docs.css">
         <link rel="stylesheet" type="text/css" href="libs/prettify/prettify.css">
         <link rel="stylesheet" type="text/css" href="libs/prettify/themes/ghink2.css">
 
-        <script type="text/javascript" src="libs/ink-all.js"></script>
+        <!-- load inks javascript files from the cdn -->
+        <script type="text/javascript" src="http://cdn.ink.sapo.pt/3.0.2/js/ink-all.js"></script>
+
         <script type="text/javascript" src="libs/prettify/prettify.js"></script>
     </head>
 
@@ -32,18 +37,34 @@
             -->
 
             <header id="mainMenu">
-                <h1><a href="index.html"><img src="content/img/logo-small.png" height="50" alt=""></a><small>Single page app framework</small></h1>
+                <h1 class="hide-tiny hide-small"><a href="index.html"><img src="content/img/logo-small.png" height="50" alt=""></a><small>Single page app framework</small></h1>
                 <nav class="ink-navigation quarter-top-space">
-                    <ul class="menu horizontal black">
+                    <ul class="menu horizontal black hide-tiny hide-small">
                         <li><a href="get-started.html">Get started</a></li>
-                        <li class="active"><a href="#">Docs</a></li>
+                        <li class="active"><a href="docs.html">Docs</a></li>
+                        <li><a href="samples.html">Sample apps</a></li>
+                        <li><a href="https://github.com/sapo/pink" target="_blank">GitHub</a></li>
+                    </ul>
+                    <ul class="menu horizontal black hide-medium hide-large hide-xlarge">
+                    	<li id="verticalMenuTrigger" class="menu-bars" data-target="#verticalMenuMenu">
+                    		<a href="#"><i class="fa fa-bars"></i>
+                    	</a>
+                    	<li class="small-logo-right">                   	
+                    		<a href="index.html"><img src="content/img/logo-small.png" height="30" alt=""></a>
+                    	</li>
+                    </ul>
+                </nav>
+                <nav class="ink-navigation hide-all" id="verticalMenuMenu">
+                    <ul class="menu vertical black">
+                        <li><a href="get-started.html">Get started</a></li>
+                        <li class="active"><a href="docs.html">Docs</a></li>
                         <li><a href="samples.html">Sample apps</a></li>
                         <li><a href="https://github.com/sapo/pink" target="_blank">GitHub</a></li>
                     </ul>
                 </nav>
             </header>
             
-            <div id="docsContainer" class="column-group gutters large-100">
+            <div id="docsContainer" class="column-group gutters large-100 xlarge-100">
                 <div id="docMenu">
                     <h2>Documentation</h2>
                     <nav>
@@ -104,6 +125,8 @@
                                     <li><a href="#tooltip">Tooltip</a></li>
                                     <li><a href="#dragdrop">Drag&Drop</a></li>
                                     <li><a href="#kanban">Kanban</a></li>
+                                    <li><a href="#carousel">Carousel</a></li>
+                                    <li><a href="#tabs">Tabs</a></li>
                                </ol>
                             </li>
                             <li><a href="#plugins">Plugins</a></li>
@@ -117,7 +140,7 @@
                             <h2 class="push-left">Application Interface</h2>
                         </header>
                         <summary>
-                            The main module of every Pink application must inherit its prototype from the <code>Ink.App</code> module.
+                            The main module of every Pink application must inherit its prototype from the <code>Pink.App</code> module.
                             The app's modules should require this module in their dependencies to access the framework's public interface.
                         </summary>
                         <br>
@@ -508,7 +531,7 @@
                             </ul>    
                         </p>
                         <p>
-                            To register new events your application must assign a new instance of "Ink.Plugin.Signals_1" to app.signals.&lt;signal-name&gt;.
+                            To register new events your application must assign a new instance of "Pink.Plugin.Signals_1" to app.signals.&lt;signal-name&gt;.
                             This is usally done by overriding the addCustomSignals application's method.  
                         </p>
                         
@@ -644,7 +667,7 @@ app.signals.taskSaved.add(taskSavedHandler);
                         <h3>Data binding</h3>
                         <h4><em>Binding declaration</em></h4>
                         <p>
-                            <blockquote><pre class="prettyprint lang-html">&lt;div data-bind="module: {name: 'Ink.Data.ModalWindow_1', data: modalModel}"&gt;&lt;/div&gt;</pre></blockquote>                            
+                            <blockquote><pre class="prettyprint lang-html">&lt;div data-bind="module: {name: 'Pink.Data.ModalWindow_1', data: modalModel}"&gt;&lt;/div&gt;</pre></blockquote>                            
                         </p>
                         <h4><em>Binding value</em></h4>
                         <p>
@@ -683,7 +706,7 @@ Ink.createModule('App.Example.Shell', '1', ['App.Example'], function(app) {
                             <h2 class="push-left">Grid</h2>
                         </header>
                         <p>
-                            The 'Ink.Data.Grid' module provides a Knockout binding handler to render an HTML table, fully customizable through 
+                            The 'Pink.Data.Grid' module provides a Knockout binding handler to render an HTML table, fully customizable through 
                             the use of Knockout templates, and also an extendable javascript model for 
                             tabular data, supporting client side pagination and custom row sort handling logic (server/client).  
                         </p>
@@ -704,7 +727,7 @@ Ink.createModule('App.Example.Shell', '1', ['App.Example'], function(app) {
                             <blockquote><pre class="prettyprint lang-js">
 /* Example view model attribute for a table model */
 
-Ink.createModule('App.Shapes.Home', '1', ['Ink.Data.Grid_1'], function(Grid) {
+Ink.createModule('App.Shapes.Home', '1', ['Pink.Data.Grid_1'], function(Grid) {
     var Module = function() {
         this.tableModel = new Grid({
             data: [
@@ -751,7 +774,7 @@ Ink.createModule('App.Shapes.Home', '1', ['Ink.Data.Grid_1'], function(Grid) {
                             <h2 class="push-left">Paginator</h2>
                         </header>
                         <p>
-                            The 'Ink.Data.Paginator' module, provides a Knockout binding handler to render a pagination bar widget, and a javascript model that handles the actual
+                            The 'Pink.Data.Paginator' module, provides a Knockout binding handler to render a pagination bar widget, and a javascript model that handles the actual
                             data pagination.
                         </p>
                         <h3>Data binding</h3>
@@ -771,7 +794,7 @@ Ink.createModule('App.Shapes.Home', '1', ['Ink.Data.Grid_1'], function(Grid) {
                             <blockquote><pre class="prettyprint lang-js">
 /* Example view model attribute for a paginator */
 
-Ink.createModule('App.Names.List', '1', ['Ink.Data.Paginator_1'], function(Paginator) {
+Ink.createModule('App.Names.List', '1', ['Pink.Data.Paginator_1'], function(Paginator) {
     var Module = function() {
         this.paginatedModel = new Paginator({
             data: ['Alice', 'Sara', 'John', 'Peter', 'Mark', 'Beatriz', 'Roger', 'Paul', 'Trent', 'Daniela', 'Samuel'],
@@ -798,7 +821,7 @@ Ink.createModule('App.Names.List', '1', ['Ink.Data.Paginator_1'], function(Pagin
                             <h2 class="push-left">AutoComplete</h2>
                         </header>
                         <p>
-                            The 'Ink.Data.AutoComplete' module provides a Knockout binding handler that renders an autocomplete widget bound to an observable array of values.
+                            The 'Pink.Data.AutoComplete' module provides a Knockout binding handler that renders an autocomplete widget bound to an observable array of values.
                         </p>
                         <h3>Data binding</h3>
                         <h4><em>Binding declaration</em></h4>
@@ -815,11 +838,11 @@ Ink.createModule('App.Names.List', '1', ['Ink.Data.Paginator_1'], function(Pagin
 /* 
     Example view model
 
-    Your app must declare the dependency to the 'Ink.Data.AutoComplete' module 
+    Your app must declare the dependency to the 'Pink.Data.AutoComplete' module 
     to register the 'autoComplete' binding handler. 
 */
 
-Ink.createModule('App.Names.List', '1', ['Ink.Data.Binding_1', 'Ink.Data.AutoComplete_1'], function(ko) {
+Ink.createModule('App.Names.List', '1', ['Pink.Data.Binding_1', 'Pink.Data.AutoComplete_1'], function(ko) {
     var Module = function() {
         this.users = ko.observableArray([
                 {id: 1, name: 'Alice'}, 
@@ -845,7 +868,7 @@ Ink.createModule('App.Names.List', '1', ['Ink.Data.Binding_1', 'Ink.Data.AutoCom
                             <h2 class="push-left">ToolTip</h2>
                         </header>
                         <p>
-                            'Ink.Data.Tooltip' provides a simple Ink Tooltip binding handler.
+                            'Pink.Data.Tooltip' provides a simple Ink Tooltip binding handler.
                         </p>
                         <h3>Data binding</h3>
                         <h4><em>Binding declaration</em></h4>
@@ -862,11 +885,11 @@ Ink.createModule('App.Names.List', '1', ['Ink.Data.Binding_1', 'Ink.Data.AutoCom
 /* 
     Example view model
 
-    Your app must declare the dependency to the 'Ink.Data.Tooltip' module 
+    Your app must declare the dependency to the 'Pink.Data.Tooltip' module 
     to register the 'tooltip' binding handler. 
 */
 
-Ink.createModule('App.Example.Home', '1', ['Ink.Data.Binding_1', 'Ink.Data.Tooltip_1'], function(ko) {
+Ink.createModule('App.Example.Home', '1', ['Pink.Data.Binding_1', 'Pink.Data.Tooltip_1'], function(ko) {
     var Module = function() {
         this.name = ko.observable('John Doe');
         this.photo = ko.observable('john.png');
@@ -882,7 +905,7 @@ Ink.createModule('App.Example.Home', '1', ['Ink.Data.Binding_1', 'Ink.Data.Toolt
                             <h2 class="push-left">Drag & Drop</h2>
                         </header>
                         <p>
-                            'Ink.Data.DragDrop' provides binding handlers to render drop targets and draggable elements containers.
+                            'Pink.Data.DragDrop' provides binding handlers to render drop targets and draggable elements containers.
                             These bindings allow a clean separation of the rendered draggable and the underlying data object, meaning that the view model only needs to 
                             handle pure js objects instead of DOM elements.   
                         </p>
@@ -909,11 +932,11 @@ Ink.createModule('App.Example.Home', '1', ['Ink.Data.Binding_1', 'Ink.Data.Toolt
 /* 
     Example view model
 
-    Your app must declare the dependency to the 'Ink.Data.DragDrop' module 
+    Your app must declare the dependency to the 'Pink.Data.DragDrop' module 
     to register both 'draggableContainer' and 'droppable' binding handlers. 
 */
 
-Ink.createModule('App.Example.Home', '1', ['Ink.Data.Binding_1', 'Ink.Data.DragDrop_1'], function(ko) {
+Ink.createModule('App.Example.Home', '1', ['Pink.Data.Binding_1', 'Pink.Data.DragDrop_1'], function(ko) {
     var Module = function() {
         var self=this;
         
@@ -967,7 +990,7 @@ Ink.createModule('App.Example.Home', '1', ['Ink.Data.Binding_1', 'Ink.Data.DragD
                         <h4><em>Binding declaration</em></h4>
                         <p>
                             <blockquote><pre class="prettyprint lang-html">
-&lt;!--ko module: {name:'Ink.Data.KanBan_1', data: kanbanModel}--&gt;
+&lt;!--ko module: {name:'Pink.Data.Kanban_1', data: kanbanModel}--&gt;
 &lt;!--/ko--&gt;
                             </pre></blockquote>
                         </p>
@@ -978,7 +1001,7 @@ Ink.createModule('App.Example.Home', '1', ['Ink.Data.Binding_1', 'Ink.Data.DragD
     Example view model
 */
 
-Ink.createModule('App.Example.Todo', '1', ['Ink.Data.Binding_1'], function(ko) {
+Ink.createModule('App.Example.Todo', '1', ['Pink.Data.Binding_1'], function(ko) {
     var Module = function() {
         this.todoTasks = ko.observableArray([
             {title: 'Buy wood', content: 'Oak wood 10"x5"'},
@@ -1041,6 +1064,115 @@ Ink.createModule('App.Example.Todo', '1', ['Ink.Data.Binding_1'], function(ko) {
                         </p>
                     </article>
                     <article>
+                        <a class="bookmark" id="carousel"></a>
+                        <header>
+                            <h2 class="push-left">Carousel</h2>
+                        </header>
+                        <p>
+                        	The Carousel UI module is a wrapper around Ink's <a href="http://ink.sapo.pt/javascript/Ink.UI.Carousel/">carousel</a> widget.
+                        </p>
+                        <h3>Data binding</h3>
+                        <h4><em>Binding declaration</em></h4>
+                        <p>
+                            <blockquote><pre class="prettyprint lang-html">
+&lt;div data-pagination="#carouselPagination" data-bind="carousel: carouselModel"&gt;
+	&lt;ul class="stage column-group" data-bind="foreach: photos"&gt;
+		&lt;li class="slide all-100"&gt;
+			&lt;img class="quarter-bottom-space" data-bind="attr: {src: url}" height="300"&gt;
+			&lt;div class="description"&gt;
+				&lt;h4 data-bind="text: title"&gt;&lt;/h4&gt;
+			&lt;/div&gt;
+		&lt;/li&gt;						
+	&lt;/ul&gt;
+&lt;/div&gt;			    
+&lt;nav id="carouselPagination" data-max-size="5" class="ink-navigation" style="margin-left: -1em"&gt;
+    &lt;ul class="pagination black"&gt;
+    &lt;/ul&gt;
+&lt;/nav&gt;
+                            </pre></blockquote>
+                        </p>
+                        <h4><em>Binding value</em></h4>
+                        <p>
+                            <blockquote><pre class="prettyprint lang-js">
+/* 
+    Example view model
+
+    Your app must declare the dependency to the 'Pink.Data.Carousel' module 
+    to register the 'carousel' binding handler. 
+
+*/
+
+Ink.createModule('App.Example.Images', '1', ['Pink.Data.Binding_1', 'Pink.Data.Carousel_1'], function(ko) {
+    var Module = function() {
+    	this.carouselModel = {
+    		pagination: '#carouselPagination', 
+    		nextLabel: '', 
+    		previousLabel: '', 
+    		refitHandler: this.carouselRefitHandler
+    	};
+        
+...
+                            </pre></blockquote>
+                        </p>
+                        <p>
+                            - Carousel module options:
+
+                            <ul class="unstyled">
+                                <li><b>pagination</b> Id of DOM element containing an Ink's paginator widget</li>
+                                <li><b>nextLabel</b> String with the next image button label</li>
+                                <li><b>previousLabel</b> String with the previous image button label</li>
+                                <li><b>refitHandler</b> <em>Observable</em> Function set by the carousel module to be called when a layout change occurs.</li>
+                            </ul>
+                        </p>
+                    </article>
+                    <article>
+                        <a class="bookmark" id="tabs"></a>
+                        <header>
+                            <h2 class="push-left">Tabs</h2>
+                        </header>
+                        <p>
+                            'Pink.Data.Tabs' is a wrapper around Ink's <a href="http://ink.sapo.pt/javascript/Ink.UI.Tabs/">tabs</a> widget.
+                        </p>
+                        <h3>Data binding</h3>
+                        <h4><em>Binding declaration</em></h4>
+                        <p>
+                            <blockquote><pre class="prettyprint lang-html">
+/* Example tabs binding */
+&lt;div class="top" data-bind="tabs: tabsModel"&gt;
+	&lt;ul class="tabs-nav"&gt;
+		&lt;li&gt;&lt;a class="tabs-tab" href="#gridResults"&gt;Grid&lt;/a&gt;&lt;/li&gt;
+		&lt;li&gt;&lt;a class="tabs-tab" href="#carouselResults"&gt;Carousel&lt;/a&gt;&lt;/li&gt;
+	&lt;/ul&gt;
+	&lt;div id="gridResults" class="tabs-content"&gt;
+		...
+	&lt;/div&gt;
+	&lt;div id="carouselResults" class="tabs-content"&gt;
+		...
+	&lt;/div&gt;
+&lt;/div&gt;
+                            </pre></blockquote>                            
+                        </p>
+                        <h4><em>Binding value</em></h4>
+                        <p>
+                            <blockquote><pre class="prettyprint lang-js">
+/* 
+    Example view model
+
+    Your app must declare the dependency to the 'Pink.Data.Tabs' module 
+    to register the 'tabs' binding handler. 
+*/
+
+Ink.createModule('App.Example.Search', '1', ['Pink.Data.Binding_1', 'Pink.Data.Tabs_1'], function(ko) {
+    var Module = function() {
+    	this.tabsModel = {
+    		onChange: this.tabChangeHandler.bind(this)
+    	};
+...
+                            </pre></blockquote>                            
+                            <span class="note"><i class="icon-exclamation-sign"></i> Check <a href="http://ink.sapo.pt/javascript/Ink.UI.Tabs/">Ink.UI.Tabs</a> Ink's docs, for details on the tabs value object options.</span>
+                        </p>
+                    </article>
+                    <article>
                         <a class="bookmark" id="plugins"></a>
                         <header>
                             <h2 class="push-left">Plugins</h2>
@@ -1081,7 +1213,7 @@ Ink.createModule('App.Example.Todo', '1', ['Ink.Data.Binding_1'], function(ko) {
     Example application model
 */
 
-Ink.createModule('App.Images', '1', ['Ink.App_1', 'Ink.Plugin.Signals_1', 'Ink.Data.Binding_1'], function(App, Signal, ko) {
+Ink.createModule('App.Images', '1', ['Pink.App_1', 'Pink.Plugin.Signals_1', 'Pink.Data.Binding_1'], function(App, Signal, ko) {
     var Module = function() {
         App.call(this, 'search', 'search'); 
 
@@ -1108,10 +1240,14 @@ Ink.createModule('App.Images', '1', ['Ink.App_1', 'Ink.Plugin.Signals_1', 'Ink.D
 		<script type="text/javascript">
 		    Ink.requireModules( ['Ink.UI.Sticky_1', 'Ink.UI.Toggle_1', 'Ink.Util.Array_1'], function( Sticky, Toggle, InkArray) {
 		    	InkArray.forEach(Ink.ss('.sub-menu'), function(element) {
-	                new Toggle(element);
+	                new Toggle(element, {closeOnInsideClick: null, classNameOn: '', classNameOff: ''});
 		    	});
                 prettyPrint();
 		    });
+
+		    Ink.requireModules(['Ink.UI.Toggle_1'], function (Toggle) {
+	            new Toggle('#verticalMenuTrigger');
+	        });	        
 		</script>        
     </body>
 </html>

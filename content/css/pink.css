@@ -184,13 +184,10 @@
     position: absolute;
     left: 0.6em;
     top: 40%;
-    font-size: 0.6em;
-    color: #A0A0A0;
-    box-shadow: 1px 1px 1px #888888;
-}
-
-.kanban .section .card>.drag-affordance>i {
-    display: block;
+    width: 4px;
+    height: 23px;
+    background-repeat: no-repeat;
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAXCAYAAAAss+5LAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAN1wAADdcBQiibeAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAADASURBVBiVtc49SsNgAIDhJ1++tosOAYe2oAimCkpApOoJxNHNAwgeo7OrN3DxCOINdO3gUjDdFEWRSnTwP67iKPiM7/QmLbY67LW5f+I4XWCwSVjnJtKMc9wWVDnliCrNmCQ0hjyccJnUde2n4Jc/BAhT7HbZQYgzHKyyljMekcUenYKLnPKFtxg5X+Z9nvEhXxCW6GcUCP9ymrTYnmW/zd0rR+kigw0++1ylNGOX6xWqHuWQ53Saxw8aZ0xOKb8BYowyUQJEBT8AAAAASUVORK5CYII=);
 }
 
 .kanban .section .card>.edit-action {

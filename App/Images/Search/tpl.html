@@ -1,23 +1,67 @@
 <div class="half-space">
     <div class="ink-form">
-        <div class="control-group column-group half-right-space">
-            <div class="control">
-                <input type="search" placeholder="Search terms..." data-bind="value: search, valueUpdate: 'afterkeydown'"></input>
-            </div>
-        </div>
-    </div>
-    <!-- ko if: searching  -->
-	    <i class="icon-spinner icon-spin icon-4x"></i>
-    <!-- /ko -->
-    <!-- ko ifnot: searching -->
-	    <div class="top-space" data-bind="foreach: photos">
-	        <div class="thumbnail">
-	            <a href="javascript:void(0)" data-bind="click: clickHandler">
-	               <img data-bind="attr: {src: tbUrl}" height="120">
-	            </a>
+    	<div class="column-group gutters">
+	        <div class="control-group xlarge-50 large-50 medium-60 tiny-90 small-90">
+	        	<div class="column-group gutters">
+		            <div class="control all-100">
+		                <input type="search" placeholder="Search terms..." data-bind="value: search, valueUpdate: 'afterkeydown'"></input>
+		            </div>
+		        </div>
 	        </div>
+            <div class="control-group xlarge-50 large-50 medium-40 tiny-10 small-10">
+            	<div class="control push-right">
+      				<a href="javascript:void" data-bind="click: showProviderConfig"><i class="fa fa-gears fa-lg"></i></a>
+      			</div>
+            </div>
 	    </div>
-	    <div class="top-space" data-bind="visible: noPhotos">
+    </div>
+    <div class="top" data-bind="tabs: {onChange: tabChangeHandler.bind($data)}">
+	 	<ul class="tabs-nav">
+	        <li><a class="tabs-tab" href="#gridResults">Grid</a></li>
+	        <li><a class="tabs-tab" href="#carouselResults">Carousel</a></li>
+	    </ul>
+	    <div id="gridResults" class="tabs-content">
+		    <!-- ko if: searching  -->
+			    <i class="fa fa-spinner fa fa-spin fa fa-4x"></i>
+		    <!-- /ko -->
+		    <!-- ko ifnot: searching -->
+		    	<!-- ko ifnot: noPhotos -->
+				    <div class="top-space" data-bind="foreach: photos">
+				        <div class="thumbnail">
+				            <a href="javascript:void(0)" data-bind="click: clickHandler">
+				               <img data-bind="attr: {src: tbUrl}" height="120">
+				            </a>
+				        </div>
+				    </div>
+			    <!-- /ko -->
+		    <!-- /ko -->
+	    </div>
+	    <div id="carouselResults" class="tabs-content">
+		    <!-- ko if: searching  -->
+			    <i class="fa fa-spinner fa fa-spin fa fa-4x"></i>
+		    <!-- /ko -->
+		    <!-- ko ifnot: searching -->
+		    	<!-- ko ifnot: noPhotos -->
+					<div data-pagination="#carouselPagination" data-bind="carousel: {pagination: '#carouselPagination', nextLabel: '', previousLabel: '', refitHandler: carouselRefitHandler}">
+						<ul class="stage column-group" data-bind="foreach: photos">
+							<li class="slide all-100">
+								<img class="quarter-bottom-space" data-bind="attr: {src: url}" height="300">
+					            <div class="description">
+					                <h4 data-bind="text: title"></h4>
+					            </div>
+					        </li>						
+						</ul>
+					</div>			    
+					<nav id="carouselPagination" data-max-size="5" class="ink-navigation" style="margin-left: -1em">
+					    <ul class="pagination black">
+					    </ul>
+					</nav>
+			    <!-- /ko -->
+		    <!-- /ko -->
+	    </div>
+    </div>
+    <!-- ko ifnot: searching -->
+	    <div data-bind="visible: noPhotos">
 	        No results
 	    </div>
     <!-- /ko -->

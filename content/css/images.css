@@ -139,10 +139,13 @@ footer>.ink-navigation>ul>li>a {
 
 .thumbnail {
 	float: left;
-	height: 120px;
     padding: 0.5em;
 	margin: 0.5em;
 	background-color: #F0F0F0;
+}
+
+.thumbnail:hover {
+	background-color: #A0A0A0;
 }
 
 /*****************************

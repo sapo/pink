@@ -4,7 +4,7 @@
  * @version 1
  */    
 
-Ink.createModule('App.Images', '1', ['Ink.App_1', 'Ink.Plugin.Signals_1', 'Ink.Data.Binding_1'], function(App, Signal, ko) {
+Ink.createModule('App.Images', '1', ['Pink.App_1', 'Pink.Plugin.Signals_1', 'Pink.Data.Binding_1'], function(App, Signal, ko) {
     var Module = function() {
         App.call(this, 'search', 'search'); 
 
@@ -23,6 +23,7 @@ Ink.createModule('App.Images', '1', ['Ink.App_1', 'Ink.Plugin.Signals_1', 'Ink.D
     
     Module.prototype.addCustomSignals = function() {
     	this.signals.viewPhoto = new Signal();
+    	this.signals.providerConfigUpdated = new Signal();
     };
 
     /*

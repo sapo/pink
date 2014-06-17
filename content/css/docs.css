@@ -65,6 +65,7 @@ blockquote>pre {
     overflow-x: auto;
     white-space: pre;
     word-wrap: normal;
+	font-size: .85em;
 }
 
 #docsContainer {
@@ -98,6 +99,7 @@ blockquote>pre {
 
 #mainMenu>h1 {
 	margin-left: 1em;
+	margin-bottom: 0;
 }
 
 #mainMenu>nav>ul {
@@ -106,6 +108,10 @@ blockquote>pre {
 
 #headerPadding {
     height: 8em;    
+}
+
+#smallHeaderPadding {
+    height: 4em;    
 }
 
 a.bookmark {
@@ -118,6 +124,28 @@ a.bookmark {
 .ink-grid {
     max-width: none ! important;
 }
+
+nav a.sub-menu+ol {
+    display: none;
+}
+
+nav a.sub-menu.active+ol {
+    display: block;
+}
+
+#mainMenu .small-logo-right {
+	float: right;
+	margin-right: 2em;
+}
+
+#mainMenu .menu-bars {
+	margin-left: -1em;
+}
+
+#verticalMenuMenu {
+	margin-left: -2em;
+}
+
 /*****************************
  Media Queries
 *****************************/

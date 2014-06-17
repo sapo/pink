@@ -40,7 +40,13 @@
 <footer>
     <nav class="ink-navigation">
         <ul class="menu horizontal black">
-            <li class="large-100 medium-100 small-100"><a href="javascript:void(0)" data-bind="click: saveTask"><i class="icon-save"></i>&nbsp;Save Task</a></li>
+        	<!-- ko if: task -->
+	            <li class="all-50"><a href="javascript:void(0)" data-bind="click: removeTask"><i class="fa fa-trash-o"></i>&nbsp;Remove</a></li>
+	            <li class="all-50"><a href="javascript:void(0)" data-bind="click: saveTask"><i class="fa fa-save"></i>&nbsp;Save</a></li>
+        	<!-- /ko -->
+        	<!-- ko ifnot: task -->
+	            <li class="all-100"><a href="javascript:void(0)" data-bind="click: saveTask"><i class="fa fa-save"></i>&nbsp;Save</a></li>
+        	<!-- /ko -->
         </ul>
     </nav>
 </footer>

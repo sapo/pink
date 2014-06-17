@@ -10,12 +10,17 @@
         <meta name="MobileOptimized" content="320">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
 
-        <link rel="stylesheet" type="text/css" href="content/css/ink.css">
+        <!-- load inks css from the cdn -->
+        <link rel="stylesheet" type="text/css" href="http://cdn.ink.sapo.pt/3.0.2/css/ink.css">
+        <link rel="stylesheet" type="text/css" href="http://cdn.ink.sapo.pt/3.0.2/css/font-awesome.css">
+        
         <link rel="stylesheet" type="text/css" href="content/css/docs.css">
         <link rel="stylesheet" type="text/css" href="libs/prettify/prettify.css">
         <link rel="stylesheet" type="text/css" href="libs/prettify/themes/ghink2.css">
 
-        <script type="text/javascript" src="libs/ink-all.js"></script>
+        <!-- load inks javascript files from the cdn -->
+        <script type="text/javascript" src="http://cdn.ink.sapo.pt/3.0.2/js/ink-all.js"></script>
+        
         <script type="text/javascript" src="libs/prettify/prettify.js"></script>
     </head>
 
@@ -32,9 +37,25 @@
             -->
 
             <header id="mainMenu">
-                <h1><a href="index.html"><img src="content/img/logo-small.png" height="50" alt=""></a><small>Single page app framework</small></h1>
+                <h1 class="hide-tiny hide-small"><a href="index.html"><img src="content/img/logo-small.png" height="50" alt=""></a><small>Single page app framework</small></h1>
                 <nav class="ink-navigation quarter-top-space">
-                    <ul class="menu horizontal black">
+                    <ul class="menu horizontal black hide-tiny hide-small">
+                        <li class="active"><a href="get-started.html">Get started</a></li>
+                        <li><a href="docs.html">Docs</a></li>
+                        <li><a href="samples.html">Sample apps</a></li>
+                        <li><a href="https://github.com/sapo/pink" target="_blank">GitHub</a></li>
+                    </ul>
+                    <ul class="menu horizontal black hide-medium hide-large hide-xlarge">
+                    	<li id="verticalMenuTrigger" class="menu-bars" data-target="#verticalMenuMenu">
+                    		<a href="#"><i class="fa fa-bars"></i></a>
+                    	</li>
+                    	<li class="small-logo-right">                   	
+                    		<a href="index.html"><img src="content/img/logo-small.png" height="30" alt=""></a>
+                    	</li>
+                    </ul>
+                </nav>
+                <nav class="ink-navigation hide-all" id="verticalMenuMenu">
+                    <ul class="menu vertical black">
                         <li class="active"><a href="get-started.html">Get started</a></li>
                         <li><a href="docs.html">Docs</a></li>
                         <li><a href="samples.html">Sample apps</a></li>
@@ -42,9 +63,10 @@
                     </ul>
                 </nav>
             </header>
-            <div id="headerPadding">&nbsp;</div>
+            <div id="headerPadding" class="hide-small hide-tiny">&nbsp;</div>
+            <div id="smallHeaderPadding" class="hide-medium hide-large hide-xlarge">&nbsp;</div>
             
-            <section class="column-group gutters article">
+            <section class="column-group article quarter-space">
                 <div class="large-100">
                     <article>
                         <header>
@@ -74,10 +96,8 @@
       |----lib.js
       +content
       +--css
-      |----ink.css
       |----pink.css
-      |----taks.css
-      +--font
+      |----tasks.css
       +--img
       +libs
       |index.html
@@ -107,7 +127,7 @@
         &lt;script src="libs/ink-all.js"&gt;&lt;/script&gt;
         &lt;script type="text/javascript"&gt;
             Ink.setPath('App', 'App/');
-            Ink.setPath('Ink', 'libs/Ink/');
+	        Ink.setPath('Pink', 'libs/Pink/');
     
             Ink.requireModules(['App.Images'], function(app) {
                 app.run();
@@ -125,7 +145,7 @@
 		                
 		                <p>
 		                    The "Ink.setPath" command defines where Ink can find the modules needed by the app, this should include the application
-		                    folder (usually "App") and Ink & Pink libraries folder (usually "libs/Ink").
+		                    folder (usually "App") and Pink's libraries folder (usually "libs/Pink").
 		                </p>
 		                
 		                <p>
@@ -136,7 +156,7 @@
                         <h2>App/Images/lib.js</h2>
 
                         <blockquote><pre class="prettyprint lang-js">
-Ink.createModule('App.Images', '1', ['Ink.App_1', 'Ink.Plugin.Signals_1', 'Ink.Data.Binding_1'], function(App, Signal, ko) {
+Ink.createModule('App.Images', '1', ['Pink.App_1', 'Pink.Plugin.Signals_1', 'Pink.Data.Binding_1'], function(App, Signal, ko) {
     var Module = function() {
         App.call(this, 'search', 'search'); 
 
@@ -170,7 +190,7 @@ Ink.createModule('App.Images', '1', ['Ink.App_1', 'Ink.Plugin.Signals_1', 'Ink.D
                         </pre></blockquote>                        
                         
                         <p>
-                            The application module must inherit it's prototype from the "Ink.App" module.
+                            The application module must inherit it's prototype from the "Pink.App" module.
                             As this simple application as no visible menus, we only need to redefine the app's 
                             "listInvisibleRoutes" method that must return an array of route definitions.
                             <br>
@@ -179,7 +199,7 @@ Ink.createModule('App.Images', '1', ['Ink.App_1', 'Ink.Plugin.Signals_1', 'Ink.D
                         </p>
                         
                         <p>
-                            We also override the "addCustomSignals" method from "Ink.App", this allows us to add new client signals
+                            We also override the "addCustomSignals" method from "Pink.App", this allows us to add new client signals
                             to the app. Although not required, is's a good pratice to decouple the app's modules, so that they have
                             very limited knowledge about the other parts of the application, allowing those parts to be easly replaced. 
                             For this decoupling we usually use custom events to signal the ocurrence of some actions, like the success 
@@ -192,8 +212,8 @@ Ink.createModule('App.Images', '1', ['Ink.App_1', 'Ink.Plugin.Signals_1', 'Ink.D
                         </p>
                         
                         <p>
-                            The "ready" method from "Ink.App" is also overriden to add custom startup logic. In our example we require the 
-                            preload of the "App.Images.View" module, so that it can subscribe to "viewPhoto" events. After that we call "Ink.App"
+                            The "ready" method from "Pink.App" is also overriden to add custom startup logic. In our example we require the 
+                            preload of the "App.Images.View" module, so that it can subscribe to "viewPhoto" events. After that we call "Pink.App"
                             "start" method, that begins the data binding process, in our case, loading the "App.Images.Shell" method referenced in
                             "index.html". 
                         </p>
@@ -260,14 +280,14 @@ Ink.createModule('App.Images.Shell', '1', ['App.Images'], function(app) {
                             The "App.Images.Shell" template (App/Images/Shell/tpl.html), has the app's main layout markup,
                             responsible for UI composition through the use
                             of the "module" binding directive. Here we instruct the framework to load the active route's module (mainModule).
-                            If we want to show modal dialogs, we should also include, the "Ink.App"'s "modalModule", "alertModule"
+                            If we want to show modal dialogs, we should also include, the "Pink.App"'s "modalModule", "alertModule"
                             and "infoModule".
                         </p>
 
                         <h2>App/Images/Search/lib.js</h2>
                         
                         <blockquote><pre class="prettyprint lang-js">
-Ink.createModule('App.Images.Search', '1', ['App.Images', 'Ink.Data.Binding', 'Ink.Net.JsonP_1'], function(app, ko, JsonP) {
+Ink.createModule('App.Images.Search', '1', ['App.Images', 'Pink.Data.Binding', 'Ink.Net.JsonP_1'], function(app, ko, JsonP) {
     var Module = function() {
         var self=this;
         
@@ -380,7 +400,7 @@ Ink.createModule('App.Images.Search', '1', ['App.Images', 'Ink.Data.Binding', 'I
                         <h2>App/Images/View/lib.js</h2>
                         
                         <blockquote><pre class="prettyprint lang-js">
-Ink.createModule('App.Images.View', '1', ['App.Images', 'Ink.Data.Binding_1'], function(app, ko) {
+Ink.createModule('App.Images.View', '1', ['App.Images', 'Pink.Data.Binding_1'], function(app, ko) {
     var Module = function() {
         app.signals.viewPhoto.add(this.viewPhoto.bind(this));
         
@@ -440,6 +460,9 @@ Ink.createModule('App.Images.View', '1', ['App.Images', 'Ink.Data.Binding_1'], f
 
         <script type="text/javascript">
 	        prettyPrint();
+	        Ink.requireModules(['Ink.UI.Toggle_1'], function (Toggle) {
+	            new Toggle('#verticalMenuTrigger');
+	        });	        
         </script>        
     </body>
 </html>

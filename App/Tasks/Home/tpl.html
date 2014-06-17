@@ -1,12 +1,12 @@
 <div class="scroll-area">
-    <div class="hide-large" data-bind="simpleGrid: tasksModel"></div>
-    <div class="hide-small hide-medium  todo-kanban" data-bind="module: {name:'Ink.Data.KanBan_1', data: {sections: sections, cardsMovedHandler: tasksMovedHandler.bind($data)}}"></div>
+    <div class="hide-large hide-xlarge" data-bind="simpleGrid: tasksModel"></div>
+    <div class="hide-small hide-tiny hide-medium  todo-kanban" data-bind="module: {name:'Pink.Data.Kanban_1', data: {sections: sections, cardsMovedHandler: tasksMovedHandler.bind($data)}}"></div>
 </div>
 
 <footer>
     <nav class="ink-navigation">
         <ul class="menu horizontal black">
-            <li class="large-100 medium-100 small-100"><a href="#new"><i class="icon-plus"></i>&nbsp;New Task</a></li>
+            <li class="all-100"><a href="#new"><i class="fa fa-plus"></i>&nbsp;New Task</a></li>
         </ul>
     </nav>
 </footer>
@@ -14,7 +14,7 @@
 <script type="text/html" id="taskItemTemplate">
    	<div class="task-item" data-bind="click: $root.parentModel.editTask.bind($root.parentModel, $data)">
    	   <div class="push-left" data-bind="text: subject"></div>
-       <div class="push-right"><i class="icon-chevron-right"></i></div>
-      <div class="clearfix"></div>
+       <div class="push-right"><i class="fa fa-chevron-right"></i></div>
+       <div class="clearfix">&nbsp;</div>
     </div>
 </script>

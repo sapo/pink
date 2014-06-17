@@ -124,7 +124,6 @@ footer>.ink-navigation>ul>li>a {
     position: absolute;
     left: 0px; 
     right: 0px;
-    margin-top: -1.5em;
     z-index: 10000;
 }
 

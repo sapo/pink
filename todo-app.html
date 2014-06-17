@@ -14,15 +14,16 @@
         <link rel="apple-touch-startup-image" href="content/imgs/ios-startup-image-portrait.png" media="(orientation:portrait)" />
         <link rel="apple-touch-icon" href="content/imgs/icon.png"/>
         
-        <link rel="stylesheet" href="content/css/ink.css">
-        <link rel="stylesheet" href="content/css/pink.css">
-        <link rel="stylesheet" href="content/css/tasks.css">
+        <link rel="stylesheet" type="text/css" href="http://cdn.ink.sapo.pt/3.0.2/css/ink.css">
+        <link rel="stylesheet" type="text/css" href="http://cdn.ink.sapo.pt/3.0.2/css/font-awesome.css">
+        <link rel="stylesheet" type="text/css" href="content/css/pink.css">
+        <link rel="stylesheet" type="text/css" href="content/css/tasks.css">
     </head>
     <body>
         <div id="applicationHost" data-bind="module: 'App.Tasks.Shell'"></div>
         
         <!-- Load scripts -->        
-        <script src="libs/ink-all.js"></script>
+        <script type="text/javascript" src="http://cdn.ink.sapo.pt/3.0.2/js/ink-all.js"></script>
         <script type="text/javascript">
 	        /*
 	         * Application bootstrap
@@ -32,7 +33,7 @@
 	         * 
 	         */
 	        Ink.setPath('App', 'App/');
-	        Ink.setPath('Ink', 'libs/Ink/');
+	        Ink.setPath('Pink', 'libs/Pink/');
 	
 	        Ink.requireModules(['App.Tasks'], function(app) {
 	            app.run();

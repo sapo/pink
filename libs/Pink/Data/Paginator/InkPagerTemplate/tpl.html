@@ -1,0 +1,27 @@
+<footer class="paginator ink-form">
+    <nav class="ink-navigation push-left">
+        <ul class="pagination">
+            <li class="previous" data-bind="css: {disabled: backDisabled}"><a href="javascript:void" data-bind="click: stepBackward"><span class="fa fa-chevron-left"></span></a></li>
+            <!-- ko foreach: pages -->  
+                <!-- ko ifnot: dots -->     
+                    <li data-bind="css: {active: active}"><a href="javascript:void" data-bind="text: pageNum, click: goTo"></a></li>
+                <!-- /ko -->
+                <!-- ko if: dots -->        
+                    <li class="pagination-dots" data-bind="text: pageNum"></li>
+                <!-- /ko -->
+            <!-- /ko -->
+            <li class="next" data-bind="css: {disabled: forwardDisabled}"><a href="javascript:void" data-bind="click: stepForward"><span class="fa fa-chevron-right"></span></a></li>
+        </ul>
+    </nav>              
+    <!-- ko if: typeof $data.pageSizeOptionList != 'undefined' -->
+        <div class="control push-left paginator-page-sizes">
+            <label>Items/Page:&nbsp;</label>
+            <select title="Items/Page" data-bind="options: pageSizeOptionList, value: pageSize"></select>
+        </div>
+    <!-- /ko -->
+    <!-- ko if: $data.showPageCaption -->
+        <div class="control push-right paginator-page-caption">
+            <label data-bind="text: pageCaption"></label>
+        </div>
+    <!-- /ko -->
+</footer>   

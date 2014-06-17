@@ -1,4 +1,4 @@
-Ink.createModule('App.Tasks.Home', '1', ['App.Tasks', 'Ink.Data.Binding_1', 'App.Tasks.DataProvider', 'Ink.Data.Grid_1'], function(app, ko, dataProvider, Grid) {
+Ink.createModule('App.Tasks.Home', '1', ['App.Tasks', 'Pink.Data.Binding_1', 'App.Tasks.DataProvider', 'Pink.Data.Grid_1'], function(app, ko, dataProvider, Grid) {
     var Module = function() {
         this.moduleName = 'App.Tasks.Home';
         this.tasks = ko.observableArray();
@@ -66,10 +66,6 @@ Ink.createModule('App.Tasks.Home', '1', ['App.Tasks', 'Ink.Data.Binding_1', 'App
     	}
     };
     
-    Module.prototype.afterRender = function() {
-        document.getElementById('mainMenuDropDown').style.display = 'none';  
-    };
-
     Module.prototype.tasksMovedHandler = function(source, tasks) {
     	var i;
     	var task;
