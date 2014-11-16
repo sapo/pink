@@ -64,7 +64,7 @@ Ink.createModule('Pink.Data.Grid', '1', ['Pink.Data.Module_1', 'Pink.Data.Pagina
                             column.headerSortOrder('sort');
 
                         wrappedHandler(column);
-                    }
+                    };
                 })();
             }
         }
@@ -86,8 +86,9 @@ Ink.createModule('Pink.Data.Grid', '1', ['Pink.Data.Module_1', 'Pink.Data.Pagina
             var viewModel = viewModelAccessor(), allBindings = allBindingsAccessor();
 
             // Empty the element
-            while (element.firstChild)
+            while (element.firstChild) {
                 ko.removeNode(element.firstChild);
+            }
 
             // Allow the default templates to be overridden
             var gridTemplateName = allBindings.simpleGridTemplate || 'Pink.Data.Grid.InkGridTemplate';

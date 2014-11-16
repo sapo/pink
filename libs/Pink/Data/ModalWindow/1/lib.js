@@ -24,7 +24,14 @@ Ink.createModule('Pink.Data.ModalWindow', '1', ['Pink.Data.Binding_1', 'Ink.Dom.
         this.confirmCaption = ko.computed(function() {
             return ko.unwrap(options.confirmCaption) || 'Confirm';
         });
-        this.taskButtons = ko.observableArray();
+
+        
+        this.taskButtonsArray = ko.observable();
+        this.taskButtons = ko.computed(function() {
+            var buttons = ko.unwrap(self.taskButtonsArray());
+            
+            return buttons ? buttons : [];
+        });
 
         // Options passed to the content module
         this.moduleData = {
@@ -96,7 +103,7 @@ Ink.createModule('Pink.Data.ModalWindow', '1', ['Pink.Data.Binding_1', 'Ink.Dom.
         
         this.modal = new Ink.UI.Modal(this.modalEl, {onDismiss: this._hideModal.bind(this)});
         this.modal.open();
-        this.taskButtons(params.taskButtons || []);
+        this.taskButtonsArray(params.taskButtons);
         this.moduleData.params = params;
         this.moduleData.confirmHandler = undefined;
 

@@ -56,13 +56,13 @@
     Auto Complete
 ************************************/
 
-.auto-complete>input {
+.pink-auto-complete>input {
     position: absolute;
     left: 0px;
     right: 2.4em;
 }
 
-.auto-complete>button {
+.pink-auto-complete>button {
     position: absolute;
     right: 0px;
     border-left: 0px;
@@ -73,7 +73,7 @@
     margin-right: 0px ! important;
 }
 
-.auto-complete-options {
+.pink-auto-complete-options {
     display: none; 
     position: absolute; 
     top: 2.2em; 
@@ -89,17 +89,17 @@
 /***********************************
     Drag & Drop
 ************************************/
-.disable-text-selection, .disable-text-selection * {
+.pink-disable-text-selection, .pink-disable-text-selection * {
     -moz-user-select: none;
     -webkit-user-select: none;
     -ms-user-select:none;
     user-select: none;
 }
 
-.draggable-container .draggable-selected {
+.pink-draggable-container .pink-draggable-selected {
 }
 
-.draggable-proxy {
+.pink-draggable-proxy {
     opacity:0.6;
     filter:alpha(opacity=60);
     cursor: move ! important;
@@ -114,21 +114,21 @@
     white-space: nowrap;
 }
 
-.draggable-proxy .drag-affordance, .draggable-proxy .selected-icon, .draggable-proxy .edit-action {
+.pink-draggable-proxy .pink-drag-affordance, .pink-draggable-proxy .pink-selected-icon, .pink-draggable-proxy .pink-edit-action {
     display: none;
 }
 
-.drop-panel-active {
+.pink-drop-panel-active {
 }
 
-.drop-place-hint-before:before {
+.pink-drop-place-hint-before:before {
     content: '';
     display: block;
     height: 1em;
     border: 1px dashed black;
 }
 
-.drop-panel-active .drop-place-hint-after:after {
+.pink-drop-panel-active .pink-drop-place-hint-after:after {
     content: '';
     display: block;
     height: 1em;
@@ -138,10 +138,10 @@
 /***********************************
     Kanban
 ************************************/
-.kanban {
+.pink-kanban {
 }
 
-.kanban .section {
+.pink-kanban .pink-section {
     float: left;
     background-color: #e3e3e3;
     width: 15em;
@@ -151,15 +151,15 @@
     margin-bottom: 1em;
 }
 
-.kanban .section .draggable-selected>.card>.selected-icon {
+.pink-kanban .pink-section .pink-draggable-selected>.pink-card>.pink-selected-icon {
     display: block; 
 }
 
-.kanban .section .draggable-selected>.card {
+.pink-kanban .pink-section .pink-draggable-selected>.pink-card {
     background-color: #eee;
 }
 
-.kanban .section .card {
+.pink-kanban .pink-section .pink-card {
     background-color: #fff;
     border: 1px solid #b9b9b9;
     border-bottom: 2px solid #B3B3B3;
@@ -171,7 +171,7 @@
     position: relative;
 }
 
-.kanban .section .card>.selected-icon {
+.pink-kanban .pink-section .pink-card>.pink-selected-icon {
     position: absolute;
     left: 0.3em;
     top: 0.5em;
@@ -180,7 +180,7 @@
     font-size: 0.6em;
 }
 
-.kanban .section .card>.drag-affordance {
+.pink-kanban .pink-section .pink-card>.pink-drag-affordance {
     position: absolute;
     left: 0.6em;
     top: 40%;
@@ -190,7 +190,7 @@
     background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAXCAYAAAAss+5LAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAN1wAADdcBQiibeAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAADASURBVBiVtc49SsNgAIDhJ1++tosOAYe2oAimCkpApOoJxNHNAwgeo7OrN3DxCOINdO3gUjDdFEWRSnTwP67iKPiM7/QmLbY67LW5f+I4XWCwSVjnJtKMc9wWVDnliCrNmCQ0hjyccJnUde2n4Jc/BAhT7HbZQYgzHKyyljMekcUenYKLnPKFtxg5X+Z9nvEhXxCW6GcUCP9ymrTYnmW/zd0rR+kigw0++1ylNGOX6xWqHuWQ53Saxw8aZ0xOKb8BYowyUQJEBT8AAAAASUVORK5CYII=);
 }
 
-.kanban .section .card>.edit-action {
+.pink-kanban .pink-section .pink-card>.pink-edit-action {
     position: absolute;
     right: 0.3em;
     top: 0.5em;
@@ -200,13 +200,13 @@
     text-align: right;
 }
 
-.kanban .section .card>.edit-action.ink-navigation {
+.pink-kanban .pink-section .pink-card>.pink-edit-action.ink-navigation {
     top: -0.7em;
     right: -0.1em;
     text-align: left;
 }
  
-.kanban .section .card>.title {
+.pink-kanban .pink-section .pink-card>.pink-title {
     position: absolute;
     left: 1.5em;
     right: 1.5em;
@@ -217,7 +217,7 @@
     text-overflow: ellipsis;
 }
 
-.kanban .section .card>.content {
+.pink-kanban .pink-section .pink-card>.pink-content {
     margin-top: 2em;
     margin-left: 1em;
     margin-right: 1em;
@@ -227,7 +227,7 @@
     white-space: nowrap;
 }
 
-.kanban .section>.title {
+.pink-kanban .pink-section>.pink-title {
     margin-left: 0.5em;
     margin-right: 0.5em;
     margin-top: 0.5em;
@@ -239,7 +239,7 @@
     position: relative;
 }
 
-.kanban .section>.title>.section-setup {
+.pink-kanban .pink-section>.pink-title>.pink-section-setup {
     position: absolute;
     top: 0;
     right: 0;
@@ -247,7 +247,7 @@
 }
 
 
-.kanban .section>.footer {
+.pink-kanban .pink-section>.pink-footer {
     margin-left: 0.5em;
     margin-right: 0.5em;
     margin-top: 0.5em;
@@ -258,18 +258,18 @@
     text-align: center;
 }
 
-.kanban .section>.title>div, .kanban .section>.footer>div {
+.pink-kanban .pink-section>.pink-title>div, .pink-kanban .pink-section>.pink-footer>div {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
-.kanban .section>.title>.sub-title, .kanban .section>.footer>.sub-title{
+.pink-kanban .pink-section>.pink-title>.pink-sub-title, .pink-kanban .pink-section>.pink-footer>.pink-sub-title{
     font-size: smaller;
     color: gray;
 }
 
-.kanban .section>.content {
+.pink-kanban .pink-section>.pink-content {
     min-height: 2em;
     padding-left: 0.2em;
     padding-right: 0.2em;
@@ -277,7 +277,7 @@
     padding-bottom: 0.5em;
 }
 
-.kanban .drop-panel-active {
+.pink-kanban .pink-drop-panel-active {
     background-color: #eee;
 }
 
@@ -285,19 +285,19 @@
  Grid & Paginator
 *****************************/
 
-.paginator .paginator-page-sizes {
+.pink-paginator .pink-paginator-page-sizes {
     margin-top: 0;
 }
 
-table+.paginator .paginator-page-sizes {
+table+.pink-paginator .pink-paginator-page-sizes {
     margin-top: 0.3em;
 }
 
-.paginator .paginator-page-caption {
+.pink-paginator .pink-paginator-page-caption {
     margin-top: 0.7em;
     margin-right: 1em;
 }
 
-.paginator .paginator-page-sizes>select {
+.pink-paginator .pink-paginator-page-sizes>select {
     padding: 4px 4px;
 }

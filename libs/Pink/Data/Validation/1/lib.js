@@ -1,8 +1,7 @@
 /**
  * @module Pink.Data.Validation
  * @desc Validation bindings 
- *       based on Validation Library for KnockoutJS (Eric M. Barnard)
- * @author hlima, ecunha, ttt  AT sapo.pt
+ *       Ink wrapper for Knockout-Validation library for KnockoutJS (https://github.com/Knockout-Contrib/Knockout-Validation)
  * @version 1
  */
 

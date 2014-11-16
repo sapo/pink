@@ -1,4 +1,4 @@
-Ink.createModule('App.Tasks.Shell', '1', ['App.Tasks', 'App.Tasks.Libs.Animation'], function(app, Animation) {
+Ink.createModule('App.Tasks.Shell', '1', ['Pink.Data.Binding_1', 'App.Tasks', 'App.Tasks.Libs.Animation'], function(ko, app, Animation) {
     var Module = function() {
         var self=this;
         

@@ -37,15 +37,15 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
             //Create a new input to be the autocomplete so that the label shows
             // also hide the original control since it will be used for the value binding
             element.style.display = 'none';
-            displayElement = inkEl.htmlToFragment('<div style="overflow: visible" class="auto-complete control-group '+ element.getAttribute('class') +
+            displayElement = inkEl.htmlToFragment('<div style="overflow: visible" class="pink-auto-complete control-group '+ element.getAttribute('class') +
             		'"><div class="control append-button"><span><input placeholder="' + (element.getAttribute('placeholder') || '') + 
-            		'" type="text"></input></span><button class="ink-button"><i class="icon-remove"></i></button></div><div class="auto-complete-options"></div></div>').firstChild;
+            		'" type="text"></input></span><button class="ink-button"><i class="fa fa-times"></i></button></div><div class="pink-auto-complete-options"></div></div>').firstChild;
             
             element.parentNode.insertBefore(displayElement, element.nextSibling);
             
             displayInput = Ink.s('input', displayElement);
             displayButton = Ink.s('button', displayElement);
-            displayOptions = Ink.s('.auto-complete-options', displayElement);
+            displayOptions = Ink.s('.pink-auto-complete-options', displayElement);
             
             //handle value changing
             modelValue = binding.value;
@@ -219,14 +219,14 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
             }
 
             if (filter) {
-                filter=filter.toLowerCase();
+                filter = ".*" + filter.replace(/\s+/g, ".*") + ".*";
             }
             
             for (index=0; index<source.length; index++) {
                 label = source[index].label;
                 value = source[index].value;
                 
-                if (filter && (label.toLowerCase().indexOf(filter)==-1)) {
+                if (filter && !label.match(new RegExp(filter, "i"))) {
                     continue;
                 }
                 
@@ -256,7 +256,7 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
 
             ko.bindingHandlers.autoComplete._buildOptions(ul, options.source);
             
-            displayOptions = Ink.s('.auto-complete-options', displayElement);
+            displayOptions = Ink.s('.pink-auto-complete-options', displayElement);
             displayOptions.appendChild(nav);
 
             displayInput = Ink.s('input', displayElement);

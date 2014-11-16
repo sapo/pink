@@ -95,7 +95,7 @@ Ink.createModule('Pink.Data.Kanban', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Event
         	}
 
         	if (self.cardsMovedHandler) {
-    			self.cardsMovedHandler(source, data);
+    			self.cardsMovedHandler(source, data, newIndex);
     		}
         }, 0);
     };

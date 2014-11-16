@@ -127,9 +127,12 @@
                                     <li><a href="#kanban">Kanban</a></li>
                                     <li><a href="#carousel">Carousel</a></li>
                                     <li><a href="#tabs">Tabs</a></li>
+                                    <li><a href="#datepicker">DatePicker</a></li>
+                                    <li><a href="#toggle">Toggle</a></li>
                                </ol>
                             </li>
                             <li><a href="#plugins">Plugins</a></li>
+                            <li><a href="#bundles">Bundling</a></li>
                         </ol>
                     </nav>
                 </div>
@@ -255,10 +258,9 @@
 	                                <ul>
 	                                    <li><strong>title</strong> - string containing the modal's title</li>
 	                                    <li><strong>moduleName</strong> - string containing a valid Pink UI module name (eg. 'App.Tasks.EditDialog')</li>
-	                                    <li><strong>params</strong> - object with the parameters to pass to the module<br>Aditionally to custom parameters you may want to pass, there are two special parameters, named
-	                                    "confirmCallback" and "cancelCallback", that if defined should be called when the user confirms or cancel the dialog respectively. The "cancelCallback" is called by  
-	                                    the framework's code, but the "confirmCallback" must be called from the modal content's module code.
-	                                    <br><span class="note"><i class="icon-exclamation-sign"></i> Goto the <a href="#modalwindow">ModalWindow</a> section for more detais on the modal's contents module interface</span>
+	                                    <li>
+	                                    	<strong>params</strong> - object with the parameters to pass to the module<br>
+		                                    <span class="note"><i class="icon-exclamation-sign"></i> Goto the <a href="#modalwindow">ModalWindow</a> section for more detais on the modal's contents module interface</span>
 	                                    </li>
                                         <li><strong>modalStyle</strong> - object with modal window style parameters<br> <code class="prettify lang-js">{width : string, height : string, cancelVisible : bool, confirmCaption : string}</code></li> 
 	                                </ul>
@@ -650,15 +652,20 @@ app.signals.taskSaved.add(taskSavedHandler);
                         </p>
                         <h3>Modal contents module interface</h3>
                         <p>
-                            The modals content module constructor or initializer function, receives an object with
+                            The modal's content module constructor or initializer function, receives an object with
                             the follwing attributes:
                             <ul>
                                 <li><b>confirmHandler</b> Should be assigned to a modal's content module method responsible for doing the logic required by the user's confirm action.
                                 Normally this implies making an async call, calling the "params.confirmCallback()" function when the call succeeds, and calling "hide()".</li>
                                 <li><b>confirmDisabled</b> <em>Observable</em> boolean. Usually assigned to a computed observable responsible for validating the user input, returning true if there's invalid input.</li>
-                                <li><strong>params</strong> - object with the parameters passed to the module.<br>Aditionally to custom parameters you may want to pass, there are two special parameters, named
-	                                "confirmCallback" and "cancelCallback", that if defined should be called when the user confirms or cancel the dialog respectively. The "cancelCallback" is called by  
-	                                the framework's code, so there's no need to call it directly, but the "confirmCallback" must be called from the modal content's module code.
+                                <li>
+                                    <strong>params</strong> 
+                                    - object with the parameters passed to the module.<br>Aditionally to custom parameters you may want to pass, there are the following special parameters:
+									<ul>
+										<li><b>confirmCallback:</b> The modal content's module, should call this function in the 'confirmHandler' method after validation.</li>
+										<li><b>cancelCallback:</b> Called by the framework's code after the user cancels the dialog.</li>
+										<li><b>taskButtons:</b> <em>Observable</em> array with buttons to be added to the dialog footer.<br>Button object: {caption: string, handler: function, cssClass: string, icon: string}</li>
+									</ul>								                                
                                 </li>
                                 <li><b>hide</b> Function to be called by the content's module, to hide the modal dialog.</li>
                             </ul>   
@@ -687,7 +694,7 @@ Ink.createModule('App.Example.Shell', '1', ['App.Example'], function(app) {
                             </pre></blockquote>                            
                         </p>                                            
                         <p>
-                            - Modal options:
+                            <b>{parent: module_host, title: modal_title_str, modalWidth: width_str, modalHeight: height_str, contentModule: module_name_str, cancelVisible: cancel_visible_bool, confirmCaption: confirm_caption_str}</b>
                             
                             <ul class="unstyled">
                                 <li><b>module_host</b> Object to host the "modal" interface:  {modal: {show: function(params:object):void}}, reponsible to show the modal dialog, and pass parameters to the loaded module.</li>
@@ -905,9 +912,13 @@ Ink.createModule('App.Example.Home', '1', ['Pink.Data.Binding_1', 'Pink.Data.Too
                             <h2 class="push-left">Drag & Drop</h2>
                         </header>
                         <p>
-                            'Pink.Data.DragDrop' provides binding handlers to render drop targets and draggable elements containers.
+                            'Pink.Data.DragDrop' provides binding handlers to render drop targets and draggable elements.
                             These bindings allow a clean separation of the rendered draggable and the underlying data object, meaning that the view model only needs to 
-                            handle pure js objects instead of DOM elements.   
+                            handle pure js objects instead of DOM elements.
+                            
+                        </p>
+                        <p>
+                            The drop targets also permit the definition of a supported data flavor, that checks if the transfered data is an instance of a specified constructor function.   
                         </p>
                         <p>
                             The 'draggableContainer' handler builds a container widget for draggables, delegating the draggable rendering to a specified Knockout template.
@@ -923,7 +934,8 @@ Ink.createModule('App.Example.Home', '1', ['Pink.Data.Binding_1', 'Pink.Data.Too
 
 &lt;div data-bind="draggableContainer: container" /&gt;
 &lt;div data-bind="droppable: trash" /&gt;
-&lt;script id="colorTemplate" type="text/html"&gt;&lt;img data-bind="attr: {src: $data+'.png'}"/&gt;script&gt;
+&lt;script id="colorTemplate" type="text/html"&gt;&lt;img data-bind="attr: {src: $data.name+'.png'}"/&gt;script&gt;
+&lt;script id="sizeTemplate" type="text/html"&gt;&lt;img data-bind="attr: {width: $data.value}"/&gt;script&gt;
                             </pre></blockquote>                            
                         </p>
                         <h4><em>Binding value</em></h4>
@@ -940,7 +952,10 @@ Ink.createModule('App.Example.Home', '1', ['Pink.Data.Binding_1', 'Pink.Data.Dra
     var Module = function() {
         var self=this;
         
-        this.dataItems = ko.observableArray(['blue', 'red', 'cyan', 'green', 'black', 'white']);
+        function Color(name) {this.name = name;};
+        function Size(value) {this.value = value;};
+        
+        this.dataItems = ko.observableArray([new Color('blue'), new Color('red'), new Color('cyan'), new Size(10), new Size(20)]);
         
         this.trash = {
             hoverClass: 'my-drop-panel', 
@@ -951,24 +966,34 @@ Ink.createModule('App.Example.Home', '1', ['Pink.Data.Binding_1', 'Pink.Data.Dra
                 for (i=0; i < data.length; i++) {
                     self.dataItems.remove(data[i]);
                 }
-            } 
+            },
+            dataFlavor: Color 
         };
         
         this.container = {
             source: this.dataItems,
-            draggableTemplate: 'colorTemplate'
+            draggableTemplate: function(draggable) {return draggable instanceof Color ? 'colorTemplate' : 'sizeTemplate';}
         };
 ...
                             </pre></blockquote>
                         </p>
                         <p>
-                            - Draggable container options:
+                            - 'draggableContainer' options:
 
                             <ul class="unstyled">
-                                <li><b>source</b> <em>Observable</em> Array with the draggable objects.</li>
-                                <li><b>draggableTemplate</b> String with the id of a Knockout template.</li>
+                                <li><b>source</b> <em>Observable</em> array with the draggable objects.</li>
+                                <li><b>draggableTemplate</b> String with id of template to render the draggable or function that receives the draggable and returns a corresponding template id.</li>
                                 <li><b>dragOutHandler</b> Function that is called when an object from this container is dropped in a droppable.</li>
-                                <li><b>afterDraggableRender</b> Function that is called after Knockout renders each draggable</li>
+                                <li><b>afterDraggableRender</b> Function that is called after Knockout renders each draggable.</li>
+                            </ul>
+                        </p>
+                        <p>
+                            - 'droppable' options:
+
+                            <ul class="unstyled">
+                                <li><b>hoverClass</b> String with class name to add to the element when a draggable of the right flavor hovers over it.</li>
+                                <li><b>dropHandler</b> Function to execute when a draggable is dropped in this droppable (receives selectedData as a parameter).</li>
+                                <li><b>dataFlavor</b> Constructor function. If specified, the droppable only accepts drops of objects that are instances of this function.</li>
                             </ul>
                         </p>
                     </article>
@@ -1131,7 +1156,7 @@ Ink.createModule('App.Example.Images', '1', ['Pink.Data.Binding_1', 'Pink.Data.C
                             <h2 class="push-left">Tabs</h2>
                         </header>
                         <p>
-                            'Pink.Data.Tabs' is a wrapper around Ink's <a href="http://ink.sapo.pt/javascript/Ink.UI.Tabs/">tabs</a> widget.
+                            'Pink.Data.Tabs' is a wrapper around Ink's <a href="http://ink.sapo.pt/javascript/Ink.UI.Tabs/">Tabs</a> widget.
                         </p>
                         <h3>Data binding</h3>
                         <h4><em>Binding declaration</em></h4>
@@ -1170,6 +1195,76 @@ Ink.createModule('App.Example.Search', '1', ['Pink.Data.Binding_1', 'Pink.Data.T
 ...
                             </pre></blockquote>                            
                             <span class="note"><i class="icon-exclamation-sign"></i> Check <a href="http://ink.sapo.pt/javascript/Ink.UI.Tabs/">Ink.UI.Tabs</a> Ink's docs, for details on the tabs value object options.</span>
+                        </p>
+                    </article>
+                    <article>
+                        <a class="bookmark" id="datepicker"></a>
+                        <header>
+                            <h2 class="push-left">DatePicker</h2>
+                        </header>
+                        <p>
+                            'Pink.Data.DatePicker' is a wrapper around Ink's <a href="http://ink.sapo.pt/javascript/Ink.UI.DatePicker/">DatePicker</a> widget.
+                        </p>
+                        <h3>Data binding</h3>
+                        <h4><em>Binding declaration</em></h4>
+                        <p>
+                            <blockquote><pre class="prettyprint lang-html">
+/* Example datepicker binding */
+&lt;input type="date" data-bind="datePicker: {position: 'bottom'}, value: selectedDate" /&gt;
+                            </pre></blockquote>                            
+                        </p>
+                        <h4><em>Binding value</em></h4>
+                        <p>
+                            <blockquote><pre class="prettyprint lang-js">
+/* 
+    Example view model
+
+    Your app must declare the dependency to the 'Pink.Data.DatePicker' module 
+    to register the 'datePicker' binding handler. 
+*/
+
+Ink.createModule('App.Example.Search', '1', ['Pink.Data.Binding_1', 'Pink.Data.DatePicker_1'], function(ko) {
+    var Module = function() {
+    	this.selectedDate = ko.observable();
+...
+                            </pre></blockquote>                            
+                            <span class="note"><i class="icon-exclamation-sign"></i> Check <a href="http://ink.sapo.pt/javascript/Ink.UI.DatePicker/">Ink.UI.DatePicker</a> Ink's docs, for details on the datePicker value object options.</span>
+                        </p>
+                    </article>
+                    <article>
+                        <a class="bookmark" id="toggle"></a>
+                        <header>
+                            <h2 class="push-left">Toggle</h2>
+                        </header>
+                        <p>
+                            'Pink.Data.Toggle' is a wrapper around Ink's <a href="http://ink.sapo.pt/javascript/Ink.UI.Toggle/">Toggle</a> widget.
+                        </p>
+                        <h3>Data binding</h3>
+                        <h4><em>Binding declaration</em></h4>
+                        <p>
+                            <blockquote><pre class="prettyprint lang-html">
+/* Example toggle binding */
+&lt;button data-bind="toggle: {target: '#panel'}"&gt;Info&lt;/button&gt;
+&lt;div id="panel" class="hide-all"&gt;
+    Useful stuff ...
+&lt;/div&gt;
+                            </pre></blockquote>                            
+                        </p>
+                        <h4><em>Binding value</em></h4>
+                        <p>
+                            <blockquote><pre class="prettyprint lang-js">
+/* 
+    Example view model
+
+    Your app must declare the dependency to the 'Pink.Data.Toggle' module 
+    to register the 'toggle' binding handler. 
+*/
+
+Ink.createModule('App.Example.Search', '1', ['Pink.Data.Binding_1', 'Pink.Data.Toggle_1'], function(ko) {
+    var Module = function() {
+...
+                            </pre></blockquote>                            
+                            <span class="note"><i class="icon-exclamation-sign"></i> Check <a href="http://ink.sapo.pt/javascript/Ink.UI.Toggle/">Ink.UI.Toggle</a> Ink's docs, for details on the toggle value object options.</span>
                         </p>
                     </article>
                     <article>
@@ -1231,6 +1326,25 @@ Ink.createModule('App.Images', '1', ['Pink.App_1', 'Pink.Plugin.Signals_1', 'Pin
     };
 ...
                             </pre></blockquote>
+                        </p>
+                    </article>
+                    <article>
+                        <a class="bookmark" id="bundles"></a>
+                        <header>
+                            <h2 class="push-left">Bundling</h2>
+                        </header>
+                        <p>
+                            Although you can use Pink's original code structure during development, it's usually better to bundle all
+                            the required files and templates to reduce the loading time. 
+                        </p>
+                        <p>
+                            For this purpose Pink has a <a href="http://gruntjs.com/">Grunt</a> script in the source root folder, that you can run to build the following bundles 
+                            in the 'dist' folder:
+                            <ul>
+                            	<li><b>pink-tpl-bundle.js</b> - Include this file to register all Pink HTML templates.</li>
+                            	<li><b>pink.min.js</b> - Minified javascript</li>
+                            	<li><b>pink.debug.js</b> - Concatenated javascript</li>
+                            </ul> 
                         </p>
                     </article>
                 </div>

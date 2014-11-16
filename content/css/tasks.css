@@ -28,10 +28,6 @@ header>hr {
     padding-left: 0em;
 }
 
-.pagination {
-    padding-left: 1em !important;
-}
-
 .sapo_component_datepicker {
     z-index: 9999999;
 }
@@ -103,14 +99,14 @@ label {
 }
 
 
-footer {
+#mainContainer>footer {
     position: fixed;
     bottom: 0px;
     left: 0px;
     right: 0px;
 }
 
-footer>.ink-navigation>ul>li>a {
+#mainContainer>footer>.ink-navigation>ul>li>a {
 	display: block ! important;
 	text-align: center;
 }

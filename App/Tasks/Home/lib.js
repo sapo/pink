@@ -7,7 +7,9 @@ Ink.createModule('App.Tasks.Home', '1', ['App.Tasks', 'Pink.Data.Binding_1', 'Ap
         this.incompleteTasks = ko.observableArray();
         this.tasksModel = new Grid({
             data: this.tasks,
-            pageSize: 10000,
+            pageSize: 10,
+            pageSizeOptionList: [10, 20, 50, 100],
+            showPageCaption: true,
             columns: [
               {headerText: ko.observable(''), rowTemplate: 'taskItemTemplate'},
             ]
@@ -25,14 +27,14 @@ Ink.createModule('App.Tasks.Home', '1', ['App.Tasks', 'Pink.Data.Binding_1', 'Ap
     Module.prototype.initialize = function(data) {
     	if (!data.filter || data.filter == 'todo') {
     		this.tasksModel.columns[0].headerText('To-do');
-    		this.tasks(this.todoTasks);
+    		this.tasks(this.todoTasks());
     	} else {
     		if (data.filter == 'complete') {
         		this.tasksModel.columns[0].headerText('Completed');
-        		this.tasks(this.completedTasks);
+        		this.tasks(this.completedTasks());
     		} else {
         		this.tasksModel.columns[0].headerText('Incomplete');
-        		this.tasks(this.incompleteTasks);
+        		this.tasks(this.incompleteTasks());
     		}
     	}
     };

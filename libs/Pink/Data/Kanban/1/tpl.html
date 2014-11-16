@@ -1,35 +1,35 @@
-<div class="kanban disable-text-selection">
+<div class="pink-kanban pink-disable-text-selection">
     <!--ko foreach: {data: sections, afterRender: afterRender} -->
-    	<div data-bind="css: (typeof css=='undefined'?'section':'section '+ko.unwrap(css)), attr: {title: $data.title}">
-    		<div class="title prevent-hover-propagation">
+    	<div data-bind="css: (typeof css=='undefined'?'pink-section':'pink-section '+ko.unwrap(css)), attr: {title: $data.title}">
+    		<div class="pink-title prevent-hover-propagation">
                 <!--ko if: (typeof headerTemplate=='undefined')-->
                     <div data-bind="text: title"></div>
                     <!--ko if: (typeof $data.subtitle!='undefined')-->
-                        <div class="sub-title" data-bind="text: $data.subtitle, attr: {title: $data.subtitle}"></div>
+                        <div class="pink-sub-title" data-bind="text: $data.subtitle, attr: {title: $data.subtitle}"></div>
                     <!--/ko-->
                     <!--ko if: (typeof $data.settingsHandler=='function')-->
-                        <div class="section-setup">
+                        <div class="pink-section-setup">
                             <a href="javascript:void(0);" data-bind="click: $data.settingsHandler, attr: {title: (typeof $data.settingsCaption=='undefined'?'':$data.settingsCaption)}"><i class="fa fa-cog"></i></a>
                         </div>
                     <!--/ko-->
                 <!--/ko-->
                 <!--ko if: (typeof headerTemplate=='string')-->
-                    <div class="content" data-bind="template: {name: headerTemplate, data: $data}"></div>
+                    <div class="pink-content" data-bind="template: {name: headerTemplate, data: $data}"></div>
                 <!--/ko-->
             </div>
             <!--ko if: (typeof $data.droppable == 'undefined') || ($data.droppable) -->
-    		    <div class="content" data-bind="droppable: {dropHandler: $parent.dropHandler.bind($parent, $data.items)}, draggableContainer: {afterDraggableRender: $parent.afterCardRender, offset: $data.offset, source: $data.items, draggableTemplate: 'Pink.Data.Kanban.CardTemplate', dragOutHandler: $parent.dragOutHandler.bind($parent, $data.items)}">
+    		    <div class="pink-content" data-bind="droppable: {dropHandler: $parent.dropHandler.bind($parent, $data.items)}, draggableContainer: {afterDraggableRender: $parent.afterCardRender, offset: $data.offset, source: $data.items, draggableTemplate: 'Pink.Data.Kanban.CardTemplate', dragOutHandler: $parent.dragOutHandler.bind($parent, $data.items)}">
                 </div>
             <!--/ko-->
             <!--ko if: (typeof $data.droppable != 'undefined') && (!$data.droppable) -->
-                <div class="content" data-bind="draggableContainer: {afterDraggableRender: $data.afterCardRender, offset: $data.offset, source: $data.items, draggableTemplate: 'Pink.Data.Kanban.CardTemplate', dragOutHandler: $parent.dragOutHandler.bind($parent, $data.items)}">
+                <div class="pink-content" data-bind="draggableContainer: {afterDraggableRender: $data.afterCardRender, offset: $data.offset, source: $data.items, draggableTemplate: 'Pink.Data.Kanban.CardTemplate', dragOutHandler: $parent.dragOutHandler.bind($parent, $data.items)}">
                 </div>
             <!--/ko-->
-            <div class="footer">
+            <div class="pink-footer">
                 <!--ko if: (typeof footerTemplate=='undefined')-->
                     <div data-bind="text: title"></div>
                     <!--ko if: (typeof $data.subtitle!='undefined')-->
-                        <div class="sub-title" data-bind="text: $data.subtitle, attr: {title: $data.subtitle}"></div>
+                        <div class="pink-sub-title" data-bind="text: $data.subtitle, attr: {title: $data.subtitle}"></div>
                     <!--/ko-->
                 <!--/ko-->
                 <!--ko if: (typeof footerTemplate=='string')-->

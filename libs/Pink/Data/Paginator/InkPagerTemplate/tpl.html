@@ -1,4 +1,4 @@
-<footer class="paginator ink-form">
+<footer class="pink-paginator ink-form">
     <nav class="ink-navigation push-left">
         <ul class="pagination">
             <li class="previous" data-bind="css: {disabled: backDisabled}"><a href="javascript:void" data-bind="click: stepBackward"><span class="fa fa-chevron-left"></span></a></li>
@@ -14,13 +14,13 @@
         </ul>
     </nav>              
     <!-- ko if: typeof $data.pageSizeOptionList != 'undefined' -->
-        <div class="control push-left paginator-page-sizes">
+        <div class="control push-left pink-paginator-page-sizes">
             <label>Items/Page:&nbsp;</label>
             <select title="Items/Page" data-bind="options: pageSizeOptionList, value: pageSize"></select>
         </div>
     <!-- /ko -->
     <!-- ko if: $data.showPageCaption -->
-        <div class="control push-right paginator-page-caption">
+        <div class="control push-right pink-paginator-page-caption">
             <label data-bind="text: pageCaption"></label>
         </div>
     <!-- /ko -->

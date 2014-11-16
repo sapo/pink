@@ -10,17 +10,18 @@
 # Packages
 *.egg
 *.egg-info
-dist
-build
-eggs
-parts
-bin
-var
-sdist
-develop-eggs
+dist/
+build/
+eggs/
+parts/
+bin/
+var/
+sdist/
+develop-eggs/
 .installed.cfg
-lib64
-__pycache__
+lib64/
+__pycache__/
+node_modules/
 
 # Installer logs
 pip-log.txt
