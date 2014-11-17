@@ -22,6 +22,7 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
             var binding = allBindingsAccessor();
             var valueProp = unwrap(binding.optionsValue);
             var labelProp = unwrap(binding.optionsText) || valueProp;
+            var allowAny = unwrap(binding.allowAny);
             var displayElement;
             var displayInput;
             var displayOptions;
@@ -58,22 +59,23 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
             if (modelValue) {
                 // Handle value changed in the ui (update model value)
                 handleValueChange = function (event, ui) {
-                    var labelToWrite = ui.item ? ui.item.label : null;
-                    var valueToWrite = ui.item ? ui.item.value : null;
+                    var labelToWrite = ui.item ? ui.item.label : undefined;
+                    var valueToWrite = ui.item ? ui.item.value : undefined;
+
+                    if (allowAny && valueToWrite == undefined) {
+                    	labelToWrite = valueToWrite = displayInput.value;
+                    }
                     
-                    //The Label and Value should not be null, if it is
-                    // then they did not make a selection so do not update the 
-                    // ko model                            
-                    if (labelToWrite && valueToWrite) {
+                    if (valueToWrite != undefined) {
                         ko.bindingHandlers.autoComplete._updateValueAndLabel(binding, modelValue, labelToWrite, valueToWrite, displayInput, element);
                     } else { //They did not make a valid selection so change the autoComplete box back to the previous selection
                         var currentModelValue = unwrap(modelValue);
                         
                         //If the currentModelValue exists and is not nothing, then find out the display
                         // otherwise just blank it out since it is an invalid value
-                        if (!currentModelValue)
+                        if (!currentModelValue) {
                             displayInput.value = '';
-                        else {
+                        } else {
                             //Go through the source and find the id, and use its label to set the autocomplete
                             var selectedItem = ko.bindingHandlers.autoComplete._findSelectedItem(dataSource, binding, currentModelValue);           
 
@@ -82,7 +84,7 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
                                 var displayText = labelProp ? unwrap(selectedItem[labelProp]) : unwrap(selectedItem).toString();
                                 displayInput.value = displayText;
                             } else { //if we did not find the item, then just blank it out, because it is an invalid value
-                                displayInput.value = '';
+                            	displayInput.value = '';
                             }
                         }
                     }
@@ -93,15 +95,15 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
             }
 
             
-            // handle the choices being updated in a Dependant Observable (DO), so the update function doesn't 
-            // have to do it each time the value is updated. Since we are passing the dataSource in DO, if it is
-            // an observable, when you change the dataSource, the dependentObservable will be re-evaluated
+            // handle the choices being updated in a computed, so the update function doesn't 
+            // have to do it each time the value is updated. Since we are passing the dataSource in, if it is
+            // an observable, when you change the dataSource, the computed will be re-evaluated
             // and its subscribe event will fire allowing us to update the autocomplete datasource
-            var mappedSource = ko.dependentObservable(function () {
+            var mappedSource = ko.computed(function () {
                 return ko.bindingHandlers.autoComplete._buildDataSource(dataSource, labelProp, valueProp);
             }, viewModel);
             
-            //Subscribe to the knockout observable array to get new/removed items
+            //Subscribe to the computed to rebuild the options
             mappedSource.subscribe(function (newValue) {
                 var ul = displayOptions.firstChild.firstChild;
 

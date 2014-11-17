@@ -1,4 +1,4 @@
-Ink.createModule('App.Tasks.EditTask', '1', ['Pink.Data.Binding_1', 'App.Tasks.DataProvider', 'App.Tasks'], function(ko, dataProvider, app) {
+Ink.createModule('App.Tasks.EditTask', '1', ['Pink.Data.Binding_1', 'App.Tasks.DataProvider', 'App.Tasks', 'Pink.Data.AutoComplete_1'], function(ko, dataProvider, app) {
     var Module = function() {
     	var self=this;
     	
@@ -9,6 +9,8 @@ Ink.createModule('App.Tasks.EditTask', '1', ['Pink.Data.Binding_1', 'App.Tasks.D
         this.date = ko.observable('');
         this.status = ko.observable('');
         this.task = undefined;
+        this.otherTasks = ko.observableArray();
+        this.dependentTask = ko.observable();
         
         this.invalidSubject = ko.computed(function() {
         	return self.subject().trim().length == 0;
@@ -16,6 +18,12 @@ Ink.createModule('App.Tasks.EditTask', '1', ['Pink.Data.Binding_1', 'App.Tasks.D
     };
 
     Module.prototype.initialize = function(data) {
+    	var tasks = [], otherTasks;
+    	var i;
+    	
+    	this.otherTasks([]);
+    	otherTasks = dataProvider.listTasks();
+    	
     	if (!data.id) {
     		this.task=undefined;
 
@@ -24,6 +32,7 @@ Ink.createModule('App.Tasks.EditTask', '1', ['Pink.Data.Binding_1', 'App.Tasks.D
     		this.phoneNumber('');
     		this.date('');
     		this.status('todo');
+    		this.otherTasks(otherTasks);
     	} else {
     		this.task = dataProvider.getTask(data.id);
 
@@ -32,6 +41,14 @@ Ink.createModule('App.Tasks.EditTask', '1', ['Pink.Data.Binding_1', 'App.Tasks.D
     		this.phoneNumber(this.task.phoneNumber);
     		this.date(this.task.date);
     		this.status(this.task.status);
+    		
+    		for (i=0; i<otherTasks.length; i++) {
+    			if (otherTasks[i].guid != data.guid) {
+    				tasks.push(otherTasks[i]);
+    			}
+    		}
+    		
+    		this.otherTasks(tasks);
     	}
     };
 

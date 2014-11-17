@@ -26,6 +26,12 @@
             </div>
         </div>
         <div class="control-group">
+            <label>Depends on task</label> 
+            <div class="control">
+                <input type="text" data-bind="autoComplete: otherTasks, value: dependentTask, optionsText: 'subject', optionsValue: 'guid'"></input>
+            </div>
+        </div>
+        <div class="control-group">
             <label>Task Status</label> 
             <div class="control">
                 <select data-bind="value: status">
