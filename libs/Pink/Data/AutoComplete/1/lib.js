@@ -27,20 +27,16 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
             var displayInput;
             var displayOptions;
             var displayButton;
-            var options = {minLength: 0};
+            var options = {};
             var modelValue;
             var handleValueChange;
-
-            if (binding.autoCompleteOptions) {
-                options = Ink.extendObj(options, binding.autoCompleteOptions);
-            }
 
             //Create a new input to be the autocomplete so that the label shows
             // also hide the original control since it will be used for the value binding
             element.style.display = 'none';
             displayElement = inkEl.htmlToFragment('<div style="overflow: visible" class="pink-auto-complete control-group '+ element.getAttribute('class') +
-            		'"><div class="control append-button"><span><input placeholder="' + (element.getAttribute('placeholder') || '') + 
-            		'" type="text"></input></span><button class="ink-button"><i class="fa fa-times"></i></button></div><div class="pink-auto-complete-options"></div></div>').firstChild;
+                    '"><div class="control append-button"><span><input placeholder="' + (element.getAttribute('placeholder') || '') + 
+                    '" type="text"></input></span><button class="ink-button"><i class="fa fa-times"></i></button></div><div class="pink-auto-complete-options"></div></div>').firstChild;
             
             element.parentNode.insertBefore(displayElement, element.nextSibling);
             
@@ -61,9 +57,9 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
                 handleValueChange = function (event, ui) {
                     var labelToWrite = ui.item ? ui.item.label : undefined;
                     var valueToWrite = ui.item ? ui.item.value : undefined;
-
+                    
                     if (allowAny && valueToWrite == undefined) {
-                    	labelToWrite = valueToWrite = displayInput.value;
+                        labelToWrite = valueToWrite = displayInput.value;
                     }
                     
                     if (valueToWrite != undefined) {
@@ -84,7 +80,7 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
                                 var displayText = labelProp ? unwrap(selectedItem[labelProp]) : unwrap(selectedItem).toString();
                                 displayInput.value = displayText;
                             } else { //if we did not find the item, then just blank it out, because it is an invalid value
-                            	displayInput.value = '';
+                                displayInput.value = '';
                             }
                         }
                     }
@@ -95,15 +91,15 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
             }
 
             
-            // handle the choices being updated in a computed, so the update function doesn't 
-            // have to do it each time the value is updated. Since we are passing the dataSource in, if it is
-            // an observable, when you change the dataSource, the computed will be re-evaluated
+            // handle the choices being updated in a Dependant Observable (DO), so the update function doesn't 
+            // have to do it each time the value is updated. Since we are passing the dataSource in DO, if it is
+            // an observable, when you change the dataSource, the dependentObservable will be re-evaluated
             // and its subscribe event will fire allowing us to update the autocomplete datasource
-            var mappedSource = ko.computed(function () {
+            var mappedSource = ko.dependentObservable(function () {
                 return ko.bindingHandlers.autoComplete._buildDataSource(dataSource, labelProp, valueProp);
             }, viewModel);
             
-            //Subscribe to the computed to rebuild the options
+            //Subscribe to the knockout observable array to get new/removed items
             mappedSource.subscribe(function (newValue) {
                 var ul = displayOptions.firstChild.firstChild;
 
@@ -128,6 +124,7 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
             var binding = allBindingsAccessor();
             var valueProp = unwrap(binding.optionsValue);
             var labelProp = unwrap(binding.optionsText) || valueProp;
+            var allowAny = unwrap(binding.allowAny);
             var displayElement = element.nextSibling;
             var displayInput = Ink.s('input', displayElement);
             var modelValue = binding.value;
@@ -149,7 +146,7 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
                     if (selectedItem) {
                         displayText = labelProp ? unwrap(selectedItem[labelProp]) : unwrap(selectedItem).toString();
                         displayInput.value = displayText;
-                    } else {
+                    } else if (currentModelValue == undefined) {
                         displayInput.value = '';
                     }
                 } else {

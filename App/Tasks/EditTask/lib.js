@@ -9,6 +9,7 @@ Ink.createModule('App.Tasks.EditTask', '1', ['Pink.Data.Binding_1', 'App.Tasks.D
         this.date = ko.observable('');
         this.status = ko.observable('');
         this.task = undefined;
+
         this.otherTasks = ko.observableArray();
         this.dependentTask = ko.observable();
         
