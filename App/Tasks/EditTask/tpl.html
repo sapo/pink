@@ -28,8 +28,11 @@
         <div class="control-group">
             <label>Depends on task</label> 
             <div class="control">
-                <input type="text" data-bind="autoComplete: otherTasks, value: dependentTask, optionsText: 'subject', optionsValue: 'guid'"></input>
+                <input type="text" data-bind="autoComplete: otherTasks, value: dependentTask, optionsText: 'subject', optionsValue: 'guid', allowAny: true"></input>
             </div>
+        </div>
+        <div>
+        	<span data-bind="text: dependentTask"></span>
         </div>
         <div class="control-group">
             <label>Task Status</label> 

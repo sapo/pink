@@ -33,6 +33,7 @@ Ink.createModule('App.Tasks.EditTask', '1', ['Pink.Data.Binding_1', 'App.Tasks.D
     		this.date('');
     		this.status('todo');
     		this.otherTasks(otherTasks);
+    		this.dependentTask(undefined);
     	} else {
     		this.task = dataProvider.getTask(data.id);
 
@@ -41,9 +42,10 @@ Ink.createModule('App.Tasks.EditTask', '1', ['Pink.Data.Binding_1', 'App.Tasks.D
     		this.phoneNumber(this.task.phoneNumber);
     		this.date(this.task.date);
     		this.status(this.task.status);
-    		
+    		this.dependentTask(this.task.dependentTask);
+
     		for (i=0; i<otherTasks.length; i++) {
-    			if (otherTasks[i].guid != data.guid) {
+    			if (otherTasks[i]._id != this.task._id) {
     				tasks.push(otherTasks[i]);
     			}
     		}
@@ -73,7 +75,8 @@ Ink.createModule('App.Tasks.EditTask', '1', ['Pink.Data.Binding_1', 'App.Tasks.D
     			description: this.description(),
     			phoneNumber: this.phoneNumber(),
     			date: this.date(),
-    			status: this.status()
+    			status: this.status(),
+    			dependentTask: this.dependentTask()
     		};
     		
     		dataProvider.addTask(this.task);
@@ -85,6 +88,7 @@ Ink.createModule('App.Tasks.EditTask', '1', ['Pink.Data.Binding_1', 'App.Tasks.D
     		this.task.phoneNumber = this.phoneNumber();
     		this.task.date = this.date();
     		this.task.status = this.status();
+    		this.task.dependentTask = this.dependentTask();
     		
     		dataProvider.updateTask(this.task);
     		
