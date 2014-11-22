@@ -169,9 +169,7 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
             displayInput.value = inputValue;
             buildOptions(ul, options.source, inputValue);
             
-            if (options.change) {
-                options.change({label: activeItem.textContent, value: activeItem.getAttribute('data-value')});
-            }
+            options.change({label: activeItem.textContent, value: activeItem.getAttribute('data-value')});
         }, true);
         
         // Key entered in input control
@@ -223,10 +221,7 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
                        displayInput.value = inputValue;
                        buildOptions(ul, options.source, inputValue);
                        displayInput.blur();
-
-                       if (options.change) {
-                           options.change({label: activeItem.firstChild.textContent, value: activeItem.firstChild.getAttribute('data-value')});
-                       }
+                       options.change({label: activeItem.firstChild.textContent, value: activeItem.firstChild.getAttribute('data-value')});
                    }
                }
                
@@ -235,6 +230,9 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
            
            activeItem = undefined;
            buildOptions(ul, options.source, displayInput.value);
+           if (options.allowAny) {
+        	   options.change();
+           }
         });                    
     };
 	
@@ -269,7 +267,7 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
             opt.displayOptions = Ink.s('.pink-auto-complete-options', opt.displayElement);
             
             // Reset button click handler
-            inkEvt.observe(opt.displayButton, 'click', function() {
+            inkEvt.observe(opt.displayButton, 'mouseup', function() {
                 updateValueAndLabel(opt.binding, '', undefined, opt.displayInput, element);
             });
             
