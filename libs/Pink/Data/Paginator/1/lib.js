@@ -203,8 +203,9 @@ Ink.createModule('Pink.Data.Paginator', '1', [ 'Pink.Data.Module_1' ], function(
             var viewModel = viewModelAccessor(), allBindings = allBindingsAccessor();
 
             // Empty the element
-            while (element.firstChild)
+            while (element.firstChild) {
                 ko.removeNode(element.firstChild);
+            }
 
             // Allow the default template to be overridden
             var pageLinksTemplateName = allBindings.pagerTemplate || 'Pink.Data.Paginator.InkPagerTemplate';

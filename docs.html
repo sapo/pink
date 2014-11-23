@@ -793,7 +793,7 @@ Ink.createModule('App.Shapes.Home', '1', ['Pink.Data.Grid_1'], function(Grid) {
 &lt;div data-bind="foreach: pageItems"&gt;
     &lt;div data-bind="text: $data"/&gt;
 &lt;/div&gt;
-&lt;div data-bind="paginator: paginatedModel"&gt;&lt;/div&gt;
+&lt;div data-bind="paginator: paginatedModel, pagerTemplate: 'Pink.Data.Paginator.InkPagerTemplate'"&gt;&lt;/div&gt;
                             </pre></blockquote>                            
                         </p>
                         <h4><em>Binding value</em></h4>
@@ -820,6 +820,9 @@ Ink.createModule('App.Names.List', '1', ['Pink.Data.Paginator_1'], function(Pagi
                                 <li><b>pageSize</b> int value with number of rows per page.</li>
                                 <li><b>pageSizeOptionList</b> array with page sizes.</li>
                             </ul>
+                            
+                            - pagerTemplate binding: String with name of Pink module with html template or ko template. Defaults to 'Pink.Data.Paginator.InkPagerTemplate'.
+                              
                         </p>
                     </article>
                     <article>

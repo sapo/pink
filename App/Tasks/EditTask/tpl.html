@@ -28,7 +28,7 @@
         <div class="control-group">
             <label>Depends on task</label> 
             <div class="control">
-                <input type="text" data-bind="autoComplete: otherTasks, value: dependentTask, optionsText: 'subject', optionsValue: 'guid', allowAny: true"></input>
+                <input type="text" data-bind="autoComplete: otherTasks, value: dependentTask, optionsText: 'subject', optionsValue: 'guid', allowAny: true, optionTemplate: 'taskOptionTemplate'"></input>
             </div>
         </div>
         <div>
@@ -59,3 +59,15 @@
         </ul>
     </nav>
 </footer>
+
+<script id="taskOptionTemplate" type="text/html">
+	<a data-bind="attr: {'data-value': value, 'data-label': label}">
+		<div style="pointer-events: none">
+			<b data-bind="text: label"></b>
+			<span data-bind="text: source.description"></span>
+			<div>
+				<em data-bind="text: source.status"></em>	
+			</div>
+		</div>
+	</a>
+</script>

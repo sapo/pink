@@ -66,7 +66,8 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
         var mapped = ko.utils.arrayMap(source, function (item) {
             var result = {};
             result.label = labelProp ? ko.unwrap(item[labelProp]) : ko.unwrap(item).toString();  //show in pop-up choices
-            result.value = valueProp ? ko.unwrap(item[valueProp]) : ko.unwrap(item).toString();  //value 
+            result.value = valueProp ? ko.unwrap(item[valueProp]) : ko.unwrap(item).toString();  //value
+            result.source = item;
             return result;
         });
         return mapped;
@@ -87,11 +88,13 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
     };
     
     // Function to build the menu with the suggested options
-    function buildOptions(ul, source, filter) {
+    function buildOptions(ul, source, filter, itemTemplate) {
         var child;
         var index;
         var label;
         var value;
+
+        itemTemplate = itemTemplate || 'Pink.Data.AutoComplete.ItemTemplate';
         
         while (child=ul.firstChild) {
             ul.removeChild(child);
@@ -110,12 +113,12 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
             }
             
             li = document.createElement('li');
-            anchor = document.createElement('a');
-            anchor.textContent=label;
-            anchor.setAttribute('data-value', value);
-            li.appendChild(anchor);
+            container = document.createElement('div');
+            li.appendChild(container);
+            ko.renderTemplate(itemTemplate, source[index], {}, container, 'replaceNode');
             
             ul.appendChild(li);
+
         }
     };
     
@@ -136,12 +139,12 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
         ul.setAttribute('class', 'menu vertical rounded shadowed white');
         nav.appendChild(ul);
 
-        buildOptions(ul, options.source);
+        buildOptions(ul, options.source, undefined, options.itemTemplate);
         displayOptions.appendChild(nav);
         
         // Handle input focus
         inkEvt.observe(displayInput, 'focus', function() {
-            buildOptions(ul, options.source, displayInput.value);
+            buildOptions(ul, options.source, displayInput.value, options.itemTemplate);
             displayOptions.style.display = 'block';
 
             window.setTimeout(function() {
@@ -164,17 +167,17 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
         // List option selected
         inkEvt.observe(displayOptions, 'click', function(event) {
             activeItem = inkEvt.element(event);
-            var inputValue = activeItem.textContent;
+            var inputValue = activeItem.getAttribute('data-label');
             
             displayInput.value = inputValue;
-            buildOptions(ul, options.source, inputValue);
-            
-            options.change({label: activeItem.textContent, value: activeItem.getAttribute('data-value')});
+            options.change({label: inputValue, value: activeItem.getAttribute('data-value')});
+            buildOptions(ul, options.source, inputValue, options.itemTemplate);
         }, true);
         
         // Key entered in input control
         inkEvt.observe(displayInput, 'keyup', function(event) {
            var inputValue;
+           var element;
            var keyCode;
 
            keyCode = event.keyCode;
@@ -217,11 +220,12 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
                
                if (keyCode == inkEvt.KEY_RETURN) {
                    if (activeItem) {
-                       inputValue = activeItem.firstChild.textContent;
+                       element = Ink.s('a', activeItem);
+                       inputValue = element.getAttribute('data-label');
                        displayInput.value = inputValue;
-                       buildOptions(ul, options.source, inputValue);
+                       buildOptions(ul, options.source, inputValue, options.itemTemplate);
                        displayInput.blur();
-                       options.change({label: activeItem.firstChild.textContent, value: activeItem.firstChild.getAttribute('data-value')});
+                       options.change({label: inputValue, value: element.getAttribute('data-value')});
                    }
                }
                
@@ -229,7 +233,7 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
            }
            
            activeItem = undefined;
-           buildOptions(ul, options.source, displayInput.value);
+           buildOptions(ul, options.source, displayInput.value, options.itemTemplate);
            if (options.allowAny) {
         	   options.change();
            }
@@ -253,6 +257,7 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
             	this.labelProp = ko.unwrap(this.binding.optionsText) || this.valueProp;
             	this.allowAny = ko.unwrap(this.binding.allowAny);
             	this.element = element;
+            	this.itemTemplate = ko.unwrap(this.binding.optionTemplate);
             })();
 
             element.style.display = 'none';
@@ -281,7 +286,7 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
                 var ul = opt.displayOptions.firstChild.firstChild;
 
                 opt.source = newValue;
-                buildOptions(ul, buildDataSource(newValue, 'label', 'value'), opt.displayInput.value);
+                buildOptions(ul, buildDataSource(newValue, 'label', 'value'), opt.displayInput.value, opt.itemTemplate);
             });
 
             opt.source = mappedSource();
