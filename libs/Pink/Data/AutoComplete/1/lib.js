@@ -103,23 +103,24 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
         if (filter) {
             filter = ".*" + filter.replace(/\s+/g, ".*") + ".*";
         }
-        
-        for (index=0; index<source.length; index++) {
-            label = source[index].label;
-            value = source[index].value;
-            
-            if (filter && !label.match(new RegExp(filter, "i"))) {
-                continue;
-            }
-            
-            li = document.createElement('li');
-            container = document.createElement('div');
-            li.appendChild(container);
-            ko.renderTemplate(itemTemplate, source[index], {}, container, 'replaceNode');
-            
-            ul.appendChild(li);
 
-        }
+        window.setTimeout(function() {
+            for (index=0; index<source.length; index++) {
+                label = source[index].label;
+                value = source[index].value;
+                
+                if (filter && !label.match(new RegExp(filter, "i"))) {
+                    continue;
+                }
+                
+                li = document.createElement('li');
+                container = document.createElement('div');
+                li.appendChild(container);
+                ko.renderTemplate(itemTemplate, source[index], {}, container, 'replaceNode');
+                
+                ul.appendChild(li);
+            }
+        }, 0);
     };
     
     /*
