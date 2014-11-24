@@ -6,13 +6,9 @@
  */
 
 Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Event_1', 'Ink.Dom.Element_1', 'Ink.Dom.Selector_1'], function(ko, inkEvt, inkEl, inkSel) {
-    /* 
-     * Private aux functions
+    /*
+     * This function must be bound to an options object
      */
-
-	/*
-	 * This function must be bound to an options object
-	 */
 	function handleValueChange(item) {
         var labelToWrite = item ? item.label : undefined;
         var valueToWrite = item ? item.value : undefined;
@@ -46,7 +42,6 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
 
         return false;
     };
-
     
     function findSelectedItem(dataSource, binding, selectedValue) {
         var source = ko.unwrap(dataSource);
@@ -241,7 +236,7 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
         });                    
     };
 	
-	/*
+    /*
      * Ink + Knockout autoComplete binding 
      * 
      */
@@ -263,8 +258,8 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
 
             element.style.display = 'none';
             opt.displayElement = inkEl.htmlToFragment('<div style="overflow: visible" class="pink-auto-complete control-group '+ element.getAttribute('class') +
-            		'"><div class="control append-button"><span><input placeholder="' + (element.getAttribute('placeholder') || '') + 
-            		'" type="text"></input></span><button class="ink-button"><i class="fa fa-times"></i></button></div><div class="pink-auto-complete-options"></div></div>').firstChild;
+                '"><div class="control append-button"><span><input placeholder="' + (element.getAttribute('placeholder') || '') + 
+                '" type="text"></input></span><button class="ink-button"><i class="fa fa-times"></i></button></div><div class="pink-auto-complete-options"></div></div>').firstChild;
             
             element.parentNode.insertBefore(opt.displayElement, element.nextSibling);
             
@@ -306,7 +301,7 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
         update: function (element, valueAccessor, allBindingsAccessor, viewModel) {
             var dataSource = valueAccessor();
             var binding = allBindingsAccessor();
-        	var allowAny = ko.unwrap(binding.allowAny);
+            var allowAny = ko.unwrap(binding.allowAny);
             var valueProp = ko.unwrap(binding.optionsValue);
             var labelProp = ko.unwrap(binding.optionsText) || valueProp;
             var displayElement = element.nextSibling;
