@@ -83,39 +83,38 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
     };
     
     // Function to build the menu with the suggested options
-    function buildOptions(ul, source, filter, itemTemplate) {
-        var child;
-        var index;
-        var label;
-        var value;
-
+    function buildOptions(ul, source, filter, itemTemplate, bindingContext, minFilterLen) {
         itemTemplate = itemTemplate || 'Pink.Data.AutoComplete.ItemTemplate';
         
-        while (child=ul.firstChild) {
-            ul.removeChild(child);
-        }
+        ul.innerHTML = '';
 
-        if (filter) {
-            filter = ".*" + filter.replace(/\s+/g, ".*") + ".*";
-        }
+        if (filter == undefined || !minFilterLen || filter.length >= minFilterLen) {
+            window.setTimeout(function() {
+                var index;
+                var label;
+                var value;
 
-        window.setTimeout(function() {
-            for (index=0; index<source.length; index++) {
-                label = source[index].label;
-                value = source[index].value;
-                
-                if (filter && !label.match(new RegExp(filter, "i"))) {
-                    continue;
+                if (filter) {
+                    filter = ".*" + filter.replace(/\s+/g, ".*") + ".*";
                 }
                 
-                li = document.createElement('li');
-                container = document.createElement('div');
-                li.appendChild(container);
-                ko.renderTemplate(itemTemplate, source[index], {}, container, 'replaceNode');
-                
-                ul.appendChild(li);
-            }
-        }, 0);
+                for (index=0; index<source.length; index++) {
+                    label = source[index].label;
+                    value = source[index].value;
+                    
+                    if (filter && !label.match(new RegExp(filter, "i"))) {
+                        continue;
+                    }
+                    
+                    li = document.createElement('li');
+                    container = document.createElement('div');
+                    li.appendChild(container);
+                    
+                    ko.renderTemplate(itemTemplate, new ko.bindingContext(source[index], bindingContext), {}, container, 'replaceNode');
+                    ul.appendChild(li);
+                }
+            }, 0);
+        }
     };
     
     /*
@@ -135,12 +134,12 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
         ul.setAttribute('class', 'menu vertical rounded shadowed white');
         nav.appendChild(ul);
 
-        buildOptions(ul, options.source, undefined, options.itemTemplate);
+        buildOptions(ul, options.source, undefined, options.itemTemplate, options.bindingContext, options.minFilterLength);
         displayOptions.appendChild(nav);
         
         // Handle input focus
         inkEvt.observe(displayInput, 'focus', function() {
-            buildOptions(ul, options.source, displayInput.value, options.itemTemplate);
+            buildOptions(ul, options.source, displayInput.value, options.itemTemplate, options.bindingContext, options.minFilterLength);
             displayOptions.style.display = 'block';
 
             window.setTimeout(function() {
@@ -167,7 +166,7 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
             
             displayInput.value = inputValue;
             options.change({label: inputValue, value: activeItem.getAttribute('data-value')});
-            buildOptions(ul, options.source, inputValue, options.itemTemplate);
+            buildOptions(ul, options.source, inputValue, options.itemTemplate, options.bindingContext, options.minFilterLength);
         }, true);
         
         // Key entered in input control
@@ -219,7 +218,7 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
                        element = Ink.s('a', activeItem);
                        inputValue = element.getAttribute('data-label');
                        displayInput.value = inputValue;
-                       buildOptions(ul, options.source, inputValue, options.itemTemplate);
+                       buildOptions(ul, options.source, inputValue, options.itemTemplate, options.bindingContext, options.minFilterLength);
                        displayInput.blur();
                        options.change({label: inputValue, value: element.getAttribute('data-value')});
                    }
@@ -229,7 +228,7 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
            }
            
            activeItem = undefined;
-           buildOptions(ul, options.source, displayInput.value, options.itemTemplate);
+           buildOptions(ul, options.source, displayInput.value, options.itemTemplate, options.bindingContext, options.minFilterLength);
            if (options.allowAny) {
         	   options.change();
            }
@@ -245,7 +244,7 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
          * Knockout custom binding init
          * 
          */
-        init: function (element, valueAccessor, allBindingsAccessor, viewModel) {
+        init: function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
             var opt = new (function() {
             	this.dataSource = valueAccessor();
             	this.binding = allBindingsAccessor();
@@ -254,6 +253,8 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
             	this.allowAny = ko.unwrap(this.binding.allowAny);
             	this.element = element;
             	this.itemTemplate = ko.unwrap(this.binding.optionTemplate);
+            	this.bindingContext = bindingContext;
+            	this.minFilterLength = ko.unwrap(this.binding.minFilterLength);
             })();
 
             element.style.display = 'none';
@@ -282,7 +283,7 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
                 var ul = opt.displayOptions.firstChild.firstChild;
 
                 opt.source = newValue;
-                buildOptions(ul, buildDataSource(newValue, 'label', 'value'), opt.displayInput.value, opt.itemTemplate);
+                buildOptions(ul, buildDataSource(newValue, 'label', 'value'), opt.displayInput.value, opt.itemTemplate, opt.bindingContext, opt.minFilterLength);
             });
 
             opt.source = mappedSource();
