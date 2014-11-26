@@ -260,12 +260,12 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
             element.style.display = 'none';
             opt.displayElement = inkEl.htmlToFragment('<div style="overflow: visible" class="pink-auto-complete control-group '+ element.getAttribute('class') +
                 '"><div class="control append-button"><span><input placeholder="' + (element.getAttribute('placeholder') || '') + 
-                '" type="text"></input></span><button class="ink-button"><i class="fa fa-times"></i></button></div><div class="pink-auto-complete-options"></div></div>').firstChild;
+                '" type="text"></input></span><div class="ink-button"><i class="fa fa-times"></i></div></div><div class="pink-auto-complete-options"></div></div>').firstChild;
             
             element.parentNode.insertBefore(opt.displayElement, element.nextSibling);
             
             opt.displayInput = Ink.s('input', opt.displayElement);
-            opt.displayButton = Ink.s('button', opt.displayElement);
+            opt.displayButton = Ink.s('.ink-button', opt.displayElement);
             opt.displayOptions = Ink.s('.pink-auto-complete-options', opt.displayElement);
             
             // Reset button click handler
