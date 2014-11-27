@@ -85,18 +85,20 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
     // Function to build the menu with the suggested options
     function buildOptions(ul, source, filter, itemTemplate, bindingContext, minFilterLen) {
         itemTemplate = itemTemplate || 'Pink.Data.AutoComplete.ItemTemplate';
-        
-        ul.innerHTML = '';
 
         if (filter == undefined || !minFilterLen || filter.length >= minFilterLen) {
             window.setTimeout(function() {
                 var index;
                 var label;
                 var value;
+                var li;
+                var tmpUl;
 
                 if (filter) {
                     filter = ".*" + filter.replace(/\s+/g, ".*") + ".*";
                 }
+                
+                tmpUl = document.createElement('ul');
                 
                 for (index=0; index<source.length; index++) {
                     label = source[index].label;
@@ -107,13 +109,15 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
                     }
                     
                     li = document.createElement('li');
-                    container = document.createElement('div');
-                    li.appendChild(container);
-                    
-                    ko.renderTemplate(itemTemplate, new ko.bindingContext(source[index], bindingContext), {}, container, 'replaceNode');
-                    ul.appendChild(li);
+                    ko.renderTemplate(itemTemplate, new ko.bindingContext(source[index], bindingContext), {}, li);
+                    ko.cleanNode(li);
+                    tmpUl.appendChild(li);
                 }
+                
+                ul.innerHTML = tmpUl.innerHTML;
             }, 0);
+        } else {
+            ul.innerHTML = '';
         }
     };
     
@@ -256,6 +260,8 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
             	this.bindingContext = bindingContext;
             	this.minFilterLength = ko.unwrap(this.binding.minFilterLength);
             })();
+            var mappedSource;
+            var subscription;
 
             element.style.display = 'none';
             opt.displayElement = inkEl.htmlToFragment('<div style="overflow: visible" class="pink-auto-complete control-group '+ element.getAttribute('class') +
@@ -275,11 +281,11 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
             
             // handle the choices being updated in a computed, so the update function doesn't 
             // have to do it each time the value is updated.
-            var mappedSource = ko.computed(function () {
+            mappedSource = ko.computed(function () {
                 return buildDataSource(opt.dataSource, opt.labelProp, opt.valueProp);
             }, viewModel);
             
-            mappedSource.subscribe(function (newValue) {
+            subscription = mappedSource.subscribe(function (newValue) {
                 var ul = opt.displayOptions.firstChild.firstChild;
 
                 opt.source = newValue;
@@ -288,6 +294,11 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
 
             opt.source = mappedSource();
             opt.change = handleValueChange;
+            
+            ko.utils.domNodeDisposal.addDisposeCallback(element, function() {
+                subscription.dispose();
+                mappedSource.dispose();
+            });
 
             buildAutoComplete(opt);
         },
@@ -334,6 +345,8 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
                 } else {
                     if (currentModelValue !== undefined) {
                         displayInput.value = currentModelValue;
+                    } else {
+                        displayInput.value = '';
                     }
                 }
             }
