@@ -199,8 +199,8 @@ Ink.createModule('Pink.Data.Paginator', '1', [ 'Pink.Data.Module_1' ], function(
             };
         },
         
-        update : function(element, viewModelAccessor, allBindingsAccessor) {
-            var viewModel = viewModelAccessor(), allBindings = allBindingsAccessor();
+        update : function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+            var paginator = valueAccessor(), allBindings = allBindingsAccessor();
 
             // Empty the element
             while (element.firstChild) {
@@ -212,7 +212,7 @@ Ink.createModule('Pink.Data.Paginator', '1', [ 'Pink.Data.Module_1' ], function(
 
             // Render the page links
             var pageLinksContainer = element.appendChild(document.createElement('DIV'));
-            ko.renderTemplate(pageLinksTemplateName, viewModel, {}, pageLinksContainer, 'replaceNode');
+            ko.renderTemplate(pageLinksTemplateName, new ko.bindingContext(paginator, bindingContext), {}, pageLinksContainer, 'replaceNode');
         }
     };
     
