@@ -193,6 +193,8 @@ Ink.createModule('Pink.Data.Paginator', '1', [ 'Pink.Data.Module_1' ], function(
      * 
      */
     ko.bindingHandlers.paginator = {
+        defaultPagerTemplate: 'Pink.Data.Paginator.InkPagerTemplate',
+        
         init : function() {
             return {
                 'controlsDescendantBindings' : true
@@ -208,13 +210,14 @@ Ink.createModule('Pink.Data.Paginator', '1', [ 'Pink.Data.Module_1' ], function(
             }
 
             // Allow the default template to be overridden
-            var pageLinksTemplateName = allBindings.pagerTemplate || 'Pink.Data.Paginator.InkPagerTemplate';
+            var pageLinksTemplateName = allBindings.pagerTemplate || ko.bindingHandlers.paginator.defaultPagerTemplate;
 
             // Render the page links
             var pageLinksContainer = element.appendChild(document.createElement('DIV'));
             ko.renderTemplate(pageLinksTemplateName, new ko.bindingContext(paginator, bindingContext), {}, pageLinksContainer, 'replaceNode');
         }
     };
+    
     
     return Module;
 });
