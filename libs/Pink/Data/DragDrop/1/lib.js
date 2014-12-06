@@ -781,7 +781,7 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
             var receiverEl;
             var dataIndex;
             
-        	if (!ko.bindingHandlers.droppable._isRightFlavor(binding.dataFlavor)) {
+        	if (!ko.bindingHandlers.droppable._isRightFlavor(binding.dataFlavor, dataTransfer)) {
         		return;
         	}
 
@@ -813,10 +813,15 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
         	}
         },
         
-        _isRightFlavor: function(dataFlavor) {
+        _isRightFlavor: function(dataFlavor, dataTransfer) {
         	if (dataFlavor) {
         		if (dataTransfer instanceof Array) {
-        			return dataTransfer.length==1 && dataTransfer[0] instanceof dataFlavor;
+        		    if (dataTransfer.length == 0) {
+        		        return true;
+        		    }
+        			return (dataTransfer[0] instanceof dataFlavor) && 
+        			       ko.bindingHandlers.droppable._isRightFlavor(dataFlavor, dataTransfer.slice(1));
+        			       
         		} else {
         			return dataTransfer instanceof dataFlavor;
         		}
@@ -828,7 +833,7 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
         _handleHover: function(binding, draggable, droppable, evt) {
         	var receiverEl;
 
-        	if (!ko.bindingHandlers.droppable._isRightFlavor(binding.dataFlavor)) {
+        	if (!ko.bindingHandlers.droppable._isRightFlavor(binding.dataFlavor, dataTransfer)) {
         		return;
         	}
         	
