@@ -777,27 +777,6 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
      * 
      */
     ko.bindingHandlers.droppable = {
-        _handleDrop: function(binding, draggable, droppable, evt) {
-            var receiverEl;
-            var dataIndex;
-            
-        	if (!ko.bindingHandlers.droppable._isRightFlavor(binding.dataFlavor, dataTransfer)) {
-        		return;
-        	}
-
-            if (draggable.parentNode) {
-                draggable.parentNode.removeChild(draggable);
-            }
-            
-            if (typeof binding.dropHandler == 'function') {
-                receiverEl=document.elementFromPoint(evt.clientX, evt.clientY);
-                receiverEl=inkEl.findUpwardsByClass(receiverEl, 'drag-enabled');
-
-                dataIndex=(receiverEl?parseInt(receiverEl.getAttribute('data-index'), 10):undefined);
-                binding.dropHandler(dataTransfer, dataIndex);
-            }
-            dropSuccess=true;
-        }, 
 
         _clearHints: function() {
         	var hints;
@@ -830,35 +809,80 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
         	return true;
         },
         
+        _handleDrop: function(binding, draggable, droppable, evt) {
+            var receiverEl;
+            var containerEl;
+            var dataIndex;
+            
+            if (!ko.bindingHandlers.droppable._isRightFlavor(binding.dataFlavor, dataTransfer)) {
+                return;
+            }
+
+            if (draggable.parentNode) {
+                draggable.parentNode.removeChild(draggable);
+            }
+            
+            if (typeof binding.dropHandler == 'function') {
+                receiverEl=document.elementFromPoint(evt.clientX, evt.clientY);
+                receiverEl=inkEl.findUpwardsByClass(receiverEl, 'drag-enabled');
+                containerEl=inkEl.findUpwardsByClass(receiverEl, 'pink-draggable-container');
+
+                if (containerEl != droppable) {
+                    return;
+                }
+
+                dataIndex=(receiverEl?parseInt(receiverEl.getAttribute('data-index'), 10):undefined);
+                binding.dropHandler(dataTransfer, dataIndex);
+            }
+            dropSuccess=true;
+        }, 
+
         _handleHover: function(binding, draggable, droppable, evt) {
         	var receiverEl;
+        	var containerEl;
 
         	if (!ko.bindingHandlers.droppable._isRightFlavor(binding.dataFlavor, dataTransfer)) {
-        		return;
+        		return false;
         	}
         	
         	ko.bindingHandlers.droppable._clearHints();
         	receiverEl=document.elementFromPoint(evt.clientX, evt.clientY);
             receiverEl=inkEl.findUpwardsByClass(receiverEl, 'drag-enabled');
 
-        	if (receiverEl) {
-        		inkCss.addClassName(receiverEl, 'pink-drop-place-hint-before');
-        	} else {
-        		receiverEl=Ink.ss('.drag-enabled', droppable);
-        		if (receiverEl.length>0) {
-            		if (inkCss.hasClassName(receiverEl[receiverEl.length-1], 'pink-draggable-proxy')) {
-            			receiverEl.pop();
-            		} 
-            		receiverEl=receiverEl[receiverEl.length-1];
-            		inkCss.addClassName(receiverEl, 'pink-drop-place-hint-after');
-        		}
-        	}
+            if (!receiverEl) {
+                return;
+            }
+            
+            containerEl=inkEl.findUpwardsByClass(receiverEl, 'pink-draggable-container');
+
+            if (containerEl != droppable) {
+                return;
+            }
+
+            if (binding.horizontalLayout) {
+                if (evt.offsetX  > evt.target.offsetWidth / 2) {
+                    inkCss.addClassName(receiverEl, 'pink-drop-place-hint-after');
+                } else {
+                    inkCss.addClassName(receiverEl, 'pink-drop-place-hint-before');
+                }
+            } else {
+                if (evt.offsetY > evt.target.offsetHeight / 2) {
+                    inkCss.addClassName(receiverEl, 'pink-drop-place-hint-after');
+                } else {
+                    inkCss.addClassName(receiverEl, 'pink-drop-place-hint-before');
+                }
+            }
         }, 
 
         init: function (element, valueAccessor, allBindingsAccessor, viewModel) {
             var attr;
             var binding = ko.unwrap(valueAccessor());
-            var options = {hoverClass: 'pink-drop-panel-active', onHover: ko.bindingHandlers.droppable._handleHover.bind(this, binding), onDrop: ko.bindingHandlers.droppable._handleDrop.bind(this, binding), onDropOut: ko.bindingHandlers.droppable._clearHints}; 
+            var options = {
+                hoverClass: 'pink-drop-panel-active', 
+                onHover: ko.bindingHandlers.droppable._handleHover.bind(this, binding), 
+                onDrop: ko.bindingHandlers.droppable._handleDrop.bind(this, binding), 
+                onDropOut: ko.bindingHandlers.droppable._clearHints
+            }; 
             
             if (typeof binding == 'object') {
             	if (binding.hoverClass) {
@@ -966,6 +990,7 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
             var draggableElement;
             var dragThreshold = (binding.dragThreshold || 4);
             var lastSelectedIndex=-1;
+            var multiSelection = binding.multiSelection;
 
             var handleSelection = function(data, evt) {
                 var draggableElement;
@@ -1110,7 +1135,10 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
                     ko.applyBindings(draggable, draggableElement);
                     
                     element.appendChild(draggableElement);
-                    inkEvt.observe(draggableElement, 'click', handleSelection.bind(this, draggable));
+                    
+                    if (multiSelection) {
+                        inkEvt.observe(draggableElement, 'click', handleSelection.bind(this, draggable));
+                    }
                     inkEvt.observe(draggableElement, 'mousemove', handleDragMove.bind(this, draggable));
 
                     inkEvt.observe(draggableElement, 'mousedown', ko.bindingHandlers.draggableContainer._handleDragStart);

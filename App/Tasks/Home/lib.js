@@ -1,4 +1,4 @@
-Ink.createModule('App.Tasks.Home', '1', ['App.Tasks', 'Pink.Data.Binding_1', 'App.Tasks.DataProvider', 'Pink.Data.Grid_1'], function(app, ko, dataProvider, Grid) {
+Ink.createModule('App.Tasks.Home', '1', ['App.Tasks', 'Pink.Data.Binding_1', 'App.Tasks.DataProvider', 'Pink.Data.Grid_1', 'Pink.Data.Kanban_1'], function(app, ko, dataProvider, Grid, Kanban) {
     var Module = function() {
         this.moduleName = 'App.Tasks.Home';
         this.tasks = ko.observableArray();
@@ -16,7 +16,15 @@ Ink.createModule('App.Tasks.Home', '1', ['App.Tasks', 'Pink.Data.Binding_1', 'Ap
         });
         this.tasksModel.parentModel = this;
 
-        this.sections = [{title: 'Todo', items: this.todoTasks}, {title: 'Incomplete', items: this.incompleteTasks}, {title: 'Complete', items: this.completedTasks}];
+        this.sections = ko.observableArray([new Kanban.Section({title: 'Todo', items: this.todoTasks}), 
+                         new Kanban.Section({title: 'Incomplete', items: this.incompleteTasks}), 
+                         new Kanban.Section({title: 'Complete', items: this.completedTasks})]);
+        
+        this.kanbanModel = {
+            sections: this.sections, 
+            cardsMovedHandler: this.tasksMovedHandler.bind(this),
+            sectionMovedHandler: this.sectionMovedHandler.bind(this)
+        };
         
         this.loadTasks();
         
@@ -42,30 +50,37 @@ Ink.createModule('App.Tasks.Home', '1', ['App.Tasks', 'Pink.Data.Binding_1', 'Ap
     Module.prototype.loadTasks = function() {
     	var tasks = dataProvider.listTasks();
     	var task;
+    	var todoTasks = [];
+    	var completedTasks = [];
+    	var incompleteTasks = [];
 
         this.todoTasks([]);
         this.completedTasks([]);        
         this.incompleteTasks([]);
     	
     	for (var i=0; i<tasks.length; i++) {
-    		task = tasks[i];
+    		task = new Kanban.Card(tasks[i]);
 
     		task.title = task.subject;
     		task.content = task.description;
     		task.editHandler = this.editTask.bind(this, task);
     	
     		if (task.status=='todo') {
-    			this.todoTasks.push(task);
+    			todoTasks.push(task);
     		}
     		
     		if (task.status=='completed') {
-    			this.completedTasks.push(task);
+    			completedTasks.push(task);
     		}
     		
     		if (task.status=='incomplete') {
-    			this.incompleteTasks.push(task);
+    			incompleteTasks.push(task);
     		}
     	}
+
+        this.todoTasks(todoTasks);
+        this.completedTasks(completedTasks);        
+        this.incompleteTasks(incompleteTasks);
     };
     
     Module.prototype.tasksMovedHandler = function(source, tasks) {
@@ -103,5 +118,17 @@ Ink.createModule('App.Tasks.Home', '1', ['App.Tasks', 'Pink.Data.Binding_1', 'Ap
     	app.navigateTo('edit?id='+task._id);
     };
 
+    Module.prototype.sectionMovedHandler = function(section, index) {
+        var oldIndex = this.sections.indexOf(section);
+        
+        this.sections.splice(index, 0, section);
+        
+        if (oldIndex <= index) {
+            this.sections.splice(oldIndex, 1);
+        } else {
+            this.sections.splice(oldIndex+1, 1);
+        }
+    };
+    
     return new Module();
 });

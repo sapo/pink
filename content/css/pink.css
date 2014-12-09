@@ -141,9 +141,15 @@
 .pink-kanban {
 }
 
+.pink-kanban>.drag-enabled {
+	display: inline-block;
+    vertical-align: top;
+}
+
 .pink-kanban .pink-section {
-    float: left;
-    background-color: #e3e3e3;
+    display: inline-block;
+    vertical-align: top;
+	background-color: #e3e3e3;
     width: 15em;
     padding: 0.2em; 
     border-radius: 3px;
@@ -279,6 +285,13 @@
 
 .pink-kanban .pink-drop-panel-active {
     background-color: #eee;
+}
+
+.pink-kanban>.drag-enabled.pink-drop-place-hint-before:before {
+    float: left;
+    margin-left: -0.75em;
+    width: 0.2em;
+    height: 4em;
 }
 
 /*****************************
