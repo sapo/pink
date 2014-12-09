@@ -24,7 +24,9 @@ Ink.createModule('Pink.Data.Toggle', '1', ['Pink.Data.Binding_1', 'Ink.UI.Toggle
 
             // Defer the toggle renderization to wait for the target element to be in the DOM
             window.setTimeout(function() {
-                new Toggle(element, options);
+                if (document.getElementById(options.target.slice(1))) {
+                    new Toggle(element, options);
+                }
             }, 0);
         }
     };
