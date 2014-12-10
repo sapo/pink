@@ -966,6 +966,7 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
         _handleDragEnd: function(evt) {
             ko.bindingHandlers.draggableContainer._isMouseDown = false;
             if (ko.bindingHandlers.draggableContainer._isDragging) {
+                ko.bindingHandlers.draggableContainer._draggable.destroy();
                 window.setTimeout(function() {
                     ko.bindingHandlers.draggableContainer._isDragging = false;
 
@@ -1142,7 +1143,7 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
             inkCss.addClassName(element, 'pink-draggable-container');
             inkCss.addClassName(element, 'pink-disable-text-selection');
             
-            ko.computed(function() {
+            var sourceChangedListener = ko.computed(function() {
                 var source = ko.unwrap(binding.source);
                 var childElements;
                 var i;
@@ -1156,7 +1157,7 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
                     inkEvt.stopObserving(childElements[i], 'mousedown');
                     inkEvt.stopObserving(childElements[i], 'mouseup');
                     
-                    childElements[i].parentNode.removeChild(childElements[i]);
+                    ko.removeNode(childElements[i]);
                 }
                 
                 for (i=0; i < source.length; i++) {
@@ -1186,6 +1187,10 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
                     inkEvt.observe(document, 'mouseup', ko.bindingHandlers.draggableContainer._handleDragEnd);
                 }
                 
+            });
+            
+            ko.utils.domNodeDisposal.addDisposeCallback(element, function() {
+                sourceChangedListener.dispose();
             });
             
             return {controlsDescendantBindings: true};
