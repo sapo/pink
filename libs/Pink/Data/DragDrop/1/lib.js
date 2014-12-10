@@ -812,7 +812,9 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
         _handleDrop: function(binding, draggable, droppable, evt) {
             var receiverEl;
             var containerEl;
-            var dataIndex;
+            var dataIndex = 0;
+            var rect;
+            var x, y;
             
             if (!ko.bindingHandlers.droppable._isRightFlavor(binding.dataFlavor, dataTransfer)) {
                 return;
@@ -824,14 +826,34 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
             
             if (typeof binding.dropHandler == 'function') {
                 receiverEl=document.elementFromPoint(evt.clientX, evt.clientY);
-                receiverEl=inkEl.findUpwardsByClass(receiverEl, 'drag-enabled');
-                containerEl=inkEl.findUpwardsByClass(receiverEl, 'pink-draggable-container');
 
-                if (containerEl != droppable) {
-                    return;
+                if (receiverEl != droppable) {
+                    receiverEl=inkEl.findUpwardsByClass(receiverEl, 'drag-enabled');
+                    containerEl=inkEl.findUpwardsByClass(receiverEl, 'pink-draggable-container');
+
+                    if (containerEl != droppable) {
+                        return;
+                    }
+
+                    rect = receiverEl.getBoundingClientRect();
+                    
+                    dataIndex=(receiverEl?parseInt(receiverEl.getAttribute('data-index'), 10):undefined);
+
+                    if (binding.horizontalLayout) {
+                        x = evt.pageX - rect.left;
+
+                        if (x  > rect.width / 2) {
+                            dataIndex++;
+                        }
+                    } else {
+                        y = evt.pageY - rect.top;
+                        
+                        if (y > rect.height / 2) {
+                            dataIndex++;
+                        } 
+                    }
                 }
 
-                dataIndex=(receiverEl?parseInt(receiverEl.getAttribute('data-index'), 10):undefined);
                 binding.dropHandler(dataTransfer, dataIndex);
             }
             dropSuccess=true;
@@ -840,6 +862,8 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
         _handleHover: function(binding, draggable, droppable, evt) {
         	var receiverEl;
         	var containerEl;
+        	var rect;
+        	var x, y;
 
         	if (!ko.bindingHandlers.droppable._isRightFlavor(binding.dataFlavor, dataTransfer)) {
         		return false;
@@ -847,31 +871,40 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
         	
         	ko.bindingHandlers.droppable._clearHints();
         	receiverEl=document.elementFromPoint(evt.clientX, evt.clientY);
-            receiverEl=inkEl.findUpwardsByClass(receiverEl, 'drag-enabled');
+        	
+        	if (receiverEl != droppable) {
+                receiverEl=inkEl.findUpwardsByClass(receiverEl, 'drag-enabled');
 
-            if (!receiverEl) {
-                return;
-            }
-            
-            containerEl=inkEl.findUpwardsByClass(receiverEl, 'pink-draggable-container');
-
-            if (containerEl != droppable) {
-                return;
-            }
-
-            if (binding.horizontalLayout) {
-                if (evt.offsetX  > evt.target.offsetWidth / 2) {
-                    inkCss.addClassName(receiverEl, 'pink-drop-place-hint-after');
-                } else {
-                    inkCss.addClassName(receiverEl, 'pink-drop-place-hint-before');
+                if (!receiverEl) {
+                    return;
                 }
-            } else {
-                if (evt.offsetY > evt.target.offsetHeight / 2) {
-                    inkCss.addClassName(receiverEl, 'pink-drop-place-hint-after');
-                } else {
-                    inkCss.addClassName(receiverEl, 'pink-drop-place-hint-before');
+                
+                containerEl=inkEl.findUpwardsByClass(receiverEl, 'pink-draggable-container');
+
+                if (containerEl != droppable) {
+                    return;
                 }
-            }
+
+                rect = receiverEl.getBoundingClientRect();
+                
+                if (binding.horizontalLayout) {
+                    x = evt.pageX - rect.left;
+
+                    if (x  > rect.width / 2) {
+                        inkCss.addClassName(receiverEl, 'pink-drop-place-hint-after');
+                    } else {
+                        inkCss.addClassName(receiverEl, 'pink-drop-place-hint-before');
+                    }
+                } else {
+                    y = evt.pageY - rect.top;
+                    
+                    if (y > rect.height / 2) {
+                        inkCss.addClassName(receiverEl, 'pink-drop-place-hint-after');
+                    } else {
+                        inkCss.addClassName(receiverEl, 'pink-drop-place-hint-before');
+                    }
+                }
+        	}
         }, 
 
         init: function (element, valueAccessor, allBindingsAccessor, viewModel) {
@@ -944,12 +977,17 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
         },
         
         _clearSelection: function() {
-            var selectedItems;
+            var elements;
             var i;
 
-            selectedItems = inkSel.select('.pink-draggable-selected');
-            for (i=0; i<selectedItems.length; i++) {
-                inkCss.removeClassName(selectedItems[i], 'pink-draggable-selected');
+            elements = inkSel.select('.pink-draggable-selected');
+            for (i=0; i<elements.length; i++) {
+                inkCss.removeClassName(elements[i], 'pink-draggable-selected');
+            }
+
+            elements = inkSel.select('.pink-drag-active');
+            for (i=0; i<elements.length; i++) {
+                inkCss.removeClassName(elements[i], 'pink-drag-active');
             }
 
             selectedData = [];
@@ -1064,6 +1102,7 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
                         }
                         
                         if (selectedData.length <= 1) {
+                            inkCss.addClassName(draggableElement, 'pink-draggable-selected');
                             draggableProxy = inkEl.htmlToFragment('<div>'+draggableElement.innerHTML+'</div>').firstChild;
                             dataTransfer = data;
                         } else {
@@ -1094,6 +1133,8 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
                         if (typeof ko.bindingHandlers.dragStartHandler == 'function') {
                             ko.bindingHandlers.dragStartHandler();
                         }
+
+                        inkCss.toggleClassName(element, 'pink-drag-active');
                     }
                 } 
             };

@@ -137,7 +137,33 @@ label {
 }
 
 .todo-kanban {
+    position: relative;
+    overflow-x: visible;
+    white-space: nowrap;
+    height: 100%;
 }
+
+.kanban-viewport {
+    overflow-x: auto;
+    overflow-y: hidden;
+    position:absolute;
+    left: 0px; 
+    top: 5em; 
+    right: 0px; 
+    bottom: 0px;
+}
+
+.todo-kanban .pink-kanban .pink-section {
+    display: inline-block;
+    white-space: normal;
+    position: static;
+    width: 290px;
+    overflow-y: auto;
+    max-height: 100%;
+    float: none;
+    vertical-align: top;
+}
+
 
 /*****************************
  HTML 5 Hacks

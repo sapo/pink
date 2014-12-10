@@ -119,20 +119,25 @@
 }
 
 .pink-drop-panel-active {
+	position: relative;
 }
 
-.pink-drop-place-hint-before:before {
+.pink-drop-panel-active .pink-drop-place-hint-before:before {
     content: '';
     display: block;
-    height: 1em;
-    border: 1px dashed black;
+    height: 2em;
+    background-color: #B3B3B3;
 }
 
 .pink-drop-panel-active .pink-drop-place-hint-after:after {
     content: '';
     display: block;
-    height: 1em;
-    border: 1px dashed black;
+    height: 2em;
+    background-color: #B3B3B3;
+}
+
+.pink-drag-active .pink-draggable-selected {
+	display: none;
 }
 
 /***********************************
@@ -288,9 +293,16 @@
 }
 
 .pink-kanban>.drag-enabled.pink-drop-place-hint-before:before {
-    float: left;
-    margin-left: -0.75em;
-    width: 0.2em;
+    position: absolute;
+    width: 0.5em;
+    height: 4em;
+}
+
+.pink-kanban>.drag-enabled.pink-drop-place-hint-after:after {
+    position: absolute;
+    top: 0px;
+    margin-left: 14.5em;
+	width: 0.5em;
     height: 4em;
 }
 
