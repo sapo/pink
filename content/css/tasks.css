@@ -136,34 +136,71 @@ label {
 	cursor: pointer;	
 }
 
-.todo-kanban {
-    position: relative;
-    overflow-x: visible;
-    white-space: nowrap;
-    height: 100%;
+.kanban-viewport {
+    position: absolute;
+    left: 0.9em;
+    top: 4em;
+    right: 0.9em;
+    bottom: 3em;
 }
 
-.kanban-viewport {
-    overflow-x: auto;
-    overflow-y: hidden;
-    position:absolute;
-    left: 0px; 
-    top: 5em; 
-    right: 0px; 
+.todo-kanban {
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    top: 0px;
     bottom: 0px;
 }
 
-.todo-kanban .pink-kanban .pink-section {
-    display: inline-block;
-    white-space: normal;
-    position: static;
-    width: 290px;
-    overflow-y: auto;
-    max-height: 100%;
-    float: none;
-    vertical-align: top;
+.todo-kanban .pink-kanban  {
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;    
 }
 
+.todo-kanban .pink-kanban>.drag-enabled  {
+    height: 100%;
+    overflow-y: hidden;
+    overflow-x: hidden;
+}
+
+.todo-kanban .pink-kanban>.drag-enabled>.pink-section  {
+    height: 100%;
+    position: relative;
+    min-height: 8em;
+}
+
+.todo-kanban .pink-kanban>.drag-enabled>.pink-section>.pink-title  {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    height: 2em;
+    z-index: 99;
+}
+
+.todo-kanban .pink-kanban>.drag-enabled>.pink-section>.pink-content  {
+    position: absolute;
+    top: 2.5em;
+    left: 0.5em;
+    right: 0.5em;
+    bottom: 3em;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.todo-kanban .pink-kanban>.drag-enabled>.pink-section>.pink-footer  {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+}
+
+.todo-kanban .pink-kanban.pink-drag-active>.drag-enabled {
+    overflow-y: hidden;
+}
 
 /*****************************
  HTML 5 Hacks

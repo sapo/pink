@@ -159,6 +159,7 @@
     padding: 0.2em; 
     border-radius: 3px;
     margin-right: 1em;
+    margin-left: 0.1em;
     margin-bottom: 1em;
 }
 
@@ -293,18 +294,18 @@
 }
 
 .pink-kanban>.drag-enabled.pink-drop-place-hint-before:before {
-    position: absolute;
-    width: 0.5em;
-    height: 4em;
+    display: inline-block;
+    width: 1.5em;
+    height: 6em;
 }
 
 .pink-kanban>.drag-enabled.pink-drop-place-hint-after:after {
-    position: absolute;
-    top: 0px;
-    margin-left: 14.5em;
-	width: 0.5em;
-    height: 4em;
+    display: inline-block;
+    margin-left: -0.25em;
+    width: 1.5em;
+    height: 6em;
 }
+
 
 /*****************************
  Grid & Paginator
