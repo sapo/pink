@@ -16,11 +16,11 @@
         <!--/ko-->
     </div>
     <!--ko if: (typeof $data.droppable == 'undefined') || ($data.droppable) -->
-        <div class="pink-content" data-bind="droppable: {dataFlavor: $data.dataFlavor, dropHandler: kanban.dropHandler.bind(kanban, $data.items)}, draggableContainer: {multiSelection: true, afterDraggableRender: kanban.afterCardRender, offset: $data.offset, source: $data.items, draggableTemplate: 'Pink.Data.Kanban.CardTemplate', dragOutHandler: kanban.dragOutHandler.bind(kanban, $data.items)}">
+        <div class="pink-content" data-bind="droppable: {dataFlavor: $data.dataFlavor, dropHandler: kanban.dropHandler.bind(kanban, $data.items)}, draggableContainer: {multiSelection: multiSelection, afterDraggableRender: kanban.afterCardRender, offset: $data.offset, source: $data.items, draggableTemplate: 'Pink.Data.Kanban.CardTemplate', dragOutHandler: kanban.dragOutHandler.bind(kanban, $data.items)}">
         </div>
     <!--/ko-->
     <!--ko if: (typeof $data.droppable != 'undefined') && (!$data.droppable) -->
-        <div class="pink-content" data-bind="draggableContainer: {multiSelection: true, afterDraggableRender: $data.afterCardRender, offset: $data.offset, source: $data.items, draggableTemplate: 'Pink.Data.Kanban.CardTemplate', dragOutHandler: kanban.dragOutHandler.bind(kanban, $data.items)}">
+        <div class="pink-content" data-bind="draggableContainer: {multiSelection: multiSelection, afterDraggableRender: $data.afterCardRender, offset: $data.offset, source: $data.items, draggableTemplate: 'Pink.Data.Kanban.CardTemplate', dragOutHandler: kanban.dragOutHandler.bind(kanban, $data.items)}">
         </div>
     <!--/ko-->
     <div class="pink-footer">

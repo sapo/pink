@@ -13,20 +13,22 @@ Ink.createModule('Pink.Data.Kanban', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Event
     var Section = function(section) {
         Ink.extendObj(this, section);
         this.dataFlavor = Card;
-    }
+    };
     
     var Module = function(options) {
         var self = this;
+        var multiSelection = options.multiSelection;
         
         this.sections = ko.computed(function() {
-            var i;
             var src = ko.unwrap(options.sections);
+            var i;
             var sections = [];
             var section;
             
             for (i = 0; i < src.length; i++) {
                 section = src[i];
                 section.kanban = self;
+                section.multiSelection = multiSelection;
                 sections.push(section);
             }
             
