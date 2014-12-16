@@ -777,27 +777,6 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
      * 
      */
     ko.bindingHandlers.droppable = {
-        _handleDrop: function(binding, draggable, droppable, evt) {
-            var receiverEl;
-            var dataIndex;
-            
-        	if (!ko.bindingHandlers.droppable._isRightFlavor(binding.dataFlavor)) {
-        		return;
-        	}
-
-            if (draggable.parentNode) {
-                draggable.parentNode.removeChild(draggable);
-            }
-            
-            if (typeof binding.dropHandler == 'function') {
-                receiverEl=document.elementFromPoint(evt.clientX, evt.clientY);
-                receiverEl=inkEl.findUpwardsByClass(receiverEl, 'drag-enabled');
-
-                dataIndex=(receiverEl?parseInt(receiverEl.getAttribute('data-index'), 10):undefined);
-                binding.dropHandler(dataTransfer, dataIndex);
-            }
-            dropSuccess=true;
-        }, 
 
         _clearHints: function() {
         	var hints;
@@ -813,10 +792,15 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
         	}
         },
         
-        _isRightFlavor: function(dataFlavor) {
+        _isRightFlavor: function(dataFlavor, dataTransfer) {
         	if (dataFlavor) {
         		if (dataTransfer instanceof Array) {
-        			return dataTransfer.length==1 && dataTransfer[0] instanceof dataFlavor;
+        		    if (dataTransfer.length == 0) {
+        		        return true;
+        		    }
+        			return (dataTransfer[0] instanceof dataFlavor) && 
+        			       ko.bindingHandlers.droppable._isRightFlavor(dataFlavor, dataTransfer.slice(1));
+        			       
         		} else {
         			return dataTransfer instanceof dataFlavor;
         		}
@@ -825,35 +809,113 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
         	return true;
         },
         
+        _handleDrop: function(binding, draggable, droppable, evt) {
+            var receiverEl;
+            var containerEl;
+            var dataIndex = 0;
+            var rect;
+            var x, y;
+            
+            if (!ko.bindingHandlers.droppable._isRightFlavor(binding.dataFlavor, dataTransfer)) {
+                return;
+            }
+
+            if (draggable.parentNode) {
+                draggable.parentNode.removeChild(draggable);
+            }
+            
+            if (typeof binding.dropHandler == 'function') {
+                receiverEl=document.elementFromPoint(evt.clientX, evt.clientY);
+
+                if (receiverEl != droppable) {
+                    receiverEl=inkEl.findUpwardsByClass(receiverEl, 'drag-enabled');
+                    containerEl=inkEl.findUpwardsByClass(receiverEl, 'pink-draggable-container');
+
+                    if (containerEl != droppable) {
+                        return;
+                    }
+
+                    rect = receiverEl.getBoundingClientRect();
+                    
+                    dataIndex=(receiverEl?parseInt(receiverEl.getAttribute('data-index'), 10):undefined);
+
+                    if (binding.horizontalLayout) {
+                        x = evt.pageX - rect.left;
+
+                        if (x  > rect.width / 2) {
+                            dataIndex++;
+                        }
+                    } else {
+                        y = evt.pageY - rect.top;
+                        
+                        if (y > rect.height / 2) {
+                            dataIndex++;
+                        } 
+                    }
+                }
+
+                binding.dropHandler(dataTransfer, dataIndex);
+            }
+            dropSuccess=true;
+        }, 
+
         _handleHover: function(binding, draggable, droppable, evt) {
         	var receiverEl;
+        	var containerEl;
+        	var rect;
+        	var x, y;
 
-        	if (!ko.bindingHandlers.droppable._isRightFlavor(binding.dataFlavor)) {
-        		return;
+        	if (!ko.bindingHandlers.droppable._isRightFlavor(binding.dataFlavor, dataTransfer)) {
+        		return false;
         	}
         	
         	ko.bindingHandlers.droppable._clearHints();
         	receiverEl=document.elementFromPoint(evt.clientX, evt.clientY);
-            receiverEl=inkEl.findUpwardsByClass(receiverEl, 'drag-enabled');
+        	
+        	if (receiverEl != droppable) {
+                receiverEl=inkEl.findUpwardsByClass(receiverEl, 'drag-enabled');
 
-        	if (receiverEl) {
-        		inkCss.addClassName(receiverEl, 'pink-drop-place-hint-before');
-        	} else {
-        		receiverEl=Ink.ss('.drag-enabled', droppable);
-        		if (receiverEl.length>0) {
-            		if (inkCss.hasClassName(receiverEl[receiverEl.length-1], 'pink-draggable-proxy')) {
-            			receiverEl.pop();
-            		} 
-            		receiverEl=receiverEl[receiverEl.length-1];
-            		inkCss.addClassName(receiverEl, 'pink-drop-place-hint-after');
-        		}
+                if (!receiverEl) {
+                    return;
+                }
+                
+                containerEl=inkEl.findUpwardsByClass(receiverEl, 'pink-draggable-container');
+
+                if (containerEl != droppable) {
+                    return;
+                }
+
+                rect = receiverEl.getBoundingClientRect();
+                
+                if (binding.horizontalLayout) {
+                    x = evt.pageX - rect.left;
+
+                    if (x  > rect.width / 2) {
+                        inkCss.addClassName(receiverEl, 'pink-drop-place-hint-after');
+                    } else {
+                        inkCss.addClassName(receiverEl, 'pink-drop-place-hint-before');
+                    }
+                } else {
+                    y = evt.pageY - rect.top;
+                    
+                    if (y > rect.height / 2) {
+                        inkCss.addClassName(receiverEl, 'pink-drop-place-hint-after');
+                    } else {
+                        inkCss.addClassName(receiverEl, 'pink-drop-place-hint-before');
+                    }
+                }
         	}
         }, 
 
         init: function (element, valueAccessor, allBindingsAccessor, viewModel) {
             var attr;
             var binding = ko.unwrap(valueAccessor());
-            var options = {hoverClass: 'pink-drop-panel-active', onHover: ko.bindingHandlers.droppable._handleHover.bind(this, binding), onDrop: ko.bindingHandlers.droppable._handleDrop.bind(this, binding), onDropOut: ko.bindingHandlers.droppable._clearHints}; 
+            var options = {
+                hoverClass: 'pink-drop-panel-active', 
+                onHover: ko.bindingHandlers.droppable._handleHover.bind(this, binding), 
+                onDrop: ko.bindingHandlers.droppable._handleDrop.bind(this, binding), 
+                onDropOut: ko.bindingHandlers.droppable._clearHints
+            }; 
             
             if (typeof binding == 'object') {
             	if (binding.hoverClass) {
@@ -904,6 +966,7 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
         _handleDragEnd: function(evt) {
             ko.bindingHandlers.draggableContainer._isMouseDown = false;
             if (ko.bindingHandlers.draggableContainer._isDragging) {
+                ko.bindingHandlers.draggableContainer._draggable.destroy();
                 window.setTimeout(function() {
                     ko.bindingHandlers.draggableContainer._isDragging = false;
 
@@ -915,12 +978,17 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
         },
         
         _clearSelection: function() {
-            var selectedItems;
+            var elements;
             var i;
 
-            selectedItems = inkSel.select('.pink-draggable-selected');
-            for (i=0; i<selectedItems.length; i++) {
-                inkCss.removeClassName(selectedItems[i], 'pink-draggable-selected');
+            elements = inkSel.select('.pink-draggable-selected');
+            for (i=0; i<elements.length; i++) {
+                inkCss.removeClassName(elements[i], 'pink-draggable-selected');
+            }
+
+            elements = inkSel.select('.pink-drag-active');
+            for (i=0; i<elements.length; i++) {
+                inkCss.removeClassName(elements[i], 'pink-drag-active');
             }
 
             selectedData = [];
@@ -961,6 +1029,7 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
             var draggableElement;
             var dragThreshold = (binding.dragThreshold || 4);
             var lastSelectedIndex=-1;
+            var multiSelection = binding.multiSelection;
 
             var handleSelection = function(data, evt) {
                 var draggableElement;
@@ -1034,6 +1103,7 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
                         }
                         
                         if (selectedData.length <= 1) {
+                            inkCss.addClassName(draggableElement, 'pink-draggable-selected');
                             draggableProxy = inkEl.htmlToFragment('<div>'+draggableElement.innerHTML+'</div>').firstChild;
                             dataTransfer = data;
                         } else {
@@ -1064,6 +1134,8 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
                         if (typeof ko.bindingHandlers.dragStartHandler == 'function') {
                             ko.bindingHandlers.dragStartHandler();
                         }
+
+                        inkCss.toggleClassName(element, 'pink-drag-active');
                     }
                 } 
             };
@@ -1071,7 +1143,7 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
             inkCss.addClassName(element, 'pink-draggable-container');
             inkCss.addClassName(element, 'pink-disable-text-selection');
             
-            ko.computed(function() {
+            var sourceChangedListener = ko.computed(function() {
                 var source = ko.unwrap(binding.source);
                 var childElements;
                 var i;
@@ -1085,7 +1157,7 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
                     inkEvt.stopObserving(childElements[i], 'mousedown');
                     inkEvt.stopObserving(childElements[i], 'mouseup');
                     
-                    childElements[i].parentNode.removeChild(childElements[i]);
+                    ko.removeNode(childElements[i]);
                 }
                 
                 for (i=0; i < source.length; i++) {
@@ -1105,13 +1177,20 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
                     ko.applyBindings(draggable, draggableElement);
                     
                     element.appendChild(draggableElement);
-                    inkEvt.observe(draggableElement, 'click', handleSelection.bind(this, draggable));
+                    
+                    if (multiSelection) {
+                        inkEvt.observe(draggableElement, 'click', handleSelection.bind(this, draggable));
+                    }
                     inkEvt.observe(draggableElement, 'mousemove', handleDragMove.bind(this, draggable));
 
                     inkEvt.observe(draggableElement, 'mousedown', ko.bindingHandlers.draggableContainer._handleDragStart);
                     inkEvt.observe(document, 'mouseup', ko.bindingHandlers.draggableContainer._handleDragEnd);
                 }
                 
+            });
+            
+            ko.utils.domNodeDisposal.addDisposeCallback(element, function() {
+                sourceChangedListener.dispose();
             });
             
             return {controlsDescendantBindings: true};

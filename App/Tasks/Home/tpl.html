@@ -1,6 +1,9 @@
-<div class="scroll-area">
-    <div class="hide-large hide-xlarge" data-bind="simpleGrid: tasksModel"></div>
-    <div class="hide-small hide-tiny hide-medium  todo-kanban" data-bind="module: {name:'Pink.Data.Kanban_1', data: {sections: sections, cardsMovedHandler: tasksMovedHandler.bind($data)}}"></div>
+<div class="scroll-area hide-large hide-xlarge">
+    <div  data-bind="simpleGrid: tasksModel"></div>
+</div>
+
+<div class="hide-small hide-tiny hide-medium kanban-viewport">
+    <div class="todo-kanban" data-bind="module: {name:'Pink.Data.Kanban_1', data: kanbanModel}"></div>
 </div>
 
 <footer>

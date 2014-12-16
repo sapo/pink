@@ -6,12 +6,53 @@
  */    
 
 Ink.createModule('Pink.Data.Kanban', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Event_1', 'Ink.UI.Toggle_1', 'Pink.Data.DragDrop_1'], function(ko, inkEvt, Toggle) {
+    var Card = function(card) {
+        Ink.extendObj(this, card);
+    };
+    
+    var Section = function(section) {
+        Ink.extendObj(this, section);
+        this.dataFlavor = Card;
+    };
+    
     var Module = function(options) {
-        this.sections = options.sections;
+        var self = this;
+        var multiSelection = options.multiSelection;
+        
+        this.sections = ko.computed(function() {
+            var src = ko.unwrap(options.sections);
+            var i;
+            var sections = [];
+            var section;
+            
+            for (i = 0; i < src.length; i++) {
+                section = src[i];
+                section.kanban = self;
+                section.multiSelection = multiSelection;
+                sections.push(section);
+            }
+            
+            return sections;
+        });
+
         this.afterRender = options.afterRender;
         this.cardsMovedHandler = options.cardsMovedHandler;
         this.previewMoveHandler = options.previewMoveHandler;
         this.preventDragout = false;
+        this.sectionMovedHandler = options.sectionMovedHandler;
+        
+        this.sectionsContainer = {
+            source: this.sections,
+            draggableTemplate: 'Pink.Data.Kanban.SectionTemplate',
+            afterDraggableRender: this.afterRender,
+            dataFlavor: Section,
+            horizontalLayout: true,
+            dropHandler: function(section, index) {
+                if (self.sectionMovedHandler) {
+                    self.sectionMovedHandler(section, index);
+                }
+            }
+        };
     };
 
     // This handler is called after the dropHandler and containes the logic to remove/preserve the item from/in it's origin
@@ -112,6 +153,9 @@ Ink.createModule('Pink.Data.Kanban', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Event
             }
         }, 50);
     };
+    
+    Module.Card = Card;
+    Module.Section = Section;
     
     return Module;
 });

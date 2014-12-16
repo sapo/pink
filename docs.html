@@ -820,9 +820,11 @@ Ink.createModule('App.Names.List', '1', ['Pink.Data.Paginator_1'], function(Pagi
                                 <li><b>pageSize</b> int value with number of rows per page.</li>
                                 <li><b>pageSizeOptionList</b> array with page sizes.</li>
                             </ul>
-                            
-                            - pagerTemplate binding: String with name of Pink module with html template or ko template. Defaults to 'Pink.Data.Paginator.InkPagerTemplate'.
-                              
+                        </p>                                            
+                        <p>
+                            Optional bindings (used by paginator):
+                        </p>                                            
+                            - <b>pagerTemplate</b> binding: String with name of Pink module with html template or ko template. Defaults to 'Pink.Data.Paginator.InkPagerTemplate'.
                         </p>
                     </article>
                     <article>
@@ -831,7 +833,8 @@ Ink.createModule('App.Names.List', '1', ['Pink.Data.Paginator_1'], function(Pagi
                             <h2 class="push-left">AutoComplete</h2>
                         </header>
                         <p>
-                            The 'Pink.Data.AutoComplete' module provides a Knockout binding handler that renders an autocomplete widget bound to an observable array of values.
+                            The 'Pink.Data.AutoComplete' module provides a Knockout binding handler that renders an input box with a suggestion dropdown widget bound to an observable array of values.<br>
+                            The dropdown's option item is rendered by a customizable template.
                         </p>
                         <h3>Data binding</h3>
                         <h4><em>Binding declaration</em></h4>
@@ -839,7 +842,7 @@ Ink.createModule('App.Names.List', '1', ['Pink.Data.Paginator_1'], function(Pagi
                             <blockquote><pre class="prettyprint lang-html">
 /* Example autoComplete binding */
 
-&lt;input type="text" data-bind="autoComplete: users, value: selectedUserId, optionsText: 'name', optionsValue: 'id'" /&gt;
+&lt;input type="text" data-bind="autoComplete: users, value: selectedUserId, optionsText: 'name', optionsValue: 'id', allowAny: true, optionTemplate: 'taskOptionTemplate'" /&gt;
                             </pre></blockquote>                            
                         </p>
                         <h4><em>Binding value</em></h4>
@@ -870,6 +873,16 @@ Ink.createModule('App.Names.List', '1', ['Pink.Data.Binding_1', 'Pink.Data.AutoC
         this.selectedUserId = ko.observable();
 ...
                             </pre></blockquote>                            
+                        </p>
+                        <p>
+                            Other bindings used with autoComplete:
+                        </p>                                            
+                        <p>
+                            - <b>optionsText</b> binding: string - Name of field of option item object to use as the visible option caption.<br>
+                            - <b>optionsValue</b> binding: string - Name of field of option item object to use as the option value.<br>                            
+                            - <b>allowAny</b> binding: boolean - If true, any user entered value is accepted as a valid value. Defaults to false.<br>
+                            - <b>optionTemplate</b> binding: string - knockout template id or pink template name for dropdown option item. Defaults to 'Pink.Data.AutoComplete.ItemTemplate'.<br>
+                            - <b>minFilterLength</b> binding: integer - Minimum character count entered by the user to show the options. Defaults to 0. 
                         </p>                                            
                     </article>
                     <article>
@@ -1355,16 +1368,13 @@ Ink.createModule('App.Images', '1', ['Pink.App_1', 'Pink.Plugin.Signals_1', 'Pin
         </div>
         
 		<script type="text/javascript">
-		    Ink.requireModules( ['Ink.UI.Sticky_1', 'Ink.UI.Toggle_1', 'Ink.Util.Array_1'], function( Sticky, Toggle, InkArray) {
+		    Ink.requireModules( ['Ink.UI.Toggle_1', 'Ink.Util.Array_1'], function(Toggle, InkArray) {
 		    	InkArray.forEach(Ink.ss('.sub-menu'), function(element) {
-	                new Toggle(element, {closeOnInsideClick: null, classNameOn: '', classNameOff: ''});
+	                new Toggle(element, {closeOnClick: false, closeOnInsideClick: null});
 		    	});
+                new Toggle('#verticalMenuTrigger');
                 prettyPrint();
 		    });
-
-		    Ink.requireModules(['Ink.UI.Toggle_1'], function (Toggle) {
-	            new Toggle('#verticalMenuTrigger');
-	        });	        
 		</script>        
     </body>
 </html>
