@@ -35,7 +35,7 @@ Ink.createModule('Pink.Data.Paginator', '1', [ 'Pink.Data.Module_1' ], function(
 
         this.itemsOnCurrentPage = ko.computed(function() {
             var startIndex = self.pageSize() * self.currentPageIndex();
-            return self.data.slice(startIndex, startIndex + self.pageSize());
+            return self.data().slice(startIndex, startIndex + self.pageSize());
         }, this);
 
         this.maxPageIndex = ko.computed(function() {
