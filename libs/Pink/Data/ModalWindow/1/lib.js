@@ -17,15 +17,22 @@ Ink.createModule('Pink.Data.ModalWindow', '1', ['Pink.Data.Binding_1', 'Ink.Dom.
         this.modalEl = undefined;
         this.modalWidth = options.modalWidth || "80%";
         this.modalHeight = options.modalHeight || "80%";
+        
+        this.footerTemplate = options.footerTemplate || 'Pink.Data.ModalWindow.FooterTemplate';
+        
         this.cancelVisible = ko.computed(function() {
            var cancelVisible = ko.unwrap(options.cancelVisible);
            return (typeof cancelVisible == 'boolean'?cancelVisible:true); 
         }); 
+
+        this.cancelCaption = ko.computed(function() {
+            return ko.unwrap(options.cancelCaption) || 'Cancel';
+        });
+        
         this.confirmCaption = ko.computed(function() {
             return ko.unwrap(options.confirmCaption) || 'Confirm';
         });
 
-        
         this.taskButtonsArray = ko.observable();
         this.taskButtons = ko.computed(function() {
             var buttons = ko.unwrap(self.taskButtonsArray());
