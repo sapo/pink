@@ -77,6 +77,8 @@ Ink.createModule('Pink.Data.ModalWindow', '1', ['Pink.Data.Binding_1', 'Ink.Dom.
     };
     
     Module.prototype.hide = function() {
+        // This method should be called after an accept/confirm action is done in the modal's content module 
+        this.userCanceled = false;
         this.modal.dismiss();
     };
     
@@ -92,6 +94,11 @@ Ink.createModule('Pink.Data.ModalWindow', '1', ['Pink.Data.Binding_1', 'Ink.Dom.
             
             // If there's a focused element, let's loose it's focus
             document.activeElement.blur();
+
+            // If the dismiss event was sent from a cancel action, let's call the registered callback
+            if (this.userCanceled) {
+                this.cancel();
+            }
             
             // Hack to remove previous modal attributes
             window.setTimeout(function() {
@@ -113,6 +120,9 @@ Ink.createModule('Pink.Data.ModalWindow', '1', ['Pink.Data.Binding_1', 'Ink.Dom.
         this.taskButtonsArray(params.taskButtons);
         this.moduleData.params = params;
         this.moduleData.confirmHandler = undefined;
+        
+        // By default, the dismiss event is sent when the user cancels the dialog
+        this.userCanceled = true;
 
         content = Selector.select("#modalContent", this.modalEl)[0];
 

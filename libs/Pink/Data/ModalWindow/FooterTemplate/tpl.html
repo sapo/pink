@@ -1,6 +1,6 @@
 <div class="push-right">
     <button class="ink-button blue" data-bind="click: confirm, disable: confirmDisabled, text: confirmCaption"></button>
-    <button class="ink-button red ink-dismiss" data-bind="click: cancel, visible: cancelVisible, text: cancelCaption"></button>
+    <button class="ink-button red ink-dismiss" data-bind="visible: cancelVisible, text: cancelCaption"></button>
 </div>
 <div class="push-left" data-bind="foreach: taskButtons">
     <button class="ink-button" data-bind="click: $parent.handleTask.bind($parent, handler), css: cssClass">
