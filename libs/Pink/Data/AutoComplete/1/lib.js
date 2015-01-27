@@ -5,7 +5,7 @@
  * @version 1
  */
 
-Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Event_1', 'Ink.Dom.Element_1', 'Ink.Dom.Selector_1'], function(ko, inkEvt, inkEl, inkSel) {
+Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Event_1', 'Ink.Dom.Element_1', 'Ink.Dom.Selector_1', 'Ink.UtilString_1'], function(ko, inkEvt, inkEl, inkSel, inkStr) {
     /*
      * This function must be bound to an options object
      */
@@ -95,13 +95,14 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
                 var tmpUl;
 
                 if (filter) {
+                    filter = inkStr.removeAccentedChars(filter);
                     filter = ".*" + filter.replace(/\s+/g, ".*") + ".*";
                 }
                 
                 tmpUl = document.createElement('ul');
                 
                 for (index=0; index<source.length; index++) {
-                    label = source[index].label;
+                    label = inkStr.removeAccentedChars(source[index].label);
                     value = source[index].value;
                     
                     if (filter && !label.match(new RegExp(filter, "i"))) {
