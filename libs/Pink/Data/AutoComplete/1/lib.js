@@ -5,7 +5,7 @@
  * @version 1
  */
 
-Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Event_1', 'Ink.Dom.Element_1', 'Ink.Dom.Selector_1', 'Ink.UtilString_1'], function(ko, inkEvt, inkEl, inkSel, inkStr) {
+Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Event_1', 'Ink.Dom.Element_1', 'Ink.Dom.Selector_1', 'Ink.Util.String_1'], function(ko, inkEvt, inkEl, inkSel, inkStr) {
     /*
      * This function must be bound to an options object
      */
