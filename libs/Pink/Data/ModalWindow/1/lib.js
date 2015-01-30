@@ -18,6 +18,7 @@ Ink.createModule('Pink.Data.ModalWindow', '1', ['Pink.Data.Binding_1', 'Ink.Dom.
         this.modalWidth = options.modalWidth || "80%";
         this.modalHeight = options.modalHeight || "80%";
         
+        this.headerTemplate = options.headerTemplate || 'Pink.Data.ModalWindow.HeaderTemplate';
         this.footerTemplate = options.footerTemplate || 'Pink.Data.ModalWindow.FooterTemplate';
         
         this.cancelVisible = ko.computed(function() {

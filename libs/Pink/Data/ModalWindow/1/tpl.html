@@ -1,13 +1,11 @@
 <div class="ink-shade fade">
     <div class="ink-modal" data-trigger="dummy" data-bind="attr: {'data-width': modalWidth, 'data-height': modalHeight}">
-        <div class="modal-header">
-            <button class="modal-close ink-dismiss"></button>
-            <span data-bind="text: title"></span>
-        </div>
-
+        <!-- ko if: headerTemplate -->
+            <div class="modal-header" data-bind="template: headerTemplate"></div>
+        <!-- /ko -->
         <div class="modal-body" id="modalContent"></div>
-
-        <div class="modal-footer" data-bind="template: footerTemplate">
-        </div>
+        <!-- ko if: footerTemplate -->
+            <div class="modal-footer" data-bind="template: footerTemplate"></div>
+        <!-- /ko -->
     </div>
 </div>
