@@ -263,10 +263,11 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
             })();
             var mappedSource;
             var subscription;
+            var placeholderText = opt.binding.attr && opt.binding.attr.placeholder ? opt.binding.attr.placeholder :  element.getAttribute('placeholder') || '';
 
             element.style.display = 'none';
             opt.displayElement = inkEl.htmlToFragment('<div style="overflow: visible" class="pink-auto-complete control-group '+ element.getAttribute('class') +
-                '"><div class="control append-button"><span><input placeholder="' + (element.getAttribute('placeholder') || '') + 
+                '"><div class="control append-button"><span><input placeholder="' + placeholderText + 
                 '" type="text"></input></span><div class="ink-button"><i class="fa fa-times"></i></div></div><div class="pink-auto-complete-options"></div></div>').firstChild;
             
             element.parentNode.insertBefore(opt.displayElement, element.nextSibling);

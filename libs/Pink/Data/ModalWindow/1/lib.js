@@ -114,10 +114,9 @@ Ink.createModule('Pink.Data.ModalWindow', '1', ['Pink.Data.Binding_1', 'Ink.Dom.
     };
 
     Module.prototype.show = function(params) {
+        var self = this;
         var content;
         
-        this.modal = new Ink.UI.Modal(this.modalEl, {onDismiss: this._hideModal.bind(this)});
-        this.modal.open();
         this.taskButtonsArray(params.taskButtons);
         this.moduleData.params = params;
         this.moduleData.confirmHandler = undefined;
@@ -132,12 +131,15 @@ Ink.createModule('Pink.Data.ModalWindow', '1', ['Pink.Data.Binding_1', 'Ink.Dom.
         content.innerHTML = '<!--ko module: {name: contentModule, notifyReady: notifyContentReady, data: moduleData}--><!--/ko-->';
 
         ko.applyBindings(this, content);
-        
+
         // Hack to fix the scroll bar to the top in Firefox
         content.style.overflowY = 'hidden';
         window.setTimeout(function() {
             content.scrollTop = 0;
             content.style.overflowY = 'auto';
+
+            self.modal = new Ink.UI.Modal(self.modalEl, {onDismiss: self._hideModal.bind(self)});
+            self.modal.open();
         }, 250);
     };
     
