@@ -120,6 +120,7 @@ Ink.createModule('Pink.Data.ModalWindow', '1', ['Pink.Data.Binding_1', 'Ink.Dom.
         this.taskButtonsArray(params.taskButtons);
         this.moduleData.params = params;
         this.moduleData.confirmHandler = undefined;
+        this.moduleData.confirmDisabled(false);
         
         // By default, the dismiss event is sent when the user cancels the dialog
         this.userCanceled = true;
