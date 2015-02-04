@@ -16,19 +16,13 @@ Ink.createModule('Pink.Data.DatePicker', '1', ['Pink.Data.Binding_1', 'Ink.UI.Da
             var binding = ko.unwrap(valueAccessor());
             var options = {
                 onSetDate: function(picker) {
-                    var modelValue;
-                    var date=picker._element.value;
-                    
+                    var date = picker._element.value;
+
                     if (allBindingsAccessor()['value']) {
-                        modelValue=allBindingsAccessor()['value'];
-                        if (ko.isObservable(modelValue)) {
-                            modelValue(date);
-                        } else {
-                            modelValue = date;
-                        }
+                        ko.expressionRewriting.writeValueToProperty(valueAccessor(), allBindingsAccessor, 'value', date);
                     }
                 }
-            };  
+            };
 
             if (typeof binding == 'object') {
                 for (attr in binding) {
