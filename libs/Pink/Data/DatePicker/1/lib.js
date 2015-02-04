@@ -30,7 +30,7 @@ Ink.createModule('Pink.Data.DatePicker', '1', ['Pink.Data.Binding_1', 'Ink.UI.Da
                 }
             }
 
-            if (!Modernizr || !Modernizr.inputtypes.date) {
+            if (binding.forceFallback || !Modernizr || !Modernizr.inputtypes.date) {
                 new DatePicker(element, options);
             }
         }
