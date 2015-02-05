@@ -16,11 +16,7 @@ Ink.createModule('Pink.Data.DatePicker', '1', ['Pink.Data.Binding_1', 'Ink.UI.Da
             var binding = ko.unwrap(valueAccessor());
             var options = {
                 onSetDate: function(picker) {
-                    var date = picker._element.value;
-
-                    if (allBindingsAccessor()['value']) {
-                        ko.expressionRewriting.writeValueToProperty(valueAccessor(), allBindingsAccessor, 'value', date);
-                    }
+                    ko.expressionRewriting.writeValueToProperty(valueAccessor(), allBindingsAccessor, 'value', picker._element.value);
                 }
             };
 
