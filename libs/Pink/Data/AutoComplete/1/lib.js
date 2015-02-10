@@ -136,7 +136,7 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
         var activeItem;
         
         nav.setAttribute('class', 'ink-navigation');
-        ul.setAttribute('class', 'menu vertical rounded shadowed white');
+        ul.setAttribute('class', 'menu vertical');
         nav.appendChild(ul);
 
         buildOptions(ul, options.source, undefined, options.itemTemplate, options.bindingContext, options.minFilterLength);
@@ -260,26 +260,41 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
             	this.itemTemplate = ko.unwrap(this.binding.optionTemplate);
             	this.bindingContext = bindingContext;
             	this.minFilterLength = ko.unwrap(this.binding.minFilterLength);
+            	this.style = ko.unwrap(this.binding.pickerStyle) || 'autocomplete';
             })();
             var mappedSource;
             var subscription;
             var placeholderText = opt.binding.attr && opt.binding.attr.placeholder ? opt.binding.attr.placeholder :  element.getAttribute('placeholder') || '';
+            var childClass;
+            var controlChild;
 
             element.style.display = 'none';
-            opt.displayElement = inkEl.htmlToFragment('<div style="overflow: visible" class="pink-auto-complete control-group '+ element.getAttribute('class') +
-                '"><div class="control append-button"><span><input placeholder="' + placeholderText + 
-                '" type="text"></input></span><div class="ink-button"><i class="fa fa-times"></i></div></div><div class="pink-auto-complete-options"></div></div>').firstChild;
+            
+            if (opt.style == 'autocomplete') {
+                childClass = 'append-button';
+                controlChild = '<span><input placeholder="' + placeholderText + '" type="text"></input></span><div class="ink-button"><i class="fa fa-times"></i></div>';
+            } else if (opt.style == 'search') {
+                childClass = 'append-symbol';
+                controlChild = '<span><input placeholder="' + placeholderText +'" type="search"></input><i class="fa fa-search"></i></span>';
+            } else {
+                throw 'Invalid picker style';
+            }
+
+            opt.displayElement = inkEl.htmlToFragment('<div class="pink-auto-complete control-group '+ element.getAttribute('class') +
+                    '"><div class="control '+childClass+'">'+controlChild+'</div><div class="pink-auto-complete-options"></div></div>').firstChild;
             
             element.parentNode.insertBefore(opt.displayElement, element.nextSibling);
             
             opt.displayInput = Ink.s('input', opt.displayElement);
-            opt.displayButton = Ink.s('.ink-button', opt.displayElement);
             opt.displayOptions = Ink.s('.pink-auto-complete-options', opt.displayElement);
-            
-            // Reset button click handler
-            inkEvt.observe(opt.displayButton, 'mouseup', function() {
-                updateValueAndLabel(opt.binding, '', undefined, opt.displayInput, element);
-            });
+
+            if (opt.style == 'autocomplete') {
+                opt.displayButton = Ink.s('.ink-button', opt.displayElement);
+                // Reset button click handler
+                inkEvt.observe(opt.displayButton, 'mouseup', function() {
+                    updateValueAndLabel(opt.binding, '', undefined, opt.displayInput, element);
+                });
+            }
             
             // handle the choices being updated in a computed, so the update function doesn't 
             // have to do it each time the value is updated.

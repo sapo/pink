@@ -15,7 +15,6 @@ Ink.createModule('Pink.Data.Toggle', '1', ['Pink.Data.Binding_1', 'Ink.UI.Toggle
             var attr;
             var binding = ko.unwrap(valueAccessor());
             var options = {}; // sensible defaults
-            var toggle;
 
             // If the element is already a toggle trigger then exit 
             if (element.hasAttribute('data-is-toggle-trigger')) {
@@ -28,13 +27,15 @@ Ink.createModule('Pink.Data.Toggle', '1', ['Pink.Data.Binding_1', 'Ink.UI.Toggle
                 }
             }
 
-            if (document.getElementById(options.target.slice(1))) {
-                toggle = new Toggle(element, options);
+            window.setTimeout(function() {
+                if (document.getElementById(options.target.slice(1))) {
+                    new Toggle(element, options);
 
-                ko.utils.domNodeDisposal.addDisposeCallback(element, function() {
-                    InkEvent.stopObserving(element);
-                });
-            }
+                    ko.utils.domNodeDisposal.addDisposeCallback(element, function() {
+                        InkEvent.stopObserving(element);
+                    });
+                }
+            }, 100);
         }
     };
 

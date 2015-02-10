@@ -426,10 +426,12 @@ Ink.createModule('Pink.Data.Tabs', '1', ['Pink.Data.Binding_1', 'Ink.UI.Common_1
      * 
      */
     ko.bindingHandlers.tabs = {
-        init: function (element, valueAccessor, allBindingsAccessor, viewModel) {
+        init: function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
             var attr;
             var binding = ko.unwrap(valueAccessor());
             var options = {preventUrlChange: true}; //prevent tabs changing the url
+            var innerBindingContext = bindingContext.extend(valueAccessor);
+            var tabs;
             
             if (typeof binding == 'object') {
                 for (attr in binding) {
@@ -439,7 +441,15 @@ Ink.createModule('Pink.Data.Tabs', '1', ['Pink.Data.Binding_1', 'Ink.UI.Common_1
             
             Css.addClassName(element, 'ink-tabs');
             
-            new Tabs(element, options);
+            ko.applyBindingsToDescendants(innerBindingContext, element);
+            
+            tabs=new Tabs(element, options);
+            
+            ko.utils.domNodeDisposal.addDisposeCallback(element, function() {
+                tabs.destroy();
+            });            
+            
+            return { controlsDescendantBindings: true };
         }
     };
     
