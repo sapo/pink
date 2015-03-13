@@ -86,9 +86,10 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
     function buildOptions(ul, source, filter, itemTemplate, bindingContext, minFilterLen) {
         itemTemplate = itemTemplate || 'Pink.Data.AutoComplete.ItemTemplate';
 
-        if (filter == undefined || !minFilterLen || filter.length >= minFilterLen) {
+        if (!minFilterLen || (filter && filter.length >= minFilterLen) ) {
             window.setTimeout(function() {
                 var index;
+                var items = 0;
                 var label;
                 var value;
                 var li;
@@ -101,7 +102,7 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
                 
                 tmpUl = document.createElement('ul');
                 
-                for (index=0; index<source.length; index++) {
+                for (index=0; (index<source.length) && (items < ko.bindingHandlers.autoComplete.maxVisibleOptions); index++) {
                     label = inkStr.removeAccentedChars(source[index].label);
                     value = source[index].value;
                     
@@ -113,6 +114,7 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
                     ko.renderTemplate(itemTemplate, new ko.bindingContext(source[index], bindingContext), {}, li);
                     ko.cleanNode(li);
                     tmpUl.appendChild(li);
+                    items++;
                 }
                 
                 ul.innerHTML = tmpUl.innerHTML;
@@ -249,6 +251,8 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
          * Knockout custom binding init
          * 
          */
+        maxVisibleOptions: 20,
+            
         init: function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
             var opt = new (function() {
             	this.dataSource = valueAccessor();
