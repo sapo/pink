@@ -89,6 +89,10 @@
 /***********************************
     Drag & Drop
 ************************************/
+.pink-drag-handle {
+    cursor: move;    
+}
+
 .pink-disable-text-selection, .pink-disable-text-selection * {
     -moz-user-select: none;
     -webkit-user-select: none;

@@ -943,6 +943,8 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
      * - {string|function} draggableTemplate: string with id of template to render the draggable or function that receives the draggable and returns a corresponding template id  
      * - {function} [dragOutHandler]: function to execute when a draggable from this container is dropped in a droppable (receives the selectedData as a parameter)
      * - {function} [afterDraggableRender]: Function that is called after Knockout renders each draggable
+     * - {string} [dragHandle]: string with css selector to get the draggable element drag handle. (if undefined defaults to whole draggable)
+     * - {bool} [multiSelection]: If true allows dragging multiple draggables (defaults to false) 
      * 
      * Binding example: {source: grayItems, draggableTemplate: 'veggieTemplate', dragOutHandler: onDragOut}
      *
@@ -1030,6 +1032,7 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
             var dragThreshold = (binding.dragThreshold || 4);
             var lastSelectedIndex=-1;
             var multiSelection = binding.multiSelection;
+            var dragHandleSelector = binding.dragHandle;
 
             var handleSelection = function(data, evt) {
                 var draggableElement;
@@ -1148,6 +1151,7 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
                 var childElements;
                 var i;
                 var template;
+                var dragHandleEl;
                 
                 childElements = inkSel.select('.drag-enabled', element);
                 
@@ -1171,7 +1175,11 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
                     	template = binding.draggableTemplate;
                     }
                     
-                    draggableElement = inkEl.htmlToFragment('<div data-index="'+i+'" class="drag-enabled pink-disable-text-selection" style="cursor: move" data-bind="template: {afterRender: $data.afterRender, name: \''+template+'\'}"/>').firstChild;
+                    draggableElement = inkEl.htmlToFragment('<div data-index="' + i + 
+                            '" class="drag-enabled pink-disable-text-selection" ' + 
+                            (!dragHandleSelector ? 'style="cursor: move"' : '') + 
+                            ' data-bind="template: {afterRender: $data.afterRender, name: \'' + template + '\'}"/>').firstChild;
+                    
                     draggableElement.dataTransfer = {data: draggable};
                     
                     ko.applyBindings(draggable, draggableElement);
@@ -1181,9 +1189,19 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
                     if (multiSelection) {
                         inkEvt.observe(draggableElement, 'click', handleSelection.bind(this, draggable));
                     }
-                    inkEvt.observe(draggableElement, 'mousemove', handleDragMove.bind(this, draggable));
-
-                    inkEvt.observe(draggableElement, 'mousedown', ko.bindingHandlers.draggableContainer._handleDragStart);
+                    
+                    if (dragHandleSelector) {
+                        dragHandleEl = inkSel.select(dragHandleSelector, draggableElement);
+                        if (dragHandleEl.length == 0) {
+                            throw 'Pink.Data.DragDrop: invalid drag handle selector';
+                        } else {
+                            dragHandleEl = dragHandleEl[0];
+                        }
+                    } else {
+                        dragHandleEl = draggableElement;
+                    }
+                    inkEvt.observe(dragHandleEl, 'mousemove', handleDragMove.bind(this, draggable));
+                    inkEvt.observe(dragHandleEl, 'mousedown', ko.bindingHandlers.draggableContainer._handleDragStart);
                     inkEvt.observe(document, 'mouseup', ko.bindingHandlers.draggableContainer._handleDragEnd);
                 }
                 

@@ -51,7 +51,8 @@ Ink.createModule('Pink.Data.Kanban', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Event
                 if (self.sectionMovedHandler) {
                     self.sectionMovedHandler(section, index);
                 }
-            }
+            },
+            dragHandle: options.dragHandle || '.pink-drag-handle'
         };
     };
 
