@@ -94,7 +94,9 @@ Ink.createModule('Pink.Data.ModalWindow', '1', ['Pink.Data.Binding_1', 'Ink.Dom.
             content.innerHTML = '';
             
             // If there's a focused element, let's loose it's focus
-            document.activeElement.blur();
+            if (document.activeElement) {
+                document.activeElement.blur();
+            }
 
             // If the dismiss event was sent from a cancel action, let's call the registered callback
             if (this.userCanceled) {
