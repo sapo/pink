@@ -6,6 +6,8 @@
  */
 
 Ink.createModule('Pink.Data.Toggle', '1', ['Pink.Data.Binding_1', 'Ink.UI.Toggle_1', 'Ink.Dom.Event_1'], function(ko, Toggle, InkEvent) {
+    'use strict';
+
     /*
      * Toggle binding handler
      * 

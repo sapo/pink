@@ -5,6 +5,7 @@
  */    
 
 Ink.createModule('App.Tasks', '1', ['Pink.App_1', 'Pink.Data.Binding_1', 'Pink.Plugin.Signals_1', 'Pink.Data.Grid_1', 'Pink.Data.AutoComplete_1'], function(App, ko, Signal) {
+    'use strict';
     
     // App constructor (only data initialization logic)
     var Module = function() {

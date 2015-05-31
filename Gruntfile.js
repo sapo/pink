@@ -73,7 +73,15 @@ module.exports = function(grunt) {
             src: 'libs/Pink/**/*.html', 
             dest: 'dist/pink-tpl-bundle.js'
         }
-    }
+    },
+    jshint: {
+        files: ['libs/Pink/**/*.js', '!libs/Pink/Data/Binding/1/lib.js'],
+        options: {
+            '-W069': true, // Is better written in dot notation
+            '-W032': true, // Unnecessary semi-colon
+            '-W083': true, // Function inside loop
+        }
+    },  
   });
 
   // Load the third party plugins
@@ -81,6 +89,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-concat');
+  grunt.loadNpmTasks('grunt-contrib-jshint');
   
   // Register Pink's template bundler task
   grunt.registerMultiTask('pinktemplates', 'Pink template bundler', function() {
@@ -101,5 +110,5 @@ module.exports = function(grunt) {
   });
 
   // Default task(s).
-  grunt.registerTask('default', ['clean', 'uglify', 'concat', 'copy', 'pinktemplates']);
+  grunt.registerTask('default', ['clean', 'jshint', 'uglify', 'concat', 'copy', 'pinktemplates']);
 };

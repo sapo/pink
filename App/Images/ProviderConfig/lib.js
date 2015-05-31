@@ -1,4 +1,6 @@
 Ink.createModule('App.Images.ProviderConfig', '1', ['App.Images', 'Pink.Data.Binding'], function(app, ko) {
+    'use strict';
+
     var Module = function(modal) {
     	var self=this;
     	

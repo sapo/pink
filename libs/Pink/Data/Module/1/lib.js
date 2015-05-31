@@ -6,6 +6,8 @@
  * @version 1
  */    
 Ink.createModule('Pink.Data.Module', '1', ['Pink.Data.Binding_1'], function(ko) {
+    'use strict';
+
     var NO_CACHE=true;
     
     /*
@@ -69,8 +71,8 @@ Ink.createModule('Pink.Data.Module', '1', ['Pink.Data.Binding_1'], function(ko) 
 	                templateBinding = {},
 	                initializer = ko.bindingHandlers.module.initializer || "initialize",
 	                finalizer = ko.bindingHandlers.module.finalizer || "finalize",
-	                notifyReady = undefined,
-	                notifyBeforeDestroy = undefined;
+	                notifyReady,
+	                notifyBeforeDestroy;
 
                 //build up a proper template binding object
                 if (options && typeof options === "object") {

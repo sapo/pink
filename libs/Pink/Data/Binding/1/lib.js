@@ -1,17 +1,19 @@
 /**
  * @module Pink.Data.Binding
  * @desc Ink wrapper for Knockout.js
- * @author rui.carmo AT sapo.pt
+ * @author intra-team AT sapo.pt
  * @version 1
  */
 Ink.createModule('Pink.Data.Binding', '1', [], function() {
+    'use strict';
+    
 	/*
        Knockout JavaScript library v2.3.0
        (c) Steven Sanderson - http://knockoutjs.com/
        License: MIT (http://www.opensource.org/licenses/mit-license.php)
     */
 
-    var DEBUG=true;
+    var DEBUG=false;
     var window = this || (0, eval)('this'),
     document = window['document'],
     navigator = window['navigator'],

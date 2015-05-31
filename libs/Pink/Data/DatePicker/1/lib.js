@@ -6,6 +6,8 @@
  */
 
 Ink.createModule('Pink.Data.DatePicker', '1', ['Pink.Data.Binding_1', 'Ink.UI.DatePicker_1'], function(ko, DatePicker) {
+    'use strict';
+
     /*
      * DatePicker binding handler
      * 

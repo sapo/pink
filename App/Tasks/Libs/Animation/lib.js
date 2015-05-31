@@ -1,5 +1,7 @@
 Ink.createModule('App.Tasks.Libs.Animation', '1', [], function() {
-	/**
+    'use strict';
+
+    /**
 	 * Require the given path.
 	 *
 	 * @param {String} path

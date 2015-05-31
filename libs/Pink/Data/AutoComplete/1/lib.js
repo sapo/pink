@@ -6,18 +6,22 @@
  */
 
 Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Event_1', 'Ink.Dom.Element_1', 'Ink.Dom.Selector_1', 'Ink.Util.String_1'], function(ko, inkEvt, inkEl, inkSel, inkStr) {
+    'use strict';
+    
     /*
      * This function must be bound to an options object
      */
     function handleValueChange(item) {
+        /*jshint validthis:true */
+        
         var labelToWrite = item ? item.label : undefined;
         var valueToWrite = item ? item.value : undefined;
 
-        if (this.allowAny && valueToWrite == undefined) {
+        if (this.allowAny && valueToWrite === undefined) {
             labelToWrite = valueToWrite = this.displayInput.value;
         }
 
-        if (valueToWrite != undefined) {
+        if (valueToWrite !== undefined) {
             updateValueAndLabel(this.binding, labelToWrite, valueToWrite, this.displayInput, this.element);
         } else { //They did not make a valid selection so change the autoComplete box back to the previous selection
             var currentModelValue = ko.unwrap(this.binding.value);
@@ -51,7 +55,7 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
             if (ko.unwrap(item[valueProp]) == selectedValue) {
                 return true;
             }
-        }, this);
+        });
 
         return selectedItem;
     };
@@ -254,25 +258,28 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
         maxVisibleOptions: 20,
 
         init: function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-            var opt = new (function() {
-                this.dataSource = valueAccessor();
-                this.binding = allBindingsAccessor();
-                this.valueProp = ko.unwrap(this.binding.optionsValue);
-                this.labelProp = ko.unwrap(this.binding.optionsText) || this.valueProp;
-                this.allowAny = ko.unwrap(this.binding.allowAny);
-                this.element = element;
-                this.itemTemplate = ko.unwrap(this.binding.optionTemplate);
-                this.bindingContext = bindingContext;
-                this.minFilterLength = ko.unwrap(this.binding.minFilterLength);
-                this.style = ko.unwrap(this.binding.pickerStyle) || 'autocomplete';
-                this.focus = ko.unwrap(this.binding.focus);
-            })();
+            var opt = {};
             var mappedSource;
             var subscription;
-            var placeholderText = opt.binding.attr && opt.binding.attr.placeholder ? opt.binding.attr.placeholder : element.getAttribute('placeholder') || '';
+            var placeholderText; 
             var childClass;
             var controlChild;
 
+            // Initialize options object
+            opt.dataSource = valueAccessor();
+            opt.binding = allBindingsAccessor();
+            opt.valueProp = ko.unwrap(opt.binding.optionsValue);
+            opt.labelProp = ko.unwrap(opt.binding.optionsText) || opt.valueProp;
+            opt.allowAny = ko.unwrap(opt.binding.allowAny);
+            opt.element = element;
+            opt.itemTemplate = ko.unwrap(opt.binding.optionTemplate);
+            opt.bindingContext = bindingContext;
+            opt.minFilterLength = ko.unwrap(opt.binding.minFilterLength);
+            opt.style = ko.unwrap(opt.binding.pickerStyle) || 'autocomplete';
+            opt.focus = ko.unwrap(opt.binding.focus);
+
+            placeholderText = opt.binding.attr && opt.binding.attr.placeholder ? opt.binding.attr.placeholder : element.getAttribute('placeholder') || '';
+            
             element.style.display = 'none';
 
             if (opt.style == 'autocomplete') {
@@ -365,7 +372,7 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
                     if (selectedItem) {
                         displayText = labelProp ? ko.unwrap(selectedItem[labelProp]) : ko.unwrap(selectedItem).toString();
                         displayInput.value = displayText;
-                    } else if (!allowAny || (currentModelValue == undefined)) {
+                    } else if (!allowAny || (currentModelValue === undefined)) {
                         displayInput.value = '';
                     } else {
                         displayInput.value = currentModelValue;

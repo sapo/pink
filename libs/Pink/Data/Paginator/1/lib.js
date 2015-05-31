@@ -5,6 +5,8 @@
  * @version 1
  */
 Ink.createModule('Pink.Data.Paginator', '1', [ 'Pink.Data.Module_1' ], function(ko) {
+    'use strict';
+
     /*
      * Module parameters:
      * 

@@ -1,4 +1,6 @@
 Ink.createModule('App.Tasks.Home', '1', ['App.Tasks', 'Pink.Data.Binding_1', 'App.Tasks.DataProvider', 'Pink.Data.Grid_1', 'Pink.Data.Kanban_1'], function(app, ko, dataProvider, Grid, Kanban) {
+    'use strict';
+
     var Module = function() {
         this.moduleName = 'App.Tasks.Home';
         this.tasks = ko.observableArray();

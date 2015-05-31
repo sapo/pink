@@ -1,4 +1,5 @@
 Ink.createModule('App.Tasks.DataProvider', '1', ['App.Tasks.DataProvider.Depot'], function(Depot) {
+    'use strict';
 
 	var Module = function() {
 		this.data = new Depot('db_1');

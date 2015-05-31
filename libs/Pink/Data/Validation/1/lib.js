@@ -6,6 +6,8 @@
  */
 
 Ink.createModule('Pink.Data.Validation', '1', ['Pink.Data.Binding_1'], function(ko) {
+    'use strict';
+
     // create our namespace object
     ko.validation = {};
 

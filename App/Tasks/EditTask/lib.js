@@ -1,4 +1,6 @@
 Ink.createModule('App.Tasks.EditTask', '1', ['Pink.Data.Binding_1', 'App.Tasks.DataProvider', 'App.Tasks', 'Pink.Data.AutoComplete_1'], function(ko, dataProvider, app) {
+    'use strict';
+
     var Module = function() {
     	var self=this;
     	

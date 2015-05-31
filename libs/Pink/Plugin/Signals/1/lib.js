@@ -5,6 +5,8 @@
  * @version 1
  */
 Ink.createModule('Pink.Plugin.Signals', '1', [], function() {
+    'use strict';
+
     /**
      * 
      * 

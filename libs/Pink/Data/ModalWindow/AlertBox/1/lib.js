@@ -6,6 +6,8 @@
  */    
 
 Ink.createModule('Pink.Data.ModalWindow.AlertBox', '1', ['Pink.Data.Binding_1'], function(ko) {
+    'use strict';
+
     var Module = function() {
         this.message = ko.observable('');
     };

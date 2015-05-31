@@ -6,13 +6,15 @@
  */
 
 Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Element_1', 'Ink.Dom.Event_1', 'Ink.Dom.Css_1', 'Ink.Dom.Selector_1', 'Ink.Dom.Browser_1', 'Ink.UI.Common_1', 'Ink.Util.Array_1'], function(ko, inkEl, inkEvt, inkCss, inkSel, inkBrw, inkComn, inkArr) {
+    'use strict';
+
     var InkElement=inkEl, InkEvent=inkEvt, Css=inkCss, Browser=inkBrw, Selector=inkSel, Common=inkComn, InkArray=inkArr; // Alias
 
     var unknownDropId = 0;
-    var dataTransfer=undefined; // Holds the dragged data (can be a single object or an array)
+    var dataTransfer; // Holds the dragged data (can be a single object or an array)
     var dropSuccess = false;
     var selectedData = []; // Array of selected objects (multi drag)
-    var lastSelectedContainer = undefined;
+    var lastSelectedContainer;
     
     
     /*
@@ -795,7 +797,7 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
         _isRightFlavor: function(dataFlavor, dataTransfer) {
         	if (dataFlavor) {
         		if (dataTransfer instanceof Array) {
-        		    if (dataTransfer.length == 0) {
+        		    if (dataTransfer.length === 0) {
         		        return true;
         		    }
         			return (dataTransfer[0] instanceof dataFlavor) && 
@@ -1192,7 +1194,7 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
                     
                     if (dragHandleSelector) {
                         dragHandleEl = inkSel.select(dragHandleSelector, draggableElement);
-                        if (dragHandleEl.length == 0) {
+                        if (dragHandleEl.length === 0) {
                             throw 'Pink.Data.DragDrop: invalid drag handle selector';
                         } else {
                             dragHandleEl = dragHandleEl[0];

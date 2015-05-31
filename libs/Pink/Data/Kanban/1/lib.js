@@ -6,6 +6,8 @@
  */    
 
 Ink.createModule('Pink.Data.Kanban', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Event_1', 'Ink.UI.Toggle_1', 'Pink.Data.DragDrop_1'], function(ko, inkEvt, Toggle) {
+    'use strict';
+
     var Card = function(card) {
         Ink.extendObj(this, card);
     };
@@ -89,7 +91,7 @@ Ink.createModule('Pink.Data.Kanban', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Event
     Module.prototype.dropHandler = function(source, data, index) {
         var self=this;
     	var i;
-        var oldItem = undefined;
+        var oldItem;
 
         // The data array needs to be cloned to allow the client to modify the cards after the move 
         if (data.length === undefined) {

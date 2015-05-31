@@ -6,6 +6,8 @@
  */
 
 Ink.createModule('Pink.App', '1', ['Pink.Data.Binding_1', 'Pink.Plugin.Router_1', 'Ink.Dom.Element_1', 'Pink.Plugin.Signals_1', 'Pink.Data.Module_1'], function(ko, Router, element, Signal) {
+    'use strict';
+    
     // App constructor
     var Module = function(rootRoute, undefinedRoute) {
         this._router = undefined;
@@ -246,18 +248,19 @@ Ink.createModule('Pink.App', '1', ['Pink.Data.Binding_1', 'Pink.Plugin.Router_1'
         var visibleRouteHashMap = {};
         var routes = [];
         var route;
+        var i;
 
         // Build the routing maps (visible + invisible)
         routes = this.definedRoutes.visibleRoutes.concat(this.definedRoutes.invisibleRoutes);
 
         // Initialize the visible routes map
-        for (var i = 0; i < this.definedRoutes.visibleRoutes.length; i++) {
+        for (i = 0; i < this.definedRoutes.visibleRoutes.length; i++) {
             route = this.definedRoutes.visibleRoutes[i];
             visibleRouteHashMap[route.hash] = route;
         }
 
         // Configure each route's callback function
-        for (var i=0; i<routes.length; i++) {
+        for (i=0; i<routes.length; i++) {
             (function () {
                 var route = routes[i];
 
@@ -266,9 +269,10 @@ Ink.createModule('Pink.App', '1', ['Pink.Data.Binding_1', 'Pink.Plugin.Router_1'
                     var parameters;
                     var argumentsValues;
                     var values = {};
-
+                    var i; 
+                    
                     // Turn off all visible routes
-                    for (var i = 0; i < self.definedRoutes.visibleRoutes.length; i++) {
+                    for (i = 0; i < self.definedRoutes.visibleRoutes.length; i++) {
                         self.definedRoutes.visibleRoutes[i].isActive(false);
                     }
 
@@ -287,8 +291,8 @@ Ink.createModule('Pink.App', '1', ['Pink.Data.Binding_1', 'Pink.Plugin.Router_1'
                     argumentsValues = Array.prototype.slice.call(arguments);
 
                     // Create an object with the parameters associated to the respective value
-                    if(argumentsValues && parameters) {
-                        for(var i = 0; i < argumentsValues.length; i++) {
+                    if (argumentsValues && parameters) {
+                        for (i = 0; i < argumentsValues.length; i++) {
                             values[parameters[i].replace(":", "")] = argumentsValues[i];
                         }
                     }

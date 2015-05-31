@@ -5,6 +5,8 @@
  */    
 
 Ink.createModule('App.Images', '1', ['Pink.App_1', 'Pink.Plugin.Signals_1', 'Pink.Data.Binding_1'], function(App, Signal, ko) {
+    'use strict';
+
     var Module = function() {
         App.call(this, 'search', 'search'); 
 

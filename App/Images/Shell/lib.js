@@ -1,4 +1,6 @@
 Ink.createModule('App.Images.Shell', '1', ['App.Images'], function(app) {
+    'use strict';
+
     var Module = function() {
         var self=this;
 

@@ -5,6 +5,8 @@
  * @version 1
  */
 Ink.createModule('Pink.Data.Grid', '1', ['Pink.Data.Module_1', 'Pink.Data.Paginator_1'],   function(ko, Paginator) {
+    'use strict';
+
     // Private function
     function getColumnsForScaffolding(data) {
         if ((typeof data.length !== 'number') || data.length === 0) {

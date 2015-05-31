@@ -1,4 +1,6 @@
 Ink.createModule('App.Images.View', '1', ['App.Images', 'Pink.Data.Binding_1'], function(app, ko) {
+    'use strict';
+
     var Module = function() {
     	app.signals.viewPhoto.add(this.viewPhoto.bind(this));
     	

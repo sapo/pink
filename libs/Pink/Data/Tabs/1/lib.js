@@ -6,6 +6,8 @@
  */
 
 Ink.createModule('Pink.Data.Tabs', '1', ['Pink.Data.Binding_1', 'Ink.UI.Common_1','Ink.Dom.Event_1','Ink.Dom.Css_1','Ink.Dom.Element_1','Ink.Dom.Selector_1'], function(ko, Common, Event, Css, Element, Selector) {
+    'use strict';
+
     /**
      * The Tabs Component offers a simple way to build a tab-separated layout, allowing you to offer multiple content in the same space with intuitive navigation.
      * This component requires your markup to have:

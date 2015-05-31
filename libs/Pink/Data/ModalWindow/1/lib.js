@@ -6,6 +6,8 @@
  */    
 
 Ink.createModule('Pink.Data.ModalWindow', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Selector_1','Ink.UI.Modal_1'], function(ko, Selector, Modal) {
+    'use strict';
+
     var Module = function(options) {
         var self = this;
 

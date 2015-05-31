@@ -6,6 +6,8 @@
  */
 
 Ink.createModule('Pink.Data.Tooltip', '1', ['Pink.Data.Binding_1', 'Ink.UI.Tooltip_1'], function(ko, Tooltip) {
+    'use strict';
+
     /*
      * Tooltip binding handler
      * 

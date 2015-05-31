@@ -1,4 +1,6 @@
 Ink.createModule('App.Images.Search', '1', ['App.Images', 'Pink.Data.Binding', 'Ink.Net.JsonP_1', 'Pink.Data.Tabs_1', 'Pink.Data.Carousel_1'], function(app, ko, JsonP) {
+    'use strict';
+
     var Module = function() {
         var self=this;
         

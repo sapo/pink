@@ -6,6 +6,8 @@
  */
 
 Ink.createModule('Pink.Data.Carousel', '1', ['Pink.Data.Binding_1', 'Ink.UI.Carousel_1', 'Ink.Dom.Css_1'], function(ko, Carousel, InkCss) {
+    'use strict';
+
     /*
      * Carousel binding handler
      * 

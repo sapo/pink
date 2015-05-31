@@ -6,6 +6,8 @@
  */    
 
 Ink.createModule('Pink.Data.ModalWindow.InfoBox', '1', ['Pink.Data.Binding_1'], function(ko) {
+    'use strict';
+
     var Module = function() {
         this.message = ko.observable('');
     };
@@ -15,14 +17,14 @@ Ink.createModule('Pink.Data.ModalWindow.InfoBox', '1', ['Pink.Data.Binding_1'], 
         modal.confirmHandler = this.confirm.bind(this);
         this.message(modal.params.message);
         this.confirmCallback = modal.params.confirmCallback;
-    }
+    };
 
     Module.prototype.confirm = function() {
         this.modal.hide();
         if (typeof this.confirmCallback == 'function') {
             this.confirmCallback();
         }
-    }
+    };
 
     return new Module();
 });
