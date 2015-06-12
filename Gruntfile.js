@@ -74,6 +74,16 @@ module.exports = function(grunt) {
             dest: 'dist/pink-tpl-bundle.js'
         }
     },
+    jasmine : {
+        all: {
+            options : {
+                vendor: [
+                  'http://cdn.ink.sapo.pt/3.0.2/js/ink-all.js'
+                ],
+                specs : 'spec/**/*.js'
+            }
+        }
+    },
     jshint: {
         files: ['libs/Pink/**/*.js', '!libs/Pink/Data/Binding/1/lib.js'],
         options: {
@@ -90,6 +100,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-contrib-jasmine');
   
   // Register Pink's template bundler task
   grunt.registerMultiTask('pinktemplates', 'Pink template bundler', function() {
@@ -110,5 +121,5 @@ module.exports = function(grunt) {
   });
 
   // Default task(s).
-  grunt.registerTask('default', ['clean', 'jshint', 'uglify', 'concat', 'copy', 'pinktemplates']);
+  grunt.registerTask('default', ['clean', 'jshint', 'jasmine', 'uglify', 'concat', 'copy', 'pinktemplates']);
 };
