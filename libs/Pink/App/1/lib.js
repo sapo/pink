@@ -237,7 +237,7 @@ Ink.createModule('Pink.App', '1', ['Pink.Data.Binding_1', 'Pink.Plugin.Router_1'
     };
 
     /*
-     * This methods is responsible for:
+     * This method is responsible for:
      * - Initialize the routing maps and send them to the routing plugin.
      * - View change logic
      *

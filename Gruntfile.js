@@ -80,6 +80,7 @@ module.exports = function(grunt) {
                 vendor: [
                   'http://cdn.ink.sapo.pt/3.0.2/js/ink-all.js'
                 ],
+                helpers: ['libs/jasmine/*.js', 'dist/pink-tpl-bundle.js'],
                 specs : 'spec/**/*.js'
             }
         }
@@ -121,5 +122,5 @@ module.exports = function(grunt) {
   });
 
   // Default task(s).
-  grunt.registerTask('default', ['clean', 'jshint', 'jasmine', 'uglify', 'concat', 'copy', 'pinktemplates']);
+  grunt.registerTask('default', ['clean', 'jshint', 'uglify', 'concat', 'copy', 'pinktemplates', 'jasmine']);
 };
