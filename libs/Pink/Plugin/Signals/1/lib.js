@@ -8,9 +8,6 @@ Ink.createModule('Pink.Plugin.Signals', '1', [], function() {
     'use strict';
 
     /**
-     * 
-     * 
-     * 
      * Object that represents a binding between a Signal and a listener function.
      * <br />- <strong>This is an internal constructor and shouldn't be called by regular users.</strong>
      * <br />- inspired by Joa Ebert AS3 SignalBinding and Robert Penner's Slot classes.
@@ -405,6 +402,6 @@ Ink.createModule('Pink.Plugin.Signals', '1', [], function() {
         }
 
     };
-    
+
     return Signal;
 });

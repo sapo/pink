@@ -24,19 +24,18 @@ Ink.createModule('Pink.Data.Grid', '1', ['Pink.Data.Module_1', 'Pink.Data.Pagina
 
     /*
      * Module parameters:
-     * 
+     *
      * configuration: object {
      *   data: observableArray with the records to be paginated
      *   pageSize: default 5
      *   columns: array with the column info (eg. caption)
      * }
-     * 
      */
     var Module = function(configuration) {
         Paginator.call(this, configuration); // Inherit from the Paginator's class
 
         var sortHandler;
-        
+
         this.sortedColumn = undefined;
 
         // If you don't specify columns configuration,
@@ -71,10 +70,9 @@ Ink.createModule('Pink.Data.Grid', '1', ['Pink.Data.Module_1', 'Pink.Data.Pagina
             }
         }
     };
-    
-    /* 
+
+    /*
      * simpleGrid binding handler
-     * 
      */
     ko.bindingHandlers.simpleGrid = {
         init : function() {
@@ -82,7 +80,7 @@ Ink.createModule('Pink.Data.Grid', '1', ['Pink.Data.Module_1', 'Pink.Data.Pagina
                 'controlsDescendantBindings' : true
             };
         },
-        
+
         // This method is called to initialize the node, and will also be called again if you change what the grid is bound to
         update : function(element, viewModelAccessor, allBindingsAccessor) {
             var viewModel = viewModelAccessor(), allBindings = allBindingsAccessor();
@@ -105,6 +103,6 @@ Ink.createModule('Pink.Data.Grid', '1', ['Pink.Data.Module_1', 'Pink.Data.Pagina
             ko.renderTemplate(pageLinksTemplateName, viewModel, {}, pageLinksContainer, 'replaceNode');
         }
     };
-    
+
     return Module;
 });

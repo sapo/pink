@@ -3,7 +3,7 @@
  * @desc AlertBox Module for use with the ModalWindow widget
  * @author hlima, ecunha, ttt  AT sapo.pt
  * @version 1
- */    
+ */
 
 Ink.createModule('Pink.Data.ModalWindow.AlertBox', '1', ['Pink.Data.Binding_1'], function(ko) {
     'use strict';

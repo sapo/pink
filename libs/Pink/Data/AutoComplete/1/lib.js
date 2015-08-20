@@ -7,13 +7,13 @@
 
 Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Event_1', 'Ink.Dom.Element_1', 'Ink.Dom.Selector_1', 'Ink.Util.String_1'], function(ko, inkEvt, inkEl, inkSel, inkStr) {
     'use strict';
-    
+
     /*
      * This function must be bound to an options object
      */
     function handleValueChange(item) {
         /*jshint validthis:true */
-        
+
         var labelToWrite = item ? item.label : undefined;
         var valueToWrite = item ? item.value : undefined;
 
@@ -132,7 +132,6 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
      * Function to transform the input into an autocomplete input
      *
      * @param options: object
-     *
      */
     function buildAutoComplete(options) {
         var nav = document.createElement('nav');
@@ -248,12 +247,10 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
 
     /*
      * Ink + Knockout autoComplete binding
-     *
      */
     ko.bindingHandlers.autoComplete = {
         /*
          * Knockout custom binding init
-         *
          */
         maxVisibleOptions: 20,
 
@@ -261,7 +258,7 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
             var opt = {};
             var mappedSource;
             var subscription;
-            var placeholderText; 
+            var placeholderText;
             var childClass;
             var controlChild;
 
@@ -279,7 +276,7 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
             opt.focus = ko.unwrap(opt.binding.focus);
 
             placeholderText = opt.binding.attr && opt.binding.attr.placeholder ? opt.binding.attr.placeholder : element.getAttribute('placeholder') || '';
-            
+
             element.style.display = 'none';
 
             if (opt.style == 'autocomplete') {
@@ -338,12 +335,10 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
             buildAutoComplete(opt);
         },
 
-
         /*
          * Knockout custom binding update
          *
          * Updates the autocomplete based on a model change
-         *
          */
         update: function (element, valueAccessor, allBindingsAccessor, viewModel) {
             var dataSource = valueAccessor();

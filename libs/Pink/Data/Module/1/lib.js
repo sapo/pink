@@ -1,20 +1,19 @@
 /**
  * @module Pink.Data.Module_1
  * @author hlima, ecunha, ttt
- * @desc Helper binding that allows declarative module loading/binding  
+ * @desc Helper binding that allows declarative module loading/binding
  *       based on knockout-amd-helpers 0.2.5 | (c) 2013 Ryan Niemeyer |  http://www.opensource.org/licenses/mit-license
  * @version 1
- */    
+ */
 Ink.createModule('Pink.Data.Module', '1', ['Pink.Data.Binding_1'], function(ko) {
     'use strict';
 
     var NO_CACHE=true;
-    
+
     /*
      * Function to asynchronously load the required template
      * Note: you can redefine the template file name by setting the ko.bindingHandlers.module.templateName config parameter (eg. 'tpl.android.html')
-     *  
-     */ 
+     */
     var loadTemplate = function(moduleName, callback) {
         var xhr = new XMLHttpRequest();
 
@@ -27,8 +26,7 @@ Ink.createModule('Pink.Data.Module', '1', ['Pink.Data.Binding_1'], function(ko) 
         xhr.open("GET", Ink.getPath(moduleName).replace('lib.js', (ko.bindingHandlers.module.templateName || 'tpl.html'))+(NO_CACHE?'?'+Math.floor(Math.random()*1001):''), true);
         xhr.send();
     };
-    
-    
+
     //  helper functions
     var unwrap = ko.utils.unwrapObservable,
         //call a constructor function with a variable number of arguments
@@ -37,11 +35,11 @@ Ink.createModule('Pink.Data.Module', '1', ['Pink.Data.Binding_1'], function(ko) 
             Wrapper = function() {
                 return Constructor.apply(this, args || []);
             };
-    
+
             Wrapper.prototype = Constructor.prototype;
             instance = new Wrapper();
             instance.constructor = Constructor;
-    
+
             return instance;
         },
         addTrailingSlash = function(path) {
@@ -52,27 +50,25 @@ Ink.createModule('Pink.Data.Module', '1', ['Pink.Data.Binding_1'], function(ko) 
             if (viewModel[finalizer]) {
                 viewModel[finalizer].apply(viewModel);
             }
-            
+
             // If defined, run this callback to notify that the old module is to be destroyed (eg. run UI transition)
             if (disposeCallback && (typeof disposeCallback == "function") ) {
                 disposeCallback(element);
             }
         };
 
-        
     /*
      * Helper binding that allows declarative module loading/binding
-     * 
-     */ 
+     */
     ko.bindingHandlers.module = {
             init: function(element, valueAccessor, allBindingsAccessor, data, context) {
                 var value = valueAccessor(),
-	                options = unwrap(value),
-	                templateBinding = {},
-	                initializer = ko.bindingHandlers.module.initializer || "initialize",
-	                finalizer = ko.bindingHandlers.module.finalizer || "finalize",
-	                notifyReady,
-	                notifyBeforeDestroy;
+                    options = unwrap(value),
+                    templateBinding = {},
+                    initializer = ko.bindingHandlers.module.initializer || "initialize",
+                    finalizer = ko.bindingHandlers.module.finalizer || "finalize",
+                    notifyReady,
+                    notifyBeforeDestroy;
 
                 //build up a proper template binding object
                 if (options && typeof options === "object") {
@@ -83,7 +79,7 @@ Ink.createModule('Pink.Data.Module', '1', ['Pink.Data.Binding_1'], function(ko) 
                     notifyBeforeDestroy = options.notifyBeforeDestroy;
 
                     if (options["templateEngine"]) {
-                        templateBinding.templateEngine = options["templateEngine"]; 
+                        templateBinding.templateEngine = options["templateEngine"];
                     }
                 }
 
@@ -103,7 +99,7 @@ Ink.createModule('Pink.Data.Module', '1', ['Pink.Data.Binding_1'], function(ko) 
                         // The viewmodel must be a valid one
                         if (templateBinding.data()) {
                             // Run this method on the loaded view model
-                            if (typeof templateBinding.data()['afterRender'] == "function") { 
+                            if (typeof templateBinding.data()['afterRender'] == "function") {
                                 templateBinding.data()["afterRender"](elements);
                             }
 
@@ -117,11 +113,11 @@ Ink.createModule('Pink.Data.Module', '1', ['Pink.Data.Binding_1'], function(ko) 
 
                 // Actually apply the template binding that we built
                 ko.applyBindingsToNode(element, { template: templateBinding },  context);
-                
+
                 // Setup custom disposal login to run when the node is removed
                 ko.utils.domNodeDisposal.addDisposeCallback(element, function() {
                     var oldModule = templateBinding.data();
-                    
+
                     if (oldModule) {
                         disposeViewModel(element, oldModule, finalizer, notifyBeforeDestroy);
                     }
@@ -132,7 +128,7 @@ Ink.createModule('Pink.Data.Module', '1', ['Pink.Data.Binding_1'], function(ko) 
                     read: function() {
                         //module name could be in an observable
                         var moduleName = unwrap(value),
-                            oldModule = templateBinding.data.peek(), //don't create a dependency 
+                            oldModule = templateBinding.data.peek(), //don't create a dependency
                             initialArgs;
 
                         //observable could return an object that contains a name property
@@ -147,7 +143,7 @@ Ink.createModule('Pink.Data.Module', '1', ['Pink.Data.Binding_1'], function(ko) 
                         if (oldModule) {
                             disposeViewModel(element, oldModule, finalizer, notifyBeforeDestroy);
                         }
-                        
+
                         // Destroy the old module
                         templateBinding.data(null);
 
@@ -167,7 +163,7 @@ Ink.createModule('Pink.Data.Module', '1', ['Pink.Data.Binding_1'], function(ko) 
                                             mod = mod[initializer].apply(mod, initialArgs) || mod;
                                         }
                                     }
-    
+
                                     //update the data that we are binding against
                                     templateBinding.data(mod);
                                 });
@@ -183,17 +179,14 @@ Ink.createModule('Pink.Data.Module', '1', ['Pink.Data.Binding_1'], function(ko) 
             templateCache: {}
     };
 
-    
     //  support KO 2.0 that did not export ko.virtualElements
     if (ko.virtualElements) {
         ko.virtualElements.allowedBindings.module = true;
     }
 
-
-    /* 
+    /*
      *  Template engine that uses XmlHttpRequest to pull the templates
      *  (overrides the default ko template engine)
-     *  
      */
     (function(ko) {
         //get a new native template engine to start with

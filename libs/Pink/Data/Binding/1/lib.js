@@ -6,8 +6,8 @@
  */
 Ink.createModule('Pink.Data.Binding', '1', [], function() {
     'use strict';
-    
-	/*
+
+    /*
        Knockout JavaScript library v2.3.0
        (c) Steven Sanderson - http://knockoutjs.com/
        License: MIT (http://www.opensource.org/licenses/mit-license.php)
@@ -20,7 +20,7 @@ Ink.createModule('Pink.Data.Binding', '1', [], function() {
     jQuery = window["jQuery"],
     JSON = window["JSON"];
 
-	var ko = {};
+    var ko = {};
     ko.exportSymbol = function(koPath, object) {
         var tokens = koPath.split(".");
 
@@ -2951,10 +2951,10 @@ Ink.createModule('Pink.Data.Binding', '1', [], function() {
         //                                           with the rendered template output.
         // You can implement your own template source if you want to fetch/store templates somewhere other than in DOM elements.
         // Template sources need to have the following functions:
-        //   text() 			- returns the template text from your storage location
-        //   text(value)		- writes the supplied template text to your storage location
-        //   data(key)			- reads values stored using data(key, value) - see below
-        //   data(key, value)	- associates "value" with this template and the key "key". Is used to store information like "isRewritten".
+        //   text()             - returns the template text from your storage location
+        //   text(value)        - writes the supplied template text to your storage location
+        //   data(key)          - reads values stored using data(key, value) - see below
+        //   data(key, value)   - associates "value" with this template and the key "key". Is used to store information like "isRewritten".
         //
         // Optionally, template sources can also have the following functions:
         //   nodes()            - returns a DOM element containing the nodes of this template, where available

@@ -1,6 +1,6 @@
 /**
  * @module Pink.Data.Validation
- * @desc Validation bindings 
+ * @desc Validation bindings
  *       Ink wrapper for Knockout-Validation library for KnockoutJS (https://github.com/Knockout-Contrib/Knockout-Validation)
  * @version 1
  */
@@ -16,7 +16,7 @@ Ink.createModule('Pink.Data.Validation', '1', ['Pink.Data.Binding_1'], function(
         unwrap = koUtils.unwrapObservable,
         forEach = koUtils.arrayForEach,
         extend = koUtils.extend;
-    
+
     var defaults = {
         registerExtenders: true,
         messagesOnModified: true,
@@ -41,25 +41,25 @@ Ink.createModule('Pink.Data.Validation', '1', ['Pink.Data.Binding_1'], function(
             // throttle: 10
         }
     };
-    
+
     // make a copy  so we can use 'reset' later
     var configuration = extend({}, defaults);
-    
+
     configuration.html5Attributes = ['required', 'pattern', 'min', 'max', 'step'];
     configuration.html5InputTypes = ['email', 'number', 'date'];
-    
+
     configuration.reset = function () {
         extend(configuration, defaults);
     };
-    
+
     kv.configuration = configuration;
-    
+
     kv.utils = (function () {
         var seedId = new Date().getTime();
-    
+
         var domData = {}; //hash of data objects that we reference from dom elements
         var domDataKey = '__ko_validation__';
-    
+
         return {
             isArray: function (o) {
                 return o.isArray || Object.prototype.toString.call(o) === '[object Array]';
@@ -108,25 +108,25 @@ Ink.createModule('Pink.Data.Validation', '1', ['Pink.Data.Binding_1'], function(
             },
             getConfigOptions: function (element) {
                 var options = kv.utils.contextFor(element);
-    
+
                 return options || kv.configuration;
             },
             setDomData: function (node, data) {
                 var key = node[domDataKey];
-    
+
                 if (!key) {
                     node[domDataKey] = key = kv.utils.newId();
                 }
-    
+
                 domData[key] = data;
             },
             getDomData: function (node) {
                 var key = node[domDataKey];
-    
+
                 if (!key) {
                     return undefined;
                 }
-    
+
                 return domData[key];
             },
             contextFor: function (node) {
@@ -155,7 +155,7 @@ Ink.createModule('Pink.Data.Validation', '1', ['Pink.Data.Binding_1'], function(
                 var savedOriginalTitle = kv.utils.getAttribute(element, 'data-orig-title'),
                     currentTitle = element.title,
                     hasSavedOriginalTitle = kv.utils.hasAttribute(element, 'data-orig-title');
-    
+
                 return hasSavedOriginalTitle ?
                     savedOriginalTitle : currentTitle;
             },
@@ -175,20 +175,20 @@ Ink.createModule('Pink.Data.Validation', '1', ['Pink.Data.Binding_1'], function(
             }
         };
     }());
-    
+
     var api = (function () {
-    
+
         var isInitialized = 0,
             configuration = kv.configuration,
             utils = kv.utils;
-    
+
         function cleanUpSubscriptions(context) {
             forEach(context.subscriptions, function (subscription) {
                 subscription.dispose();
             });
             context.subscriptions = [];
         }
-    
+
         function dispose(context) {
             if (context.options.deep) {
                 forEach(context.flagged, function (obj) {
@@ -196,47 +196,47 @@ Ink.createModule('Pink.Data.Validation', '1', ['Pink.Data.Binding_1'], function(
                 });
                 context.flagged.length = 0;
             }
-    
+
             if (!context.options.live) {
                 cleanUpSubscriptions(context);
             }
         }
-    
+
         function runTraversal(obj, context) {
             context.validatables = [];
             cleanUpSubscriptions(context);
             traverseGraph(obj, context);
             dispose(context);
             }
-    
+
         function traverseGraph(obj, context, level) {
             var objValues = [],
                 val = obj.peek ? obj.peek() : obj;
-    
+
             if (obj.__kv_traversed === true) { return; }
-    
+
             if (context.options.deep) {
             obj.__kv_traversed = true;
                 context.flagged.push(obj);
             }
-    
+
             //default level value depends on deep option.
             level = (level !== undefined ? level : context.options.deep ? 1 : -1);
-    
+
             // if object is observable then add it to the list
             if (ko.isObservable(obj)) {
-    
+
                 //make sure it is validatable object
                 if (!obj.isValid) { obj.extend({ validatable: true }); }
                 context.validatables.push(obj);
-    
+
                 if(context.options.live && utils.isObservableArray(obj)) {
                     context.subscriptions.push(obj.subscribe(function () {
                         context.graphMonitor.valueHasMutated();
                     }));
+                }
             }
-            }
-    
+
             //get list of values either from array or object but ignore non-objects
             // and destroyed objects
             if (val && !val._destroy) {
@@ -244,13 +244,13 @@ Ink.createModule('Pink.Data.Validation', '1', ['Pink.Data.Binding_1'], function(
                 objValues = val;
                 } else if (utils.isObject(val)) {
                     objValues = utils.values(val);
+                }
             }
-            }
-    
+
             //process recurisvely if it is deep grouping
             if (level !== 0) {
                 utils.forEach(objValues, function (observable) {
-    
+
                     //but not falsy things and not HTML Elements
                     if (observable && !observable.nodeType) {
                         traverseGraph(observable, context, level + 1);
@@ -258,7 +258,7 @@ Ink.createModule('Pink.Data.Validation', '1', ['Pink.Data.Binding_1'], function(
                 });
             }
         }
-    
+
         function collectErrors(array) {
             var errors = [];
             forEach(array, function (observable) {
@@ -268,7 +268,7 @@ Ink.createModule('Pink.Data.Validation', '1', ['Pink.Data.Binding_1'], function(
             });
             return errors;
         }
-    
+
         return {
             //Call this on startup
             //any config can be overridden with the passed in options
@@ -277,7 +277,7 @@ Ink.createModule('Pink.Data.Validation', '1', ['Pink.Data.Binding_1'], function(
                 if (isInitialized > 0 && !force) {
                     return;
                 }
-    
+
                 //becuase we will be accessing options properties it has to be an object at least
                 options = options || {};
                 //if specific error classes are not provided then apply generic errorClass
@@ -285,21 +285,21 @@ Ink.createModule('Pink.Data.Validation', '1', ['Pink.Data.Binding_1'], function(
                 //errorElementClass and errorMessage class but not those provided in options
                 options.errorElementClass = options.errorElementClass || options.errorClass || configuration.errorElementClass;
                 options.errorMessageClass = options.errorMessageClass || options.errorClass || configuration.errorMessageClass;
-    
+
                 extend(configuration, options);
-    
+
                 if (configuration.registerExtenders) {
                     kv.registerExtenders();
                 }
-    
+
                 isInitialized = 1;
             },
             // backwards compatability
             configure: function (options) { kv.init(options); },
-    
+
             // resets the config back to its original state
             reset: kv.configuration.reset,
-    
+
             // recursivly walks a viewModel and creates an object that
             // provides validation information for the entire viewModel
             // obj -> the viewModel to walk
@@ -309,7 +309,7 @@ Ink.createModule('Pink.Data.Validation', '1', ['Pink.Data.Binding_1'], function(
             // }
             group: function group(obj, options) { // array of observables or viewModel
                 options = extend(extend({}, configuration.grouping), options);
-    
+
                 var context = {
                     options: options,
                     graphMonitor: ko.observable(),
@@ -317,67 +317,67 @@ Ink.createModule('Pink.Data.Validation', '1', ['Pink.Data.Binding_1'], function(
                     subscriptions: [],
                     validatables: []
             };
-    
+
                 var result = null;
-    
+
                 //if using observables then traverse structure once and add observables
                 if (options.observable) {
                     runTraversal(obj, context);
-    
+
                     result = ko.computed(function () {
                         context.graphMonitor(); //register dependency
                         runTraversal(obj, context);
-    
+
                         return collectErrors(context.validatables);
                     });
-    
+
                 } else { //if not using observables then every call to error() should traverse the structure
                     result = function () {
                         runTraversal(obj, context);
-    
+
                         return collectErrors(context.validatables);
                     };
                 }
-    
+
                 result.showAllMessages = function (show) { // thanks @heliosPortal
                     if (show === undefined) {//default to true
                         show = true;
                     }
-    
+
                     // ensure we have latest changes
                     result();
-    
+
                     forEach(context.validatables, function (observable) {
                         observable.isModified(show);
                     });
                 };
-    
+
                 obj.errors = result;
                 obj.isValid = function () {
                     return obj.errors().length === 0;
                 };
                 obj.isAnyMessageShown = function () {
                     var invalidAndModifiedPresent = false;
-    
+
                     // ensure we have latest changes
                     result();
-    
+
                     invalidAndModifiedPresent = !!koUtils.arrayFirst(context.validatables, function (observable) {
                         return !observable.isValid() && observable.isModified();
                     });
                     return invalidAndModifiedPresent;
                 };
-    
+
                 return result;
             },
-    
+
             formatMessage: function (message, params, observable) {
                 if (typeof (message) === 'function') {
                     return message(params, observable);
                 }
                 return message.replace(/\{0\}/gi, unwrap(params));
             },
-    
+
             // addRule:
             // This takes in a ko.observable and a Rule Context - which is just a rule name and params to supply to the validator
             // ie: kv.addRule(myObservable, {
@@ -387,12 +387,12 @@ Ink.createModule('Pink.Data.Validation', '1', ['Pink.Data.Binding_1'], function(
             //
             addRule: function (observable, rule) {
                 observable.extend({ validatable: true });
-    
+
                 //push a Rule Context to the observables local array of Rule Contexts
                 observable.rules.push(rule);
                 return observable;
             },
-    
+
             // addAnonymousRule:
             // Anonymous Rules essentially have all the properties of a Rule, but are only specific for a certain property
             // and developers typically are wanting to add them on the fly or not register a rule with the 'kv.rules' object
@@ -411,16 +411,16 @@ Ink.createModule('Pink.Data.Validation', '1', ['Pink.Data.Binding_1'], function(
                 if (ruleObj['message'] === undefined) {
                     ruleObj['message'] = 'Error';
                 }
-    
+
                 //make sure onlyIf is honoured
                 if (ruleObj.onlyIf) {
                     ruleObj.condition = ruleObj.onlyIf;
                 }
-    
+
                 //add the anonymous rule to the observable
                 kv.addRule(observable, ruleObj);
             },
-    
+
             addExtender: function (ruleName) {
                 ko.extenders[ruleName] = function (observable, params) {
                     //params can come in a few flavors
@@ -454,7 +454,7 @@ Ink.createModule('Pink.Data.Validation', '1', ['Pink.Data.Binding_1'], function(
                     }
                 };
             },
-    
+
             // loops through all kv.rules and adds them as extenders to
             // ko.extenders
             registerExtenders: function () { // root extenders optional, use 'validation' extender if would cause conflicts
@@ -468,7 +468,7 @@ Ink.createModule('Pink.Data.Validation', '1', ['Pink.Data.Binding_1'], function(
                     }
                 }
             },
-    
+
             //creates a span next to the @element with the specified error class
             insertValidationMessage: function (element) {
                 var span = document.createElement('SPAN');
@@ -476,15 +476,15 @@ Ink.createModule('Pink.Data.Validation', '1', ['Pink.Data.Binding_1'], function(
                 utils.insertAfter(element, span);
                 return span;
             },
-    
+
             // if html-5 validation attributes have been specified, this parses
             // the attributes on @element
             parseInputValidationAttributes: function (element, valueAccessor) {
                 forEach(kv.configuration.html5Attributes, function (attr) {
                     if (utils.hasAttribute(element, attr)) {
-    
+
                         var params = element.getAttribute(attr) || true;
-    
+
                         if (attr === 'min' || attr === 'max')
                         {
                             // If we're validating based on the min and max attributes, we'll
@@ -493,20 +493,20 @@ Ink.createModule('Pink.Data.Validation', '1', ['Pink.Data.Binding_1'], function(
                             if (typeof typeAttr === "undefined" || !typeAttr)
                             {
                                 // From http://www.w3.org/TR/html-markup/input:
-                                //   An input element with no type attribute specified represents the 
+                                //   An input element with no type attribute specified represents the
                                 //   same thing as an input element with its type attribute set to "text".
-                                typeAttr = "text"; 
-                            }                            
-                            params = {typeAttr: typeAttr, value: params}; 
+                                typeAttr = "text";
+                            }
+                            params = {typeAttr: typeAttr, value: params};
                         }
-                    
+
                         kv.addRule(valueAccessor(), {
                             rule: attr,
                             params: params
                         });
                     }
                 });
-    
+
                 var currentType = element.getAttribute('type');
                 forEach(kv.configuration.html5InputTypes, function (type) {
                     if (type === currentType) {
@@ -517,73 +517,73 @@ Ink.createModule('Pink.Data.Validation', '1', ['Pink.Data.Binding_1'], function(
                     }
                 });
             },
-    
+
             // writes html5 validation attributes on the element passed in
             writeInputValidationAttributes: function (element, valueAccessor) {
                 var observable = valueAccessor();
-    
+
                 if (!observable || !observable.rules) {
                     return;
                 }
-    
+
                 var contexts = observable.rules(); // observable array
-    
+
                 // loop through the attributes and add the information needed
                 forEach(kv.configuration.html5Attributes, function (attr) {
                     var params;
                     var ctx = koUtils.arrayFirst(contexts, function (ctx) {
                         return ctx.rule.toLowerCase() === attr.toLowerCase();
                     });
-    
+
                     if (!ctx) {
                         return;
                     }
-    
+
                     params = ctx.params;
-    
+
                     // we have to do some special things for the pattern validation
                     if (ctx.rule === "pattern") {
                         if (ctx.params instanceof RegExp) {
                             params = ctx.params.source; // we need the pure string representation of the RegExpr without the //gi stuff
                         }
                     }
-    
+
                     // we have a rule matching a validation attribute at this point
                     // so lets add it to the element along with the params
                     element.setAttribute(attr, params);
                 });
-    
+
                 contexts = null;
             },
-    
+
             //take an existing binding handler and make it cause automatic validations
             makeBindingHandlerValidatable: function (handlerName) {
                 var init = ko.bindingHandlers[handlerName].init;
-    
+
                 ko.bindingHandlers[handlerName].init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-    
+
                     init(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext);
-    
+
                     return ko.bindingHandlers['validationCore'].init(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext);
                 };
             },
-    
+
             // visit an objects properties and apply validation rules from a definition
             setRules: function (target, definition) {
                 var setRules = function (target, definition) {
                     if (!target || !definition) { return; }
-    
+
                     for (var prop in definition) {
                         if (!definition.hasOwnProperty(prop)) { continue; }
                         var ruleDefinitions = definition[prop];
-    
+
                         //check the target property exists and has a value
                         if (!target[prop]) { continue; }
                         var targetValue = target[prop],
                             unwrappedTargetValue = unwrap(targetValue),
                             rules = {},
                             nonRules = {};
-    
+
                         for (var rule in ruleDefinitions) {
                             if (!ruleDefinitions.hasOwnProperty(rule)) { continue; }
                             if (kv.rules[rule]) {
@@ -592,12 +592,12 @@ Ink.createModule('Pink.Data.Validation', '1', ['Pink.Data.Binding_1'], function(
                                 nonRules[rule] = ruleDefinitions[rule];
                             }
                         }
-    
+
                         //apply rules
                         if (ko.isObservable(targetValue)) {
                             targetValue.extend(rules);
                         }
-    
+
                         //then apply child rules
                         //if it's an array, apply rules to all children
                         if (unwrappedTargetValue && utils.isArray(unwrappedTargetValue)) {
@@ -613,9 +613,9 @@ Ink.createModule('Pink.Data.Validation', '1', ['Pink.Data.Binding_1'], function(
                 setRules(target, definition);
             }
         };
-    
+
     }());
-    
+
     // expose api publicly
     extend(ko.validation, api);;//Validation Rules:
     // You can view and override messages or rules via:
@@ -643,33 +643,33 @@ Ink.createModule('Pink.Data.Validation', '1', ['Pink.Data.Binding_1'], function(
         validator: function (val, required) {
             var stringTrimRegEx = /^\s+|\s+$/g,
                 testVal;
-    
+
             if (val === undefined || val === null) {
                 return !required;
             }
-    
+
             testVal = val;
             if (typeof (val) === "string") {
                 testVal = val.replace(stringTrimRegEx, '');
             }
-    
+
             if (!required) {// if they passed: { required: false }, then don't require this
                 return true;
             }
-    
+
             return ((testVal + '').length > 0);
         },
         message: 'This field is required.'
     };
-    
+
     function minMaxValidatorFactory(validatorName) {
         var isMaxValidation = validatorName === "max";
-    
+
         return function (val, options) {
             if (kv.utils.isEmptyVal(val)) {
                 return true;
             }
-    
+
             var comparisonValue, type;
             if (options.typeAttr === undefined) {
                 // This validator is being called from javascript rather than
@@ -680,13 +680,13 @@ Ink.createModule('Pink.Data.Validation', '1', ['Pink.Data.Binding_1'], function(
                 type = options.typeAttr;
                 comparisonValue = options.value;
             }
-    
+
             // From http://www.w3.org/TR/2012/WD-html5-20121025/common-input-element-attributes.html#attr-input-min,
             // if the value is parseable to a number, then the minimum should be numeric
             if (!isNaN(comparisonValue)) {
                 type = "number";
             }
-    
+
             var regex, valMatches, comparisonValueMatches;
             switch (type.toLowerCase()) {
                 case "week":
@@ -701,7 +701,7 @@ Ink.createModule('Pink.Data.Validation', '1', ['Pink.Data.Binding_1'], function(
                     if (!comparisonValueMatches) {
                         return false;
                     }
-    
+
                     if (isMaxValidation) {
                         return (valMatches[1] < comparisonValueMatches[1]) || // older year
                             // same year, older week
@@ -712,7 +712,7 @@ Ink.createModule('Pink.Data.Validation', '1', ['Pink.Data.Binding_1'], function(
                             ((valMatches[1] === comparisonValueMatches[1]) && (valMatches[2] >= comparisonValueMatches[2]));
                     }
                     break;
-    
+
                 case "month":
                     regex = /^(\d{4})-(\d{2})$/;
                     valMatches = val.match(regex);
@@ -725,7 +725,7 @@ Ink.createModule('Pink.Data.Validation', '1', ['Pink.Data.Binding_1'], function(
                     if (!comparisonValueMatches) {
                         return false;
                     }
-    
+
                     if (isMaxValidation) {
                         return ((valMatches[1] < comparisonValueMatches[1]) || // older year
                             // same year, older month
@@ -736,7 +736,7 @@ Ink.createModule('Pink.Data.Validation', '1', ['Pink.Data.Binding_1'], function(
                             ((valMatches[1] === comparisonValueMatches[1]) && (valMatches[2] >= comparisonValueMatches[2]));
                     }
                     break;
-    
+
                 case "number":
                 case "range":
                     if (isMaxValidation) {
@@ -745,7 +745,7 @@ Ink.createModule('Pink.Data.Validation', '1', ['Pink.Data.Binding_1'], function(
                         return (!isNaN(val) && parseFloat(val) >= parseFloat(comparisonValue));
                     }
                     break;
-    
+
                 default:
                     if (isMaxValidation) {
                         return val <= comparisonValue;
@@ -755,41 +755,40 @@ Ink.createModule('Pink.Data.Validation', '1', ['Pink.Data.Binding_1'], function(
             }
         };
     }
-    
+
     kv.rules['min'] = {
         validator: minMaxValidatorFactory("min"),
         message: 'Please enter a value greater than or equal to {0}.'
     };
-    
+
     kv.rules['max'] = {
         validator: minMaxValidatorFactory("max"),
         message: 'Please enter a value less than or equal to {0}.'
     };
-        
+
     kv.rules['minLength'] = {
         validator: function (val, minLength) {
             return kv.utils.isEmptyVal(val) || val.length >= minLength;
         },
         message: 'Please enter at least {0} characters.'
     };
-    
+
     kv.rules['maxLength'] = {
         validator: function (val, maxLength) {
             return kv.utils.isEmptyVal(val) || val.length <= maxLength;
         },
         message: 'Please enter no more than {0} characters.'
     };
-    
+
     kv.rules['pattern'] = {
         validator: function (val, regex) {
             return kv.utils.isEmptyVal(val) || val.toString().match(regex) !== null;
         },
         message: 'Please check this value.'
     };
-    
+
     kv.rules['step'] = {
         validator: function (val, step) {
-    
             // in order to handle steps of .1 & .01 etc.. Modulus won't work
             // if the value is a decimal, so we have to correct for that
             if (kv.utils.isEmptyVal(val) || step === 'any') { return true; }
@@ -798,11 +797,11 @@ Ink.createModule('Pink.Data.Validation', '1', ['Pink.Data.Binding_1'], function(
         },
         message: 'The value must increment by {0}'
     };
-    
+
     kv.rules['email'] = {
         validator: function (val, validate) {
             if (!validate) { return true; }
-    
+
             //I think an empty email address is also a valid entry
             //if one want's to enforce entry it should be done with 'required: true'
             return kv.utils.isEmptyVal(val) || (
@@ -812,7 +811,7 @@ Ink.createModule('Pink.Data.Validation', '1', ['Pink.Data.Binding_1'], function(
         },
         message: 'Please enter a proper email address'
     };
-    
+
     kv.rules['date'] = {
         validator: function (value, validate) {
             if (!validate) { return true; }
@@ -820,7 +819,7 @@ Ink.createModule('Pink.Data.Validation', '1', ['Pink.Data.Binding_1'], function(
         },
         message: 'Please enter a proper date'
     };
-    
+
     kv.rules['dateISO'] = {
         validator: function (value, validate) {
             if (!validate) { return true; }
@@ -828,7 +827,7 @@ Ink.createModule('Pink.Data.Validation', '1', ['Pink.Data.Binding_1'], function(
         },
         message: 'Please enter a proper date'
     };
-    
+
     kv.rules['number'] = {
         validator: function (value, validate) {
             if (!validate) { return true; }
@@ -836,7 +835,7 @@ Ink.createModule('Pink.Data.Validation', '1', ['Pink.Data.Binding_1'], function(
         },
         message: 'Please enter a number'
     };
-    
+
     kv.rules['digit'] = {
         validator: function (value, validate) {
             if (!validate) { return true; }
@@ -844,7 +843,7 @@ Ink.createModule('Pink.Data.Validation', '1', ['Pink.Data.Binding_1'], function(
         },
         message: 'Please enter a digit'
     };
-    
+
     kv.rules['phoneUS'] = {
         validator: function (phoneNumber, validate) {
             if (!validate) { return true; }
@@ -855,7 +854,7 @@ Ink.createModule('Pink.Data.Validation', '1', ['Pink.Data.Binding_1'], function(
         },
         message: 'Please specify a valid phone number'
     };
-    
+
     kv.rules['equal'] = {
         validator: function (val, params) {
             var otherValue = params;
@@ -863,7 +862,7 @@ Ink.createModule('Pink.Data.Validation', '1', ['Pink.Data.Binding_1'], function(
         },
         message: 'Values must equal'
     };
-    
+
     kv.rules['notEqual'] = {
         validator: function (val, params) {
             var otherValue = params;
@@ -871,7 +870,7 @@ Ink.createModule('Pink.Data.Validation', '1', ['Pink.Data.Binding_1'], function(
         },
         message: 'Please choose another value.'
     };
-    
+
     //unique in collection
     // options are:
     //    collection: array or function returning (observable) array
@@ -884,9 +883,9 @@ Ink.createModule('Pink.Data.Validation', '1', ['Pink.Data.Binding_1'], function(
             var c = kv.utils.getValue(options.collection),
                 external = kv.utils.getValue(options.externalValue),
                 counter = 0;
-    
+
             if (!val || !c) { return true; }
-    
+
             koUtils.arrayFilter(c, function (item) {
                 if (val === (options.valueAccessor ? options.valueAccessor(item) : item)) { counter++; }
             });
@@ -895,34 +894,32 @@ Ink.createModule('Pink.Data.Validation', '1', ['Pink.Data.Binding_1'], function(
         },
         message: 'Please make sure the value is unique.'
     };
-    
-    
+
     //now register all of these!
     (function () {
         kv.registerExtenders();
     }());
-    
+
     // The core binding handler
     // this allows us to setup any value binding that internally always
     // performs the same functionality
     ko.bindingHandlers['validationCore'] = (function () {
-    
         return {
             init: function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                 var config = kv.utils.getConfigOptions(element);
                 var observable = valueAccessor();
-    
+
                 // parse html5 input validation attributes, optional feature
                 if (config.parseInputAttributes) {
                     kv.utils.async(function () { kv.parseInputValidationAttributes(element, valueAccessor); });
                 }
-    
+
                 // if requested insert message element and apply bindings
                 if (config.insertMessages && kv.utils.isValidatable(observable)) {
-    
+
                     // insert the <span></span>
                     var validationMessageElement = kv.insertValidationMessage(element);
-    
+
                     // if we're told to use a template, make sure that gets rendered
                     if (config.messageTemplate) {
                         ko.renderTemplate(config.messageTemplate, { field: observable }, null, validationMessageElement, 'replaceNode');
@@ -930,27 +927,26 @@ Ink.createModule('Pink.Data.Validation', '1', ['Pink.Data.Binding_1'], function(
                         ko.applyBindingsToNode(validationMessageElement, { validationMessage: observable });
                     }
                 }
-    
+
                 // write the html5 attributes if indicated by the config
                 if (config.writeInputAttributes && kv.utils.isValidatable(observable)) {
-    
+
                     kv.writeInputValidationAttributes(element, valueAccessor);
                 }
-    
+
                 // if requested, add binding to decorate element
                 if (config.decorateInputElement && kv.utils.isValidatable(observable)) {
                     ko.applyBindingsToNode(element, { validationElement: observable });
                 }
             }
         };
-    
+
     }());
-    
+
     // override for KO's default 'value' and 'checked' bindings
     kv.makeBindingHandlerValidatable("value");
     kv.makeBindingHandlerValidatable("checked");
-    
-    
+
     ko.bindingHandlers['validationMessage'] = { // individual error message, if modified or post binding
         update: function (element, valueAccessor) {
             var obsv = valueAccessor(),
@@ -959,28 +955,28 @@ Ink.createModule('Pink.Data.Validation', '1', ['Pink.Data.Binding_1'], function(
                 msg = null,
                 isModified = false,
                 isValid = false;
-    
+
             if (!obsv.isValid || !obsv.isModified) {
                 throw new Error("Observable is not validatable");
             }
-    
+
             isModified = obsv.isModified();
             isValid = obsv.isValid();
-    
+
             var error = null;
             if (!config.messagesOnModified || isModified) {
                 error = isValid ? null : obsv.error;
             }
-    
+
             var isVisible = !config.messagesOnModified || isModified ? !isValid : false;
             var isCurrentlyVisible = element.style.display !== "none";
-    
+
             if (config.allowHtmlMessages) {
                 koUtils.setHtml(element, error);
             } else {
                 ko.bindingHandlers.text.update(element, function () { return error; });
             }
-    
+
             if (isCurrentlyVisible && !isVisible) {
                 element.style.display = 'none';
             } else if (!isCurrentlyVisible && isVisible) {
@@ -988,7 +984,7 @@ Ink.createModule('Pink.Data.Validation', '1', ['Pink.Data.Binding_1'], function(
             }
         }
     };
-    
+
     ko.bindingHandlers['validationElement'] = {
         update: function (element, valueAccessor, allBindingsAccessor) {
             var obsv = valueAccessor(),
@@ -997,36 +993,36 @@ Ink.createModule('Pink.Data.Validation', '1', ['Pink.Data.Binding_1'], function(
                 msg = null,
                 isModified = false,
                 isValid = false;
-    
+
             if (!obsv.isValid || !obsv.isModified) {
                 throw new Error("Observable is not validatable");
             }
-    
+
             isModified = obsv.isModified();
             isValid = obsv.isValid();
-    
+
             // create an evaluator function that will return something like:
             // css: { validationElement: true }
             var cssSettingsAccessor = function () {
                 var css = {};
-    
+
                 var shouldShow = ((!config.decorateElementOnModified || isModified) ? !isValid : false);
-    
+
                 // css: { validationElement: false }
                 css[config.errorElementClass] = shouldShow;
-    
+
                 return css;
             };
-    
+
             //add or remove class on the element;
             ko.bindingHandlers.css.update(element, cssSettingsAccessor, allBindingsAccessor);
             if (!config.errorsAsTitle) { return; }
-    
+
             ko.bindingHandlers.attr.update(element, function () {
                 var
                     hasModification = !config.errorsAsTitleOnModified || isModified,
                     title = kv.utils.getOriginalElementTitle(element);
-    
+
                 if (hasModification && !isValid) {
                     return { title: obsv.error, 'data-orig-title': title };
                 } else if (!hasModification || isValid) {
@@ -1035,7 +1031,7 @@ Ink.createModule('Pink.Data.Validation', '1', ['Pink.Data.Binding_1'], function(
             });
         }
     };
-    
+
     // ValidationOptions:
     // This binding handler allows you to override the initial config by setting any of the options for a specific element or context of elements
     //
@@ -1051,7 +1047,7 @@ Ink.createModule('Pink.Data.Validation', '1', ['Pink.Data.Binding_1'], function(
                 if (options) {
                     var newConfig = extend({}, kv.configuration);
                     extend(newConfig, options);
-    
+
                     //store the validation options on the node so we can retrieve it later
                     kv.utils.setDomData(element, newConfig);
                 }
@@ -1079,7 +1075,7 @@ Ink.createModule('Pink.Data.Validation', '1', ['Pink.Data.Binding_1'], function(
         });
         return observable;
     };
-    
+
     //This is the extender that makes a Knockout Observable also 'Validatable'
     //examples include:
     // 1. var test = ko.observable('something').extend({validatable: true});
@@ -1091,69 +1087,69 @@ Ink.createModule('Pink.Data.Validation', '1', ['Pink.Data.Binding_1'], function(
         if (!kv.utils.isObject(options)) {
             options = { enable: options };
         }
-    
+
         if (!('enable' in options)) {
             options.enable = true;
         }
-    
+
         if (options.enable && !kv.utils.isValidatable(observable)) {
             var config = kv.configuration.validate || {};
             var validationOptions = {
                 throttleEvaluation : options.throttle || config.throttle
             };
-    
+
             observable.error = ko.observable(null); // holds the error message, we only need one since we stop processing validators when one is invalid
-    
+
             // observable.rules:
             // ObservableArray of Rule Contexts, where a Rule Context is simply the name of a rule and the params to supply to it
             //
             // Rule Context = { rule: '<rule name>', params: '<passed in params>', message: '<Override of default Message>' }
             observable.rules = ko.observableArray(); //holds the rule Contexts to use as part of validation
-    
+
             //in case async validation is occuring
             observable.isValidating = ko.observable(false);
-    
+
             //the true holder of whether the observable is valid or not
             observable.__valid__ = ko.observable(true);
-    
+
             observable.isModified = ko.observable(false);
-    
+
             // a semi-protected observable
             observable.isValid = ko.computed(observable.__valid__);
-    
+
             //manually set error state
             observable.setError = function (error) {
                 observable.error(error);
                 observable.__valid__(false);
             };
-    
+
             //manually clear error state
             observable.clearError = function () {
                 observable.error(null);
                 observable.__valid__(true);
                 return observable;
             };
-    
+
             //subscribe to changes in the observable
             var h_change = observable.subscribe(function () {
                 observable.isModified(true);
             });
-    
+
             // we use a computed here to ensure that anytime a dependency changes, the
             // validation logic evaluates
             var h_obsValidationTrigger = ko.computed(extend({
                 read: function () {
                     var obs = observable(),
                         ruleContexts = observable.rules();
-    
+
                     kv.validateObservable(observable);
-    
+
                     return true;
                 }
             }, validationOptions));
-    
+
             extend(h_obsValidationTrigger, validationOptions);
-    
+
             observable._disposeValidation = function () {
                 //first dispose of the subscriptions
                 observable.isValid.dispose();
@@ -1169,7 +1165,7 @@ Ink.createModule('Pink.Data.Validation', '1', ['Pink.Data.Binding_1'], function(
                 }
                 h_change.dispose();
                 h_obsValidationTrigger.dispose();
-    
+
                 delete observable['rules'];
                 delete observable['error'];
                 delete observable['isValid'];
@@ -1182,11 +1178,10 @@ Ink.createModule('Pink.Data.Validation', '1', ['Pink.Data.Binding_1'], function(
         }
         return observable;
     };
-    
+
     function validateSync(observable, rule, ctx) {
         //Execute the validator and see if its valid
         if (!rule.validator(observable(), (ctx.params === undefined ? true : unwrap(ctx.params)))) { // default param is true, eg. required = true
-    
             //not valid, so format the error message and stick it in the 'error' variable
             observable.setError(kv.formatMessage(
                         ctx.message || rule.message,
@@ -1197,22 +1192,21 @@ Ink.createModule('Pink.Data.Validation', '1', ['Pink.Data.Binding_1'], function(
             return true;
         }
     }
-    
+
     function validateAsync(observable, rule, ctx) {
         observable.isValidating(true);
-    
+
         var callBack = function (valObj) {
             var isValid = false,
                 msg = '';
-    
+
             if (!observable.__valid__()) {
-    
                 // since we're returning early, make sure we turn this off
                 observable.isValidating(false);
-    
+
                 return; //if its already NOT valid, don't add to that
             }
-    
+
             //we were handed back a complex object
             if (valObj['message']) {
                 isValid = valObj.isValid;
@@ -1220,7 +1214,7 @@ Ink.createModule('Pink.Data.Validation', '1', ['Pink.Data.Binding_1'], function(
             } else {
                 isValid = valObj;
             }
-    
+
             if (!isValid) {
                 //not valid, so format the error message and stick it in the 'error' variable
                 observable.error(kv.formatMessage(
@@ -1229,39 +1223,37 @@ Ink.createModule('Pink.Data.Validation', '1', ['Pink.Data.Binding_1'], function(
                     observable));
                 observable.__valid__(isValid);
             }
-    
+
             // tell it that we're done
             observable.isValidating(false);
         };
-    
+
         //fire the validator and hand it the callback
         rule.validator(observable(), unwrap(ctx.params || true), callBack);
     }
-    
+
     kv.validateObservable = function (observable) {
         var i = 0,
             rule, // the rule validator to execute
             ctx, // the current Rule Context for the loop
             ruleContexts = observable.rules(), //cache for iterator
             len = ruleContexts.length; //cache for iterator
-    
+
         for (; i < len; i++) {
-    
             //get the Rule Context info to give to the core Rule
             ctx = ruleContexts[i];
-    
+
             // checks an 'onlyIf' condition
             if (ctx.condition && !ctx.condition()) {
                 continue;
             }
-    
+
             //get the core Rule to use for validation
             rule = ctx.rule ? kv.rules[ctx.rule] : ctx;
-    
+
             if (rule['async'] || ctx['async']) {
                 //run async validation
                 validateAsync(observable, rule, ctx);
-    
             } else {
                 //run normal sync validation
                 if (!validateSync(observable, rule, ctx)) {
@@ -1273,12 +1265,11 @@ Ink.createModule('Pink.Data.Validation', '1', ['Pink.Data.Binding_1'], function(
         observable.clearError();
         return true;
     };
-    
+
     //quick function to override rule messages
     kv.localize = function (msgTranslations) {
-    
         var msg, rule;
-    
+
         //loop the properties in the object and assign the msg to the rule
         for (rule in msgTranslations) {
             if (kv.rules.hasOwnProperty(rule)) {
@@ -1286,11 +1277,11 @@ Ink.createModule('Pink.Data.Validation', '1', ['Pink.Data.Binding_1'], function(
             }
         }
     };
-    
+
     ko.applyBindingsWithValidation = function (viewModel, rootNode, options) {
         var len = arguments.length,
             node, config;
-    
+
         if (len > 2) { // all parameters were passed
             node = rootNode;
             config = options;
@@ -1303,33 +1294,33 @@ Ink.createModule('Pink.Data.Validation', '1', ['Pink.Data.Binding_1'], function(
                 config = arguments[1];
             }
         }
-    
+
         kv.init();
-    
+
         if (config) { kv.utils.setDomData(node, config); }
-    
+
         ko.applyBindings(viewModel, rootNode);
     };
-    
+
     //override the original applyBindings so that we can ensure all new rules and what not are correctly registered
     var origApplyBindings = ko.applyBindings;
     ko.applyBindings = function (viewModel, rootNode) {
-    
+
         kv.init();
-    
+
         origApplyBindings(viewModel, rootNode);
     };
-    
+
     ko.validatedObservable = function (initialValue) {
         if (!kv.utils.isObject(initialValue)) { return ko.observable(initialValue).extend({ validatable: true }); }
-    
+
         var obsv = ko.observable(initialValue);
         obsv.isValid = ko.observable();
         obsv.errors = kv.group(initialValue);
         obsv.errors.subscribe(function (errors) {
             obsv.isValid(errors.length === 0);
         });
-    
+
         return obsv;
     };
 

@@ -21,9 +21,9 @@
     <!--/ko-->
     <div class="pink-title" data-bind="text: title, attr: {title: title}"></div>
     <!--ko if: (typeof contentTemplate=='string')-->
-        <div class="pink-content" data-bind="template: {name: contentTemplate, data: content}"></div>       
+        <div class="pink-content" data-bind="template: {name: contentTemplate, data: content}"></div>
     <!--/ko-->
     <!--ko if: (typeof contentTemplate=='undefined')-->
-        <div class="pink-content" data-bind="text: content, attr: {title: content}"></div>       
+        <div class="pink-content" data-bind="text: content, attr: {title: content}"></div>
     <!--/ko-->
 </div>

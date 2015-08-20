@@ -7,7 +7,7 @@
 
 Ink.createModule('Pink.App', '1', ['Pink.Data.Binding_1', 'Pink.Plugin.Router_1', 'Ink.Dom.Element_1', 'Pink.Plugin.Signals_1', 'Pink.Data.Module_1'], function(ko, Router, element, Signal) {
     'use strict';
-    
+
     // App constructor
     var Module = function(rootRoute, undefinedRoute) {
         this._router = undefined;
@@ -22,66 +22,65 @@ Ink.createModule('Pink.App', '1', ['Pink.Data.Binding_1', 'Pink.Plugin.Router_1'
         };
 
         this.modalModule = {
-	    	name:'Pink.Data.ModalWindow_1', 
-	    	data: {
-	    		parent: this._modalData, 
-	    		title: this._modalData.title, 
-	    		contentModule: this._modalData.content, 
-	    		modalWidth: this._modalData.width, 
-	    		modalHeight: this._modalData.height,
-	    		cancelVisible: this._modalData.cancelVisible,
-	    		confirmCaption: this._modalData.confirmCaption
-	    	}
+            name:'Pink.Data.ModalWindow_1',
+            data: {
+                parent: this._modalData,
+                title: this._modalData.title,
+                contentModule: this._modalData.content,
+                modalWidth: this._modalData.width,
+                modalHeight: this._modalData.height,
+                cancelVisible: this._modalData.cancelVisible,
+                confirmCaption: this._modalData.confirmCaption
+            }
         };
-        
+
         this._alertData = {
             title: ko.observable()
         };
 
         this.alertModule = {
-			name:'Pink.Data.ModalWindow_1', 
-			data: {
-				parent: this._alertData, 
-				title: this._alertData.title, 
-				contentModule: 'Pink.Data.ModalWindow.AlertBox_1', 
-				modalWidth: '400px', 
-				modalHeight: '200px'
-			}
+            name:'Pink.Data.ModalWindow_1',
+            data: {
+                parent: this._alertData,
+                title: this._alertData.title,
+                contentModule: 'Pink.Data.ModalWindow.AlertBox_1',
+                modalWidth: '400px',
+                modalHeight: '200px'
+            }
         };
-        
+
         this._infoData = {
             title: ko.observable()
         };
 
         this.infoModule = {
-			name:'Pink.Data.ModalWindow_1', 
-			data: {
-				parent: this._infoData, 
-				title: this._infoData.title, 
-				contentModule: 'Pink.Data.ModalWindow.InfoBox_1', 
-				modalWidth: '600px', 
-				modalHeight: '300px', 
-				cancelVisible: false, 
-				confirmCaption: 'Ok'
-			}
+            name:'Pink.Data.ModalWindow_1',
+            data: {
+                parent: this._infoData,
+                title: this._infoData.title,
+                contentModule: 'Pink.Data.ModalWindow.InfoBox_1',
+                modalWidth: '600px',
+                modalHeight: '300px',
+                cancelVisible: false,
+                confirmCaption: 'Ok'
+            }
         };
-        
+
         this.rootRoute = rootRoute;
         this.undefinedRoute = undefinedRoute;
 
         this._defineRoutingMaps();
 
         this.mainModule = {
-			name: this.definedRoutes.activeModule, 
-			data: this.definedRoutes.moduleArgs 
+            name: this.definedRoutes.activeModule,
+            data: this.definedRoutes.moduleArgs
         };
-        
+
         this._setupSignals();
     };
 
     /*
      * Toast notifications API
-     *
      */
 
     Module.prototype._showToast = function(message, type, delay) {
@@ -108,7 +107,6 @@ Ink.createModule('Pink.App', '1', ['Pink.Data.Binding_1', 'Pink.Plugin.Router_1'
 
     /*
      * Modal dialogs API
-     *
      */
     Module.prototype.showMiniModalWindow = function(title, moduleName, params, modalStyle) {
         var style = modalStyle || {};
@@ -159,7 +157,7 @@ Ink.createModule('Pink.App', '1', ['Pink.Data.Binding_1', 'Pink.Plugin.Router_1'
         this._infoData.title(title);
         this._infoData.modal.show({message: message});
     };
-    
+
     Module.prototype.showStandby = function() {
         var standbyPanel = document.getElementById('standbyLightBox');
 
@@ -180,7 +178,6 @@ Ink.createModule('Pink.App', '1', ['Pink.Data.Binding_1', 'Pink.Plugin.Router_1'
 
     /*
      * Define routing maps
-     *
      */
 
     /*
@@ -189,7 +186,6 @@ Ink.createModule('Pink.App', '1', ['Pink.Data.Binding_1', 'Pink.Plugin.Router_1'
      *
      * Visible route example:
      * {isActive: ko.observable(true), caption: 'Home', hash: 'home', module: 'App.Example.Home'}
-     *
      */
     Module.prototype.listVisibleRoutes = function() {
         return [];
@@ -202,12 +198,10 @@ Ink.createModule('Pink.App', '1', ['Pink.Data.Binding_1', 'Pink.Plugin.Router_1'
      *
      * Invisible route example (search users view):
      * {hash: 'users\\?search=:search', module: 'App.Example.ListUsers', parentModule: 'App.Example.ListUsers'}
-     *
      */
     Module.prototype.listInvisibleRoutes = function() {
         return [];
     };
-
 
     Module.prototype._defineRoutingMaps = function () {
         // Available routes definition
@@ -240,7 +234,6 @@ Ink.createModule('Pink.App', '1', ['Pink.Data.Binding_1', 'Pink.Plugin.Router_1'
      * This method is responsible for:
      * - Initialize the routing maps and send them to the routing plugin.
      * - View change logic
-     *
      */
     Module.prototype._buildRoutingMaps = function() {
         var self = this;
@@ -269,8 +262,8 @@ Ink.createModule('Pink.App', '1', ['Pink.Data.Binding_1', 'Pink.Plugin.Router_1'
                     var parameters;
                     var argumentsValues;
                     var values = {};
-                    var i; 
-                    
+                    var i;
+
                     // Turn off all visible routes
                     for (i = 0; i < self.definedRoutes.visibleRoutes.length; i++) {
                         self.definedRoutes.visibleRoutes[i].isActive(false);
@@ -331,16 +324,13 @@ Ink.createModule('Pink.App', '1', ['Pink.Data.Binding_1', 'Pink.Plugin.Router_1'
 
     /*
      * Signals setup
-     *
      */
-
 
     /*
      * Build the app's custom signals (client side)
      * (Method to be overriden by subclasses)
      *
      * Add custom signals to this.signals
-     *
      */
     Module.prototype.addCustomSignals = function() {
         /*
@@ -363,12 +353,10 @@ Ink.createModule('Pink.App', '1', ['Pink.Data.Binding_1', 'Pink.Plugin.Router_1'
         this.addCustomSignals();
     };
 
-
     /*
      * Navigate to an internal app route path
      *
      * eg. app.navigateTo('user/1');
-     *
      */
     Module.prototype.navigateTo = function(path, options) {
         Router.navigate(path, options);
@@ -376,7 +364,6 @@ Ink.createModule('Pink.App', '1', ['Pink.Data.Binding_1', 'Pink.Plugin.Router_1'
 
     /*
      * Navigate to the app's initial screen
-     *
      */
     Module.prototype.navigateToStart = function() {
         if (this.rootRoute) {
@@ -415,12 +402,10 @@ Ink.createModule('Pink.App', '1', ['Pink.Data.Binding_1', 'Pink.Plugin.Router_1'
 
     /*
      * Application startup logic methods
-     *
      */
 
     /*
      * The application entry point must call this method
-     *
      */
     Module.prototype.run = function() {
         var self=this;
@@ -434,7 +419,6 @@ Ink.createModule('Pink.App', '1', ['Pink.Data.Binding_1', 'Pink.Plugin.Router_1'
     /*
      * Override this method to add your own custom initialization logic.
      * If you override this method, you must call start() when ready
-     *
      */
     Module.prototype.ready = function() {
         this.start();
@@ -443,7 +427,6 @@ Ink.createModule('Pink.App', '1', ['Pink.Data.Binding_1', 'Pink.Plugin.Router_1'
 
     /*
      * Call this method only once when all the app's initialization code has run
-     *
      */
     Module.prototype.start = function() {
         this.signals.appReady.dispatch();

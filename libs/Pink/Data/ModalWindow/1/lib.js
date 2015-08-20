@@ -3,7 +3,7 @@
  * @desc Modal window widget
  * @author hlima, ecunha, ttt  AT sapo.pt
  * @version 1
- */    
+ */
 
 Ink.createModule('Pink.Data.ModalWindow', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Selector_1','Ink.UI.Modal_1'], function(ko, Selector, Modal) {
     'use strict';
@@ -19,19 +19,19 @@ Ink.createModule('Pink.Data.ModalWindow', '1', ['Pink.Data.Binding_1', 'Ink.Dom.
         this.modalEl = undefined;
         this.modalWidth = options.modalWidth || "80%";
         this.modalHeight = options.modalHeight || "80%";
-        
+
         this.headerTemplate = options.headerTemplate || 'Pink.Data.ModalWindow.HeaderTemplate';
         this.footerTemplate = options.footerTemplate || 'Pink.Data.ModalWindow.FooterTemplate';
-        
+
         this.cancelVisible = ko.computed(function() {
            var cancelVisible = ko.unwrap(options.cancelVisible);
-           return (typeof cancelVisible == 'boolean'?cancelVisible:true); 
-        }); 
+           return (typeof cancelVisible == 'boolean'?cancelVisible:true);
+        });
 
         this.cancelCaption = ko.computed(function() {
             return ko.unwrap(options.cancelCaption) || 'Cancel';
         });
-        
+
         this.confirmCaption = ko.computed(function() {
             return ko.unwrap(options.confirmCaption) || 'Confirm';
         });
@@ -39,21 +39,21 @@ Ink.createModule('Pink.Data.ModalWindow', '1', ['Pink.Data.Binding_1', 'Ink.Dom.
         this.taskButtonsArray = ko.observable();
         this.taskButtons = ko.computed(function() {
             var buttons = ko.unwrap(self.taskButtonsArray());
-            
+
             return buttons ? buttons : [];
         });
 
         // Options passed to the content module
         this.moduleData = {
-            confirmHandler: undefined, 
-            cancelHandler: undefined, 
-            confirmDisabled: ko.observable(false), 
-            params: undefined, 
-            hide: this.hide.bind(this) 
+            confirmHandler: undefined,
+            cancelHandler: undefined,
+            confirmDisabled: ko.observable(false),
+            params: undefined,
+            hide: this.hide.bind(this)
         };
-        
+
         this.confirmDisabled = ko.computed(function() {
-           return ko.unwrap(self.moduleData.confirmDisabled()); 
+           return ko.unwrap(self.moduleData.confirmDisabled());
         });
 
         this.notifyContentReady = function() {
@@ -64,7 +64,7 @@ Ink.createModule('Pink.Data.ModalWindow', '1', ['Pink.Data.Binding_1', 'Ink.Dom.
             show: function(params) {
                 self.show(params);
             }
-        }; 
+        };
     };
 
     Module.prototype.confirm = function() {
@@ -72,29 +72,29 @@ Ink.createModule('Pink.Data.ModalWindow', '1', ['Pink.Data.Binding_1', 'Ink.Dom.
             this.moduleData.confirmHandler();
         }
     };
-    
+
     Module.prototype.cancel = function() {
         if (this.moduleData.params.cancelCallback && (typeof this.moduleData.params.cancelCallback == 'function')) {
             this.moduleData.params.cancelCallback();
         }
     };
-    
+
     Module.prototype.hide = function() {
-        // This method should be called after an accept/confirm action is done in the modal's content module 
+        // This method should be called after an accept/confirm action is done in the modal's content module
         this.userCanceled = false;
         this.modal.dismiss();
     };
-    
+
     Module.prototype._hideModal = function() {
         var self=this;
         var content;
-        
+
         if (this.modal) {
             this.modal.destroy();
             content = Selector.select("#modalContent", this.modalEl)[0];
             ko.cleanNode(content);
             content.innerHTML = '';
-            
+
             // If there's a focused element, let's loose it's focus
             if (document.activeElement) {
                 document.activeElement.blur();
@@ -104,7 +104,7 @@ Ink.createModule('Pink.Data.ModalWindow', '1', ['Pink.Data.Binding_1', 'Ink.Dom.
             if (this.userCanceled) {
                 this.cancel();
             }
-            
+
             // Hack to remove previous modal attributes
             window.setTimeout(function() {
                 self.modalEl.removeAttribute('style');
@@ -112,20 +112,20 @@ Ink.createModule('Pink.Data.ModalWindow', '1', ['Pink.Data.Binding_1', 'Ink.Dom.
             }, 400);
         }
     };
-    
+
     Module.prototype.afterRender = function(elements) {
-    	this.modalEl = Selector.select(".ink-modal", elements[0])[0];
+        this.modalEl = Selector.select(".ink-modal", elements[0])[0];
     };
 
     Module.prototype.show = function(params) {
         var self = this;
         var content;
-        
+
         this.taskButtonsArray(params.taskButtons);
         this.moduleData.params = params;
         this.moduleData.confirmHandler = undefined;
         this.moduleData.confirmDisabled(false);
-        
+
         // By default, the dismiss event is sent when the user cancels the dialog
         this.userCanceled = true;
 
@@ -147,7 +147,7 @@ Ink.createModule('Pink.Data.ModalWindow', '1', ['Pink.Data.Binding_1', 'Ink.Dom.
             self.modal.open();
         }, 250);
     };
-    
+
     Module.prototype.handleTask = function(handler) {
         handler.call(this, this);
     };
