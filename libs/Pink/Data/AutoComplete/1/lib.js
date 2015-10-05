@@ -398,7 +398,7 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
                     if (selectedItem) {
                         displayText = labelProp ? ko.unwrap(selectedItem[labelProp]) : ko.unwrap(selectedItem).toString();
                         displayInput.value = displayText;
-                        displayInput.dispatchEvent(new Event('refresh'));
+                        inkEvt.fire(displayInput, 'refresh');
                     } else if (!allowAny || (currentModelValue === undefined)) {
                         displayInput.value = '';
                     } else {
