@@ -30,7 +30,7 @@ Ink.createModule('Pink.Data.Tabs', '1', ['Pink.Data.Binding_1', 'Ink.UI.Common_1
      * @param {Array}               [options.disabled]              IDs of the tabs that will be disabled on creation
      * @param {Function}            [options.onBeforeChange]        Callback to be executed before changing tabs
      * @param {Function}            [options.onChange]              Callback to be executed after changing tabs
-     * 
+     *
      * @param {String}              [options.menuSelector='.tabs-nav'] Selector to find the menu element
      * @param {String}              [options.contentSelector='.tabs-content'] Selector to find the menu element
      * @param {String}              [options.tabSelector='.tabs-tab'] Selector to find the menu element
@@ -65,7 +65,7 @@ Ink.createModule('Pink.Data.Tabs', '1', ['Pink.Data.Binding_1', 'Ink.UI.Common_1
 
         /**
          * Init function called by the constructor
-         * 
+         *
          * @method _init
          * @private
          */
@@ -92,7 +92,7 @@ Ink.createModule('Pink.Data.Tabs', '1', ['Pink.Data.Binding_1', 'Ink.UI.Common_1
 
         /**
          * Initialization of the tabs, hides all content before setting the active tab
-         * 
+         *
          * @method _initializeDom
          * @private
          */
@@ -106,7 +106,7 @@ Ink.createModule('Pink.Data.Tabs', '1', ['Pink.Data.Binding_1', 'Ink.UI.Common_1
 
         /**
          * Subscribe events
-         * 
+         *
          * @method _observe
          * @private
          */
@@ -118,7 +118,7 @@ Ink.createModule('Pink.Data.Tabs', '1', ['Pink.Data.Binding_1', 'Ink.UI.Common_1
         /**
          * Run at instantiation, to determine which is the first active tab
          * fallsback from window.location.href to options.active to the first not disabled tab
-         * 
+         *
          * @method _setFirstActive
          * @private
          */
@@ -137,7 +137,7 @@ Ink.createModule('Pink.Data.Tabs', '1', ['Pink.Data.Binding_1', 'Ink.UI.Common_1
 
         /**
          * Changes to the desired tab
-         * 
+         *
          * @method _changeTab
          * @param {DOMElement} link             anchor linking to the content container
          * @param {boolean}    runCallbacks     defines if the callbacks should be run or not
@@ -189,7 +189,7 @@ Ink.createModule('Pink.Data.Tabs', '1', ['Pink.Data.Binding_1', 'Ink.UI.Common_1
 
         /**
          * Tab clicked handler
-         * 
+         *
          * @method _onTabClicked
          * @param {Event} ev
          * @private
@@ -227,7 +227,7 @@ Ink.createModule('Pink.Data.Tabs', '1', ['Pink.Data.Binding_1', 'Ink.UI.Common_1
 
         /**
          * Disabled tab clicked handler
-         * 
+         *
          * @method _onDisabledTabClicked
          * @param {Event} ev
          * @private
@@ -238,7 +238,7 @@ Ink.createModule('Pink.Data.Tabs', '1', ['Pink.Data.Binding_1', 'Ink.UI.Common_1
 
         /**
          * Resize handler
-         * 
+         *
          * @method _onResize
          * @private
          */
@@ -272,7 +272,7 @@ Ink.createModule('Pink.Data.Tabs', '1', ['Pink.Data.Binding_1', 'Ink.UI.Common_1
 
         /**
          * Allows the hash to be passed with or without the cardinal sign
-         * 
+         *
          * @method _hashify
          * @param {String} hash     the string to be hashified
          * @return {String} Resulting hash
@@ -287,7 +287,7 @@ Ink.createModule('Pink.Data.Tabs', '1', ['Pink.Data.Binding_1', 'Ink.UI.Common_1
 
         /**
          * Returns the anchor with the desired href
-         * 
+         *
          * @method _findLinkBuHref
          * @param {String} href     the href to be found on the returned link
          * @return {String|undefined} [description]
@@ -308,7 +308,7 @@ Ink.createModule('Pink.Data.Tabs', '1', ['Pink.Data.Binding_1', 'Ink.UI.Common_1
          * Changes the active tab
          *
          * Pass a selector/element identifying what tab you want
-         * 
+         *
          * @method changeTab
          * @param {String|DOMElement} selector      Selector of the desired tab or the link that links to it
          * @public
@@ -335,7 +335,7 @@ Ink.createModule('Pink.Data.Tabs', '1', ['Pink.Data.Binding_1', 'Ink.UI.Common_1
 
         /**
          * Disables the desired tag
-         * 
+         *
          * @method disable
          * @param {String|DOMElement} selector      the id of the desired tab or the link that links to it
          * @public
@@ -346,7 +346,7 @@ Ink.createModule('Pink.Data.Tabs', '1', ['Pink.Data.Binding_1', 'Ink.UI.Common_1
 
         /**
          * Enables the desired tag
-         * 
+         *
          * @method enable
          * @param {String|DOMElement} selector      The id of the desired tab or the link that links to it
          * @public
@@ -361,7 +361,7 @@ Ink.createModule('Pink.Data.Tabs', '1', ['Pink.Data.Binding_1', 'Ink.UI.Common_1
 
         /**
          * Returns the active tab id
-         * 
+         *
          * @method activeTab
          * @return {String} ID of the active tab.
          * @public
@@ -391,7 +391,7 @@ Ink.createModule('Pink.Data.Tabs', '1', ['Pink.Data.Binding_1', 'Ink.UI.Common_1
 
         /**
          * Gets the currently active Menu link (the links which the user clicks on to change tabs)
-         * 
+         *
          * @method activeMenuLink
          * @return {DOMElement|null} Active menu link, or `null` if there is none.
          * @public
@@ -404,7 +404,7 @@ Ink.createModule('Pink.Data.Tabs', '1', ['Pink.Data.Binding_1', 'Ink.UI.Common_1
          * Gets the currently active section
          *
          * (Each section contains content for a tab, and must have an `id` attribute)
-         * 
+         *
          * @method activeContentTab
          * @return {DOMElement|null} Active section, or `null` if there is none.
          * @public
@@ -415,17 +415,15 @@ Ink.createModule('Pink.Data.Tabs', '1', ['Pink.Data.Binding_1', 'Ink.UI.Common_1
 
         /**
          * Unregisters the component and removes its markup
-         * 
+         *
          * @method destroy
          * @public
          */
         destroy: Common.destroyComponent
     };
 
-    
     /*
      * Tabs binding handler
-     * 
      */
     ko.bindingHandlers.tabs = {
         init: function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
@@ -434,26 +432,26 @@ Ink.createModule('Pink.Data.Tabs', '1', ['Pink.Data.Binding_1', 'Ink.UI.Common_1
             var options = {preventUrlChange: true}; //prevent tabs changing the url
             var innerBindingContext = bindingContext.extend(valueAccessor);
             var tabs;
-            
+
             if (typeof binding == 'object') {
                 for (attr in binding) {
                     options[attr] = ko.unwrap(binding[attr]);
                 }
             }
-            
+
             Css.addClassName(element, 'ink-tabs');
-            
+
             ko.applyBindingsToDescendants(innerBindingContext, element);
-            
+
             tabs=new Tabs(element, options);
-            
+
             ko.utils.domNodeDisposal.addDisposeCallback(element, function() {
                 tabs.destroy();
-            });            
-            
+            });
+
             return { controlsDescendantBindings: true };
         }
     };
-    
+
     return {};
 });

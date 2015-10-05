@@ -9,17 +9,16 @@ Ink.createModule('Pink.Data.Paginator', '1', [ 'Pink.Data.Module_1' ], function(
 
     /*
      * Module parameters:
-     * 
+     *
      * configuration: object {
      *   data: observableArray with the records to be paginated
      *   pageSize: default 5
      *   pageSizeOptionList: int array (eg. [5,10,50])
      * }
-     * 
      */
     var Module = function(configuration) {
         var self = this;
-        
+
         this.data = configuration.data;
         this.currentPageIndex = ko.observable(0);
         this.pageSize = ko.observable(configuration.pageSize || 5);
@@ -43,12 +42,12 @@ Ink.createModule('Pink.Data.Paginator', '1', [ 'Pink.Data.Module_1' ], function(
         this.maxPageIndex = ko.computed(function() {
             return Math.ceil(ko.utils.unwrapObservable(self.data).length / self.pageSize()) - 1;
         }, this);
-        
+
         this.pageCaption = ko.computed(function() {
             var startIndex = self.pageSize() * self.currentPageIndex() + 1;
             var endIndex = startIndex + self.pageSize() - 1;
             var itemsCount = self.data().length;
-            
+
             endIndex = (endIndex>itemsCount?itemsCount:endIndex);
 
             return (itemsCount>0?''+startIndex+'-'+endIndex+'/'+itemsCount:'');
@@ -190,19 +189,18 @@ Ink.createModule('Pink.Data.Paginator', '1', [ 'Pink.Data.Module_1' ], function(
         };
     };
 
-    /* 
+    /*
      * paginator binding handler
-     * 
      */
     ko.bindingHandlers.paginator = {
         defaultPagerTemplate: 'Pink.Data.Paginator.InkPagerTemplate',
-        
+
         init : function() {
             return {
                 'controlsDescendantBindings' : true
             };
         },
-        
+
         update : function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
             var paginator = valueAccessor(), allBindings = allBindingsAccessor();
 
@@ -219,7 +217,6 @@ Ink.createModule('Pink.Data.Paginator', '1', [ 'Pink.Data.Module_1' ], function(
             ko.renderTemplate(pageLinksTemplateName, new ko.bindingContext(paginator, bindingContext), {}, pageLinksContainer, 'replaceNode');
         }
     };
-    
-    
+
     return Module;
 });

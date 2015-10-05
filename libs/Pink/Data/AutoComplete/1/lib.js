@@ -369,7 +369,7 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
         /*
          * Knockout custom binding update
          *
-         * Updates the autocomplete based on a model change (options)
+         * Updates the autocomplete based on a model change
          */
         update: function (element, valueAccessor, allBindingsAccessor, viewModel) {
             var dataSource = valueAccessor();

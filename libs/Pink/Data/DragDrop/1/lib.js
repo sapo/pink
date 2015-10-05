@@ -15,21 +15,18 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
     var dropSuccess = false;
     var selectedData = []; // Array of selected objects (multi drag)
     var lastSelectedContainer;
-    
-    
+
     /*
      * Important note:
-     * 
+     *
      * Ink's Draggable & Droppable components are embedded in this module to fix some implementation problems until these fixes reach upstream.
      * Check "PINK:" Comments bellow for fix details
-     * 
      */
-    
-    /* 
+
+    /*
      * Ink's Draggble Component With fixes
-     *  
      */
-    
+
     var x = 0,
     y = 1;  // For accessing coords in [x, y] arrays
 
@@ -39,7 +36,7 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
         val = Math.max(val, min);
         return val;
     }
-    
+
     /**
      * @class Ink.UI.Draggable
      * @version 1
@@ -70,12 +67,12 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
     var Draggable = function(element, options) {
         this.init(element, options);
     };
-    
+
     Draggable.prototype = {
-    
+
         /**
          * Init function called by the constructor
-         * 
+         *
          * @method _init
          * @param {String|DOMElement}   element     Element ID of the element or DOM Element.
          * @param {Object}              [options]   Options object for configuration of the module.
@@ -104,67 +101,67 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
                 fps:                100,
                 debug:              false
             }, options || {}, InkElement.data(element));
-    
+
             this.options = o;
             this.element = Common.elOrSelector(element);
             this.constraintElm = o.constraintElm && Common.elOrSelector(o.constraintElm);
-    
+
             this.handle             = false;
             this.elmStartPosition   = false;
             this.active             = false;
             this.dragged            = false;
             this.prevCoords         = false;
             this.placeholder        = false;
-    
+
             this.position           = false;
             this.zindex             = false;
             this.firstDrag          = true;
-    
+
             if (o.fps) {
                 this.deltaMs = 1000 / o.fps;
                 this.lastRunAt = 0;
             }
-    
+
             this.handlers = {};
             this.handlers.start         = Ink.bindEvent(this._onStart,this);
             this.handlers.dragFacade    = Ink.bindEvent(this._onDragFacade,this);
             this.handlers.drag          = Ink.bindEvent(this._onDrag,this);
             this.handlers.end           = Ink.bindEvent(this._onEnd,this);
             this.handlers.selectStart   = function(event) {    InkEvent.stop(event);    return false;    };
-    
+
             // set handle
             this.handle = (this.options.handle) ?
                 Common.elOrSelector(this.options.handle) : this.element;
             this.handle.style.cursor = o.cursor;
-    
+
             InkEvent.observe(this.handle, 'touchstart', this.handlers.start);
             InkEvent.observe(this.handle, 'mousedown', this.handlers.start);
-    
+
             if (Browser.IE) {
                 InkEvent.observe(this.element, 'selectstart', this.handlers.selectStart);
             }
-    
+
             Common.registerInstance(this, this.element);
         },
-    
+
         /**
          * Removes the ability of the element of being dragged
-         * 
+         *
          * @method destroy
          * @public
          */
         destroy: function() {
             InkEvent.stopObserving(this.handle, 'touchstart', this.handlers.start);
             InkEvent.stopObserving(this.handle, 'mousedown', this.handlers.start);
-    
+
             if (Browser.IE) {
                 InkEvent.stopObserving(this.element, 'selectstart', this.handlers.selectStart);
             }
         },
-    
+
         /**
          * Gets coordinates for a given event (with added page scroll)
-         * 
+         *
          * @method _getCoords
          * @param {Object} e window.event object.
          * @return {Array} Array where the first position is the x coordinate, the second is the y coordinate
@@ -177,10 +174,10 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
                 y: (e.touches ? e.touches[0].clientY : e.clientY) + ps[y]
             };
         },
-    
+
         /**
          * Clones src element's relevant properties to dst
-         * 
+         *
          * @method _cloneStyle
          * @param {DOMElement} src Element from where we're getting the styles
          * @param {DOMElement} dst Element where we're placing the styles.
@@ -198,10 +195,10 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
             dst.style.cssFloat      = Css.getStyle(src, 'float');
             dst.style.display       = Css.getStyle(src, 'display');
         },
-    
+
         /**
          * onStart event handler
-         * 
+         *
          * @method _onStart
          * @param {Object} e window.event object
          * @return {Boolean|void} In some cases return false. Otherwise is void
@@ -209,33 +206,33 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
          */
         _onStart: function(e) {
             if (!this.active && InkEvent.isLeftClick(e) || typeof e.button === 'undefined') {
-    
+
                 var tgtEl = InkEvent.element(e);
                 if (this.options.skipChildren && tgtEl !== this.handle) {    return;    }
-    
+
                 InkEvent.stop(e);
-    
+
                 Css.addClassName(this.element, this.options.dragClass);
-    
+
                 this.elmStartPosition = [
                     InkElement.elementLeft(this.element),
                     InkElement.elementTop( this.element)
                 ];
-    
+
                 var pos = [
                     parseInt(Css.getStyle(this.element, 'left'), 10),
                     parseInt(Css.getStyle(this.element, 'top'),  10)
                 ];
-    
+
                 var dims = InkElement.elementDimensions(this.element);
-    
+
                 this.originalPosition = [ pos[x] ? pos[x]: null, pos[y] ? pos[y] : null ];
                 this.delta = this._getCoords(e); // mouse coords at beginning of drag
-    
+
                 this.active = true;
                 this.position = Css.getStyle(this.element, 'position');
                 this.zindex = Css.getStyle(this.element, 'zIndex');
-    
+
                 var div = document.createElement('div');
                 div.style.position      = this.position;
                 div.style.width         = dims[x] + 'px';
@@ -249,7 +246,7 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
                 div.style.cssFloat      = Css.getStyle(this.element, 'float');
                 div.style.display       = Css.getStyle(this.element, 'display');
                 div.style.visibility    = 'hidden';
-    
+
                 this.delta2 = [ this.delta.x - this.elmStartPosition[x], this.delta.y - this.elmStartPosition[y] ]; // diff between top-left corner of obj and mouse
                 if (this.options.mouseAnchor) {
                     var parts = this.options.mouseAnchor.split(' ');
@@ -258,13 +255,13 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
                     if (parts[1] === 'top') {     ad[y] = 0;    } else if(parts[1] === 'center') {    ad[y] = parseInt(ad[y]/2, 10);    }
                     this.applyDelta = [this.delta2[x] - ad[x], this.delta2[y] - ad[y]];
                 }
-    
+
                 var dragHandlerName = this.options.fps ? 'dragFacade' : 'drag';
-    
+
                 this.placeholder = div;
-    
+
                 if (this.options.onStart) {        this.options.onStart(this.element, e);        }
-    
+
                 if (this.options.droppableProxy) {    // create new transparent div to optimize DOM traversal during drag
                     this.proxy = document.createElement('div');
                     dims = [
@@ -280,35 +277,34 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
                     fs.zIndex           = this.options.zindex + 1;
                     fs.backgroundColor  = '#FF0000';
                     Css.setOpacity(this.proxy, 0);
-    
+
                     var firstEl = document.body.firstChild;
                     while (firstEl && firstEl.nodeType !== 1) {    firstEl = firstEl.nextSibling;    }
                     document.body.insertBefore(this.proxy, firstEl);
-    
-                    
+
                     InkEvent.observe(this.proxy, 'mousemove', this.handlers[dragHandlerName]);
                     InkEvent.observe(this.proxy, 'touchmove', this.handlers[dragHandlerName]);
                 }
                 else {
                     InkEvent.observe(document, 'mousemove', this.handlers[dragHandlerName]);
                 }
-    
+
                 this.element.style.position = 'absolute';
                 this.element.style.zIndex = this.options.zindex;
                 this.element.parentNode.insertBefore(this.placeholder, this.element);
-    
+
                 this._onDrag(e);
-    
+
                 InkEvent.observe(document, 'mouseup',      this.handlers.end);
                 InkEvent.observe(document, 'touchend',     this.handlers.end);
-    
+
                 return false;
             }
         },
-    
+
         /**
          * Function that gets the timestamp of the current run from time to time. (FPS)
-         * 
+         *
          * @method _onDragFacade
          * @param {Object} window.event object.
          * @private
@@ -320,10 +316,10 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
                 this._onDrag(e);
             }
         },
-    
+
         /**
          * Function that handles the dragging movement
-         * 
+         *
          * @method _onDrag
          * @param {Object} window.event object.
          * @private
@@ -338,16 +334,16 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
                     o           = this.options,
                     newX        = false,
                     newY        = false;
-    
+
                 if (this.prevCoords && mPosX !== this.prevCoords.x || mPosY !== this.prevCoords.y) {
                     if (o.onDrag) {        o.onDrag(this.element, e);        }
                     this.prevCoords = mouseCoords;
-    
+
                     newX = this.elmStartPosition[x] + mPosX - this.delta.x;
                     newY = this.elmStartPosition[y] + mPosY - this.delta.y;
-    
+
                     var draggableSize = InkElement.elementDimensions(this.element);
-    
+
                     if (this.constraintElm) {
                         var offset = InkElement.offset(this.constraintElm);
                         var size = InkElement.elementDimensions(this.constraintElm);
@@ -355,7 +351,7 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
                             constBottom = offset[y] + size[y] - (o.bottom || 0),
                             constLeft = offset[x] + (o.left || 0),
                             constRight = offset[x] + size[x] - (o.right || 0);
-    
+
                         newY = between(newY, constTop, constBottom - draggableSize[y]);
                         newX = between(newX, constLeft, constRight - draggableSize[x]);
                     } else if (o.constraint) {
@@ -370,12 +366,12 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
                             newY = between(newY, top, bottom);
                         }
                     }
-    
+
                     //var Droppable = Ink.getModule('Ink.UI.Droppable_1');
-                    
+
                     // PINK: This needs to execute on every movement because droppable's containers viewport may change over time.
                     if (Droppable) {    Droppable.updateAll();    }
-                    
+
                     if (this.firstDrag) {
                         //if (Droppable) {    Droppable.updateAll();    }
                         /*this.element.style.position = 'absolute';
@@ -383,10 +379,10 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
                         this.element.parentNode.insertBefore(this.placeholder, this.element);*/
                         this.firstDrag = false;
                     }
-    
+
                     if (newX) {        this.element.style.left = newX + 'px';        }
                     if (newY) {        this.element.style.top  = newY + 'px';        }
-    
+
                     if (Droppable) {
                         // apply applyDelta defined on drag init
                         var mouseCoords2 = this.options.mouseAnchor ?
@@ -398,10 +394,10 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
                 }
             }
         },
-    
+
         /**
          * Function that handles the end of the dragging process
-         * 
+         *
          * @method _onEnd
          * @param {Object} window.event object.
          * @private
@@ -409,32 +405,31 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
         _onEnd: function(e) {
             InkEvent.stopObserving(document, 'mousemove', this.handlers.drag);
             InkEvent.stopObserving(document, 'touchmove', this.handlers.drag);
-    
+
             if (this.options.fps) {
                 this._onDrag(e);
             }
-    
+
             Css.removeClassName(this.element, this.options.dragClass);
-    
+
             if (this.active && this.dragged) {
-    
                 if (this.options.droppableProxy) {    // remove transparent div...
                     document.body.removeChild(this.proxy);
                 }
-    
+
                 if (this.pt) {    // remove debugging element...
                     InkElement.remove(this.pt);
                     this.pt = undefined;
                 }
-    
+
                 /*if (this.options.revert) {
                     this.placeholder.parentNode.removeChild(this.placeholder);
                 }*/
-    
+
                 if(this.placeholder) {
                     InkElement.remove(this.placeholder);
                 }
-    
+
                 if (this.options.revert) {
                     this.element.style.position = this.position;
                     if (this.zindex !== null) {
@@ -443,37 +438,35 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
                     else {
                         this.element.style.zIndex = 'auto';
                     } // restore default zindex of it had none
-    
+
                     this.element.style.left = (this.originalPosition[x]) ? this.originalPosition[x] + 'px' : '';
                     this.element.style.top  = (this.originalPosition[y]) ? this.originalPosition[y] + 'px' : '';
                 }
-    
+
                 if (this.options.onEnd) {
                     this.options.onEnd(this.element, e);
                 }
-                
+
                 //var Droppable = Ink.getModule('Ink.UI.Droppable_1');
-                
+
                 if (Droppable) {
                     Droppable.action(this._getCoords(e), 'drop', e, this.element);
                 }
-    
+
                 this.position   = false;
                 this.zindex     = false;
                 this.firstDrag  = true;
             }
-    
+
             this.active         = false;
             this.dragged        = false;
         }
     };
-    
-    
+
     /*
      * Ink's Droppable component with fixes
-     * 
      */
-    
+
     // Higher order functions
     var hAddClassName = function (element) {
         return function (className) {return Css.addClassName(element, className);};
@@ -499,7 +492,7 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
 
         /**
          * Array with the data of each element (`{element: ..., data: ..., options: ...}`)
-         * 
+         *
          * @property _droppables
          * @type {Array}
          * @private
@@ -519,7 +512,7 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
          * Makes an element droppable.
          * This method adds it to the stack of droppable elements.
          * Can consider it a constructor of droppable elements, but where no Droppable object is returned.
-         * 
+         *
          * In the following arguments, any events/callbacks you may pass, can be either functions or strings. If the 'move' or 'copy' strings are passed, the draggable gets moved into this droppable. If 'revert' is passed, an acceptable droppable is moved back to the element it came from.
 
          *
@@ -546,11 +539,11 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
                 onDrop:         false,
                 onDropOut:      false
             }, options || {}, InkElement.data(element));
-            
+
             if (typeof opt.hoverClass === 'string') {
                 opt.hoverClass = opt.hoverClass.split(/\s+/);
             }
-            
+
             function cleanStyle(draggable) {
                 draggable.style.position = 'inherit';
             }
@@ -601,7 +594,7 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
             this._droppables.push(elementData);
             this._update(elementData);
         },
-        
+
         /**
          * Finds droppable data about `element`. this data is added in `.add`
          *
@@ -637,7 +630,7 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
 
         /**
          * Invoke every time a drag starts
-         * 
+         *
          * @method updateAll
          * @private
          */
@@ -647,7 +640,7 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
 
         /**
          * Updates location and size of droppable element
-         * 
+         *
          * @method update
          * @param {String|DOMElement} element Target element
          * @public
@@ -659,19 +652,19 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
         _update: function(elementData) {
             var data = elementData.data;
             var element = elementData.element;
-            
-            // PINK: This doesn't work with inner viewports 
+
+            // PINK: This doesn't work with inner viewports
             /*
             data.left   = InkElement.offsetLeft(element);
             data.top    = InkElement.offsetTop( element);
             data.right  = data.left + InkElement.elementWidth( element);
             data.bottom = data.top  + InkElement.elementHeight(element);
             */
-            
-            // This is better 
+
+            // This is better
             var ps = [InkElement.scrollWidth(), InkElement.scrollHeight()];
             var clientRect = element.getBoundingClientRect();
-            
+
             data.left = clientRect.left + ps [0];
             data.top = clientRect.top + ps[1];
             data.right = clientRect.right + ps[0];
@@ -680,7 +673,7 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
 
         /**
          * Removes an element from the droppable stack and removes the droppable behavior
-         * 
+         *
          * @method remove
          * @param {String|DOMElement} elOrSelector  Droppable element to disable.
          * @return {Boolean} Whether the object was found and deleted
@@ -700,7 +693,7 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
 
         /**
          * Executes an action on a droppable
-         * 
+         *
          * @method action
          * @param {Object} coords       Coordinates where the action happened
          * @param {String} type         Type of action. 'drag' or 'drop'.
@@ -736,7 +729,7 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
                                 hAddClassName(element));
                         }
                         if (opt.onHover) {
-                            // PINK: Added event parameter 
+                            // PINK: Added event parameter
                             opt.onHover(draggable, element, ev);
                         }
                     } else if (type === 'drop') {
@@ -750,7 +743,6 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
                     }
                 } else {
                     // OUTSIDE
-
                     if (type === 'drag' && opt.hoverClass) {
                         InkArray.each(opt.hoverClass, hRemoveClassName(element));
                     } else if (type === 'drop') {
@@ -762,62 +754,60 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
             }, this));
         }
     };
-    
-    
+
     /*
      * Droppable binding handler
-     * 
+     *
      * Description: A panel that accepts draggable drops
-     * 
+     *
      * Binding value: {Object}
-     * Binding value properties: 
-     * - {string} [hoverClass]: class name to add to the element when a draggable hovers over it 
+     * Binding value properties:
+     * - {string} [hoverClass]: class name to add to the element when a draggable hovers over it
      * - {function} [dropHandler]: function to execute when a draggable is dropped in this droppable (receives selectedData as a parameter)
-     * - {function} [dataFlavor]: Only accept drops of objects that are instances of the specified function  
-     * 
+     * - {function} [dataFlavor]: Only accept drops of objects that are instances of the specified function
+     *
      * Binding example: {hoverClass: 'my-drop-panel', dropHandler: handleDrop, dataFlavor: Fruit}
-     * 
      */
     ko.bindingHandlers.droppable = {
 
         _clearHints: function() {
-        	var hints;
-        	var i;
+            var hints;
+            var i;
 
-        	hints = Ink.ss('.pink-drop-place-hint-before');
-        	for (i=0; i < hints.length; i++) {
-        		inkCss.removeClassName(hints[i], 'pink-drop-place-hint-before');
-        	}
-        	hints = Ink.ss('.pink-drop-place-hint-after');
-        	for (i=0; i < hints.length; i++) {
-        		inkCss.removeClassName(hints[i], 'pink-drop-place-hint-after');
-        	}
+            hints = Ink.ss('.pink-drop-place-hint-before');
+            for (i=0; i < hints.length; i++) {
+                inkCss.removeClassName(hints[i], 'pink-drop-place-hint-before');
+            }
+            hints = Ink.ss('.pink-drop-place-hint-after');
+            for (i=0; i < hints.length; i++) {
+                inkCss.removeClassName(hints[i], 'pink-drop-place-hint-after');
+            }
         },
-        
+
         _isRightFlavor: function(dataFlavor, dataTransfer) {
-        	if (dataFlavor) {
-        		if (dataTransfer instanceof Array) {
-        		    if (dataTransfer.length === 0) {
-        		        return true;
-        		    }
-        			return (dataTransfer[0] instanceof dataFlavor) && 
-        			       ko.bindingHandlers.droppable._isRightFlavor(dataFlavor, dataTransfer.slice(1));
-        			       
-        		} else {
-        			return dataTransfer instanceof dataFlavor;
-        		}
-        	}
-        	
-        	return true;
+            if (dataFlavor) {
+                if (dataTransfer instanceof Array) {
+                    if (dataTransfer.length === 0) {
+                        return true;
+                    }
+                    return (dataTransfer[0] instanceof dataFlavor) &&
+                        ko.bindingHandlers.droppable._isRightFlavor(dataFlavor, dataTransfer.slice(1));
+
+                } else {
+                    return dataTransfer instanceof dataFlavor;
+                }
+            }
+
+            return true;
         },
-        
+
         _handleDrop: function(binding, draggable, droppable, evt) {
             var receiverEl;
             var containerEl;
             var dataIndex = 0;
             var rect;
             var x, y;
-            
+
             if (!ko.bindingHandlers.droppable._isRightFlavor(binding.dataFlavor, dataTransfer)) {
                 return;
             }
@@ -825,7 +815,7 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
             if (draggable.parentNode) {
                 draggable.parentNode.removeChild(draggable);
             }
-            
+
             if (typeof binding.dropHandler == 'function') {
                 receiverEl=document.elementFromPoint(evt.clientX, evt.clientY);
 
@@ -838,7 +828,7 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
                     }
 
                     rect = receiverEl.getBoundingClientRect();
-                    
+
                     dataIndex=(receiverEl?parseInt(receiverEl.getAttribute('data-index'), 10):undefined);
 
                     if (binding.horizontalLayout) {
@@ -849,38 +839,38 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
                         }
                     } else {
                         y = evt.pageY - rect.top;
-                        
+
                         if (y > rect.height / 2) {
                             dataIndex++;
-                        } 
+                        }
                     }
                 }
 
                 binding.dropHandler(dataTransfer, dataIndex);
             }
             dropSuccess=true;
-        }, 
+        },
 
         _handleHover: function(binding, draggable, droppable, evt) {
-        	var receiverEl;
-        	var containerEl;
-        	var rect;
-        	var x, y;
+            var receiverEl;
+            var containerEl;
+            var rect;
+            var x, y;
 
-        	if (!ko.bindingHandlers.droppable._isRightFlavor(binding.dataFlavor, dataTransfer)) {
-        		return false;
-        	}
-        	
-        	ko.bindingHandlers.droppable._clearHints();
-        	receiverEl=document.elementFromPoint(evt.clientX, evt.clientY);
-        	
-        	if (receiverEl != droppable) {
+            if (!ko.bindingHandlers.droppable._isRightFlavor(binding.dataFlavor, dataTransfer)) {
+                return false;
+            }
+
+            ko.bindingHandlers.droppable._clearHints();
+            receiverEl=document.elementFromPoint(evt.clientX, evt.clientY);
+
+            if (receiverEl != droppable) {
                 receiverEl=inkEl.findUpwardsByClass(receiverEl, 'drag-enabled');
 
                 if (!receiverEl) {
                     return;
                 }
-                
+
                 containerEl=inkEl.findUpwardsByClass(receiverEl, 'pink-draggable-container');
 
                 if (containerEl != droppable) {
@@ -888,7 +878,7 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
                 }
 
                 rect = receiverEl.getBoundingClientRect();
-                
+
                 if (binding.horizontalLayout) {
                     x = evt.pageX - rect.left;
 
@@ -899,58 +889,55 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
                     }
                 } else {
                     y = evt.pageY - rect.top;
-                    
+
                     if (y > rect.height / 2) {
                         inkCss.addClassName(receiverEl, 'pink-drop-place-hint-after');
                     } else {
                         inkCss.addClassName(receiverEl, 'pink-drop-place-hint-before');
                     }
                 }
-        	}
-        }, 
+            }
+        },
 
         init: function (element, valueAccessor, allBindingsAccessor, viewModel) {
             var attr;
             var binding = ko.unwrap(valueAccessor());
             var options = {
-                hoverClass: 'pink-drop-panel-active', 
-                onHover: ko.bindingHandlers.droppable._handleHover.bind(this, binding), 
-                onDrop: ko.bindingHandlers.droppable._handleDrop.bind(this, binding), 
+                hoverClass: 'pink-drop-panel-active',
+                onHover: ko.bindingHandlers.droppable._handleHover.bind(this, binding),
+                onDrop: ko.bindingHandlers.droppable._handleDrop.bind(this, binding),
                 onDropOut: ko.bindingHandlers.droppable._clearHints
-            }; 
-            
+            };
+
             if (typeof binding == 'object') {
-            	if (binding.hoverClass) {
-            		options.hoverClass += ' '+binding.hoverClass;
-            	}
+                if (binding.hoverClass) {
+                    options.hoverClass += ' '+binding.hoverClass;
+                }
             }
-            
+
             inkCss.addClassName(element, 'pink-disable-text-selection');
-            
+
             // The droppable element must have a valid id
             element.id = element.id || 'droppable'+(unknownDropId++);
             Droppable.add(element, options);
         }
     };
-    
 
     /*
      * Draggable container binding handler
-     * 
+     *
      * Description: a panel that hosts a list of draggable objects (with multi-drag) support
-     * 
+     *
      * Binding value: {Object}
-     * Binding value properties: 
-     * - {object} source: Array or ObservableArray that contains the draggable objects 
-     * - {string|function} draggableTemplate: string with id of template to render the draggable or function that receives the draggable and returns a corresponding template id  
+     * Binding value properties:
+     * - {object} source: Array or ObservableArray that contains the draggable objects
+     * - {string|function} draggableTemplate: string with id of template to render the draggable or function that receives the draggable and returns a corresponding template id
      * - {function} [dragOutHandler]: function to execute when a draggable from this container is dropped in a droppable (receives the selectedData as a parameter)
      * - {function} [afterDraggableRender]: Function that is called after Knockout renders each draggable
      * - {string} [dragHandle]: string with css selector to get the draggable element drag handle. (if undefined defaults to whole draggable)
-     * - {bool} [multiSelection]: If true allows dragging multiple draggables (defaults to false) 
-     * 
-     * Binding example: {source: grayItems, draggableTemplate: 'veggieTemplate', dragOutHandler: onDragOut}
+     * - {bool} [multiSelection]: If true allows dragging multiple draggables (defaults to false)
      *
-     * 
+     * Binding example: {source: grayItems, draggableTemplate: 'veggieTemplate', dragOutHandler: onDragOut}
      */
     ko.bindingHandlers.draggableContainer = {
         _dragX: -1,
@@ -958,7 +945,7 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
         _isMouseDown: false,
         _isDragging: false,
         _draggable: undefined,
-        
+
         _handleDragStart: function(evt) {
             if (!ko.bindingHandlers.draggableContainer._isMouseDown) {
                 ko.bindingHandlers.draggableContainer._isMouseDown = true;
@@ -966,7 +953,7 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
                 ko.bindingHandlers.draggableContainer._dragY = evt.screenY;
             }
         },
-        
+
         _handleDragEnd: function(evt) {
             ko.bindingHandlers.draggableContainer._isMouseDown = false;
             if (ko.bindingHandlers.draggableContainer._isDragging) {
@@ -980,7 +967,7 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
                 }, 500);
             }
         },
-        
+
         _clearSelection: function() {
             var elements;
             var i;
@@ -998,7 +985,7 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
             selectedData = [];
             lastSelectedContainer = undefined;
         },
-        
+
         _handleDrop: function(binding, dragProxyElement) {
             window.setTimeout(function() {
                 if (dropSuccess) {
@@ -1006,14 +993,14 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
                         binding.dragOutHandler(dataTransfer);
                     }
                 } else {
-                	if (dragProxyElement.parentNode) {
+                    if (dragProxyElement.parentNode) {
                         dragProxyElement.parentNode.removeChild(dragProxyElement);
-                	}
+                    }
                 }
                 ko.bindingHandlers.draggableContainer._clearSelection();
             }, 0);
         },
-        
+
         _cloneEvent: function(evt) {
             return {
                target: evt.target,
@@ -1026,7 +1013,7 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
                relatedTarget: evt.relatedTarget
             };
         },
-        
+
         init: function (element, valueAccessor, allBindingsAccessor, viewModel) {
             var binding = ko.unwrap(valueAccessor());
             var draggable;
@@ -1050,7 +1037,7 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
                         lastSelectedContainer = element;
                         lastSelectedIndex=-1;
                     }
-                    
+
                     draggableElement = inkEl.findUpwardsByClass(evt.target, 'drag-enabled');
                     selectedIndex = draggableElement.getAttribute('data-index');
 
@@ -1064,10 +1051,10 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
                             stop=selectedIndex;
                             start=lastSelectedIndex;
                         }
-                        
+
                         for (i=start; i<=stop; i++) {
                             inkCss.addClassName(elements[i], 'pink-draggable-selected');
-                            
+
                             if (selectedData.indexOf(source[i])==-1) {
                                 selectedData.push(source[i]);
                             }
@@ -1081,12 +1068,11 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
                             selectedData.push(data);
                         }
                     }
-                    
+
                     lastSelectedIndex = selectedIndex;
                 }
             };
 
-            
             var handleDragMove = function(data, evt) {
                 var draggableElement;
                 var draggableProxy;
@@ -1095,10 +1081,10 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
                 var localScroll;
 
                 draggableElement = inkEl.findUpwardsByClass(evt.target, 'drag-enabled');
-                
+
                 if (ko.bindingHandlers.draggableContainer._isMouseDown && !ko.bindingHandlers.draggableContainer._isDragging) {
                     if ( (Math.abs(evt.screenX-ko.bindingHandlers.draggableContainer._dragX) > dragThreshold) ||
-                         (Math.abs(evt.screenY-ko.bindingHandlers.draggableContainer._dragY) > dragThreshold) 
+                         (Math.abs(evt.screenY-ko.bindingHandlers.draggableContainer._dragY) > dragThreshold)
                        ) {
                         ko.bindingHandlers.draggableContainer._isDragging = true;
 
@@ -1106,7 +1092,7 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
                         if (!inkCss.hasClassName(draggableElement, 'pink-draggable-selected')) {
                             ko.bindingHandlers.draggableContainer._clearSelection();
                         }
-                        
+
                         if (selectedData.length <= 1) {
                             inkCss.addClassName(draggableElement, 'pink-draggable-selected');
                             draggableProxy = inkEl.htmlToFragment('<div>'+draggableElement.innerHTML+'</div>').firstChild;
@@ -1119,79 +1105,79 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
                         draggableProxy.style.position = 'absolute';
                         draggableProxy.style.width = inkEl.elementWidth(draggableElement) + 'px';
                         draggableProxy.style.height = inkEl.elementHeight(draggableElement) + 'px';
-                        
+
                         draggableProxy.style.left = (evt.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - (inkEl.elementWidth(draggableElement) / 2)) + 'px';
                         draggableProxy.style.top = (evt.clientY + document.body.scrollTop + document.documentElement.scrollTop - (inkEl.elementHeight(draggableElement) / 2)) + 'px';
-                        
+
                         inkCss.addClassName(draggableProxy, 'pink-draggable-proxy');
-                        
+
                         draggableProxy=document.body.appendChild(draggableProxy);
-                        
+
                         clonedEvent = ko.bindingHandlers.draggableContainer._cloneEvent(evt);
                         clonedEvent.target=draggableProxy;
-                        
+
                         dropSuccess = false;
                         draggable=new Draggable(draggableProxy, {cursor: 'move', onEnd: ko.bindingHandlers.draggableContainer._handleDrop.bind(this, binding)});
-                        
+
                         draggable.handlers.start(clonedEvent);
                         ko.bindingHandlers.draggableContainer._draggable=draggable;
-                        
+
                         if (typeof ko.bindingHandlers.dragStartHandler == 'function') {
                             ko.bindingHandlers.dragStartHandler();
                         }
 
                         inkCss.toggleClassName(element, 'pink-drag-active');
                     }
-                } 
+                }
             };
-            
+
             inkCss.addClassName(element, 'pink-draggable-container');
             inkCss.addClassName(element, 'pink-disable-text-selection');
-            
+
             var sourceChangedListener = ko.computed(function() {
                 var source = ko.unwrap(binding.source);
                 var childElements;
                 var i;
                 var template;
                 var dragHandleEl;
-                
+
                 childElements = inkSel.select('.drag-enabled', element);
-                
+
                 for (i=0; i < childElements.length; i++) {
                     inkEvt.stopObserving(childElements[i], 'click');
                     inkEvt.stopObserving(childElements[i], 'mousemove');
                     inkEvt.stopObserving(childElements[i], 'mousedown');
                     inkEvt.stopObserving(childElements[i], 'mouseup');
-                    
+
                     ko.removeNode(childElements[i]);
                 }
-                
+
                 for (i=0; i < source.length; i++) {
                     draggable = source[i];
                     draggable.guid = guid();
                     draggable.afterRender = binding.afterDraggableRender;
 
                     if (typeof binding.draggableTemplate == 'function') {
-                    	template = binding.draggableTemplate(draggable);
+                        template = binding.draggableTemplate(draggable);
                     } else {
-                    	template = binding.draggableTemplate;
+                        template = binding.draggableTemplate;
                     }
-                    
-                    draggableElement = inkEl.htmlToFragment('<div data-index="' + i + 
-                            '" class="drag-enabled pink-disable-text-selection" ' + 
-                            (!dragHandleSelector ? 'style="cursor: move"' : '') + 
+
+                    draggableElement = inkEl.htmlToFragment('<div data-index="' + i +
+                            '" class="drag-enabled pink-disable-text-selection" ' +
+                            (!dragHandleSelector ? 'style="cursor: move"' : '') +
                             ' data-bind="template: {afterRender: $data.afterRender, name: \'' + template + '\'}"/>').firstChild;
-                    
+
                     draggableElement.dataTransfer = {data: draggable};
-                    
+
                     ko.applyBindings(draggable, draggableElement);
-                    
+
                     element.appendChild(draggableElement);
-                    
+
                     if (multiSelection) {
                         inkEvt.observe(draggableElement, 'click', handleSelection.bind(this, draggable));
                     }
-                    
+
                     if (dragHandleSelector) {
                         dragHandleEl = inkSel.select(dragHandleSelector, draggableElement);
                         if (dragHandleEl.length === 0) {
@@ -1206,23 +1192,23 @@ Ink.createModule('Pink.Data.DragDrop', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Ele
                     inkEvt.observe(dragHandleEl, 'mousedown', ko.bindingHandlers.draggableContainer._handleDragStart);
                     inkEvt.observe(document, 'mouseup', ko.bindingHandlers.draggableContainer._handleDragEnd);
                 }
-                
+
             });
-            
+
             ko.utils.domNodeDisposal.addDisposeCallback(element, function() {
                 sourceChangedListener.dispose();
             });
-            
+
             return {controlsDescendantBindings: true};
         }
     };
-    
+
     function guid() {
         function S4() {
-            return (((1+Math.random())*0x10000)|0).toString(16).substring(1); 
+            return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
         }
-        return (S4() + S4() + "-" + S4() + "-4" + S4().substr(0,3) + "-" + S4() + "-" + S4() + S4() + S4()).toLowerCase();    
+        return (S4() + S4() + "-" + S4() + "-4" + S4().substr(0,3) + "-" + S4() + "-" + S4() + S4() + S4()).toLowerCase();
     }
-    
+
     return {};
 });

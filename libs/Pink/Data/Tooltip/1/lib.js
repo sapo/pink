@@ -10,23 +10,22 @@ Ink.createModule('Pink.Data.Tooltip', '1', ['Pink.Data.Binding_1', 'Ink.UI.Toolt
 
     /*
      * Tooltip binding handler
-     * 
      */
     ko.bindingHandlers.tooltip = {
         init: function (element, valueAccessor, allBindingsAccessor, viewModel) {
             var attr;
             var binding = ko.unwrap(valueAccessor());
-            var options = {}; // sensible defaults 
-            
+            var options = {}; // sensible defaults
+
             if (typeof binding == 'object') {
                 for (attr in binding) {
                     options[attr] = ko.unwrap(binding[attr]);
                 }
             }
-            
+
             new Tooltip(element, options);
         }
     };
-    
+
     return {};
 });

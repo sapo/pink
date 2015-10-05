@@ -1,6 +1,6 @@
 <!-- ko if: sectionMovedHandler -->
-	<div class="pink-kanban pink-disable-text-selection" data-bind="draggableContainer: sectionsContainer, droppable: sectionsContainer">
-	</div>
+    <div class="pink-kanban pink-disable-text-selection" data-bind="draggableContainer: sectionsContainer, droppable: sectionsContainer">
+    </div>
 <!-- /ko -->
 <!-- ko ifnot: sectionMovedHandler -->
     <div class="pink-kanban pink-disable-text-selection" data-bind="template: {name: 'Pink.Data.Kanban.SectionTemplate', foreach: sections}">

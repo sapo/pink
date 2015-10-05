@@ -10,7 +10,6 @@ Ink.createModule('Pink.Data.DatePicker', '1', ['Pink.Data.Binding_1', 'Ink.UI.Da
 
     /*
      * DatePicker binding handler
-     * 
      */
     ko.bindingHandlers.datePicker = {
         init: function (element, valueAccessor, allBindingsAccessor, viewModel) {
