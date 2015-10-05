@@ -7,13 +7,13 @@
 
 Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom.Event_1', 'Ink.Dom.Element_1', 'Ink.Dom.Selector_1', 'Ink.Util.String_1'], function(ko, inkEvt, inkEl, inkSel, inkStr) {
     'use strict';
-    
+
     /*
      * This function must be bound to an options object
      */
     function handleValueChange(item) {
         /*jshint validthis:true */
-        
+
         var labelToWrite = item ? item.label : undefined;
         var valueToWrite = item ? item.value : undefined;
 
@@ -132,7 +132,6 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
      * Function to transform the input into an autocomplete input
      *
      * @param options: object
-     *
      */
     function buildAutoComplete(options) {
         var nav = document.createElement('nav');
@@ -140,6 +139,7 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
         var displayOptions = options.displayOptions;
         var displayInput = options.displayInput;
         var activeItem;
+        var oldValue;
 
         nav.setAttribute('class', 'ink-navigation');
         ul.setAttribute('class', 'menu vertical');
@@ -148,6 +148,10 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
         buildOptions(ul, options.source, undefined, options.itemTemplate, options.bindingContext, options.minFilterLength);
         displayOptions.appendChild(nav);
 
+        inkEvt.observe(displayInput, 'refresh', function() {
+            buildOptions(ul, options.source, displayInput.value, options.itemTemplate, options.bindingContext, options.minFilterLength);
+        });
+        
         // Handle input focus
         inkEvt.observe(displayInput, 'focus', function() {
             buildOptions(ul, options.source, displayInput.value, options.itemTemplate, options.bindingContext, options.minFilterLength);
@@ -164,25 +168,38 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
                 if (activeItem) {
                     activeItem.setAttribute('class', '');
                     activeItem = undefined;
-                } else {
-                    options.change();
+                }
+
+                if (options.inputBlurHandler) {
+                    options.inputBlurHandler();
                 }
             }, 200);
         });
 
         // List option selected
         inkEvt.observe(displayOptions, 'click', function(event) {
+            var inputValue, modelValue;
+            
             activeItem = inkEvt.element(event);
-            var inputValue = activeItem.getAttribute('data-label');
+
+            inputValue = activeItem.getAttribute('data-label');
+            modelValue = activeItem.getAttribute('data-value');
 
             displayInput.value = inputValue;
-            options.change({label: inputValue, value: activeItem.getAttribute('data-value')});
+            options.change({label: inputValue, value: modelValue});
             buildOptions(ul, options.source, inputValue, options.itemTemplate, options.bindingContext, options.minFilterLength);
+
+            if (options.optionSelectedHandler) {
+                options.optionSelectedHandler(modelValue);
+            }
+
+            oldValue = displayInput.value;
         }, true);
 
         // Key entered in input control
         inkEvt.observe(displayInput, 'keyup', function(event) {
            var inputValue;
+           var modelValue;
            var element;
            var keyCode;
 
@@ -231,7 +248,14 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
                        displayInput.value = inputValue;
                        buildOptions(ul, options.source, inputValue, options.itemTemplate, options.bindingContext, options.minFilterLength);
                        displayInput.blur();
-                       options.change({label: inputValue, value: element.getAttribute('data-value')});
+                       modelValue = element.getAttribute('data-value');
+                       options.change({label: inputValue, value: modelValue});
+
+                       if (options.optionSelectedHandler) {
+                           options.optionSelectedHandler(modelValue);
+                       }
+
+                       oldValue = displayInput.value;
                    }
                }
 
@@ -240,20 +264,22 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
 
            activeItem = undefined;
            buildOptions(ul, options.source, displayInput.value, options.itemTemplate, options.bindingContext, options.minFilterLength);
-           if (options.allowAny) {
+           
+           // Update the viewmodel if the user manualy changes the input text and any value is allowed
+           if (options.allowAny && oldValue != displayInput.value) {
                options.change();
+
+               oldValue = displayInput.value;
            }
         });
     };
 
     /*
      * Ink + Knockout autoComplete binding
-     *
      */
     ko.bindingHandlers.autoComplete = {
         /*
          * Knockout custom binding init
-         *
          */
         maxVisibleOptions: 20,
 
@@ -261,7 +287,7 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
             var opt = {};
             var mappedSource;
             var subscription;
-            var placeholderText; 
+            var placeholderText;
             var childClass;
             var controlChild;
 
@@ -277,9 +303,11 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
             opt.minFilterLength = ko.unwrap(opt.binding.minFilterLength);
             opt.style = ko.unwrap(opt.binding.pickerStyle) || 'autocomplete';
             opt.focus = ko.unwrap(opt.binding.focus);
+            opt.optionSelectedHandler = ko.unwrap(opt.binding.optionSelectedHandler);
+            opt.inputBlurHandler = ko.unwrap(opt.binding.inputBlurHandler);
 
             placeholderText = opt.binding.attr && opt.binding.attr.placeholder ? opt.binding.attr.placeholder : element.getAttribute('placeholder') || '';
-            
+
             element.style.display = 'none';
 
             if (opt.style == 'autocomplete') {
@@ -324,7 +352,7 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
                 var ul = opt.displayOptions.firstChild.firstChild;
 
                 opt.source = newValue;
-                buildOptions(ul, buildDataSource(newValue, 'label', 'value'), opt.displayInput.value, opt.itemTemplate, opt.bindingContext, opt.minFilterLength);
+                buildOptions(ul, newValue, opt.displayInput.value, opt.itemTemplate, opt.bindingContext, opt.minFilterLength);
             });
 
             opt.source = mappedSource();
@@ -338,12 +366,10 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
             buildAutoComplete(opt);
         },
 
-
         /*
          * Knockout custom binding update
          *
-         * Updates the autocomplete based on a model change
-         *
+         * Updates the autocomplete based on a model change (options)
          */
         update: function (element, valueAccessor, allBindingsAccessor, viewModel) {
             var dataSource = valueAccessor();
@@ -372,6 +398,7 @@ Ink.createModule('Pink.Data.AutoComplete', '1', ['Pink.Data.Binding_1', 'Ink.Dom
                     if (selectedItem) {
                         displayText = labelProp ? ko.unwrap(selectedItem[labelProp]) : ko.unwrap(selectedItem).toString();
                         displayInput.value = displayText;
+                        displayInput.dispatchEvent(new Event('refresh'));
                     } else if (!allowAny || (currentModelValue === undefined)) {
                         displayInput.value = '';
                     } else {
